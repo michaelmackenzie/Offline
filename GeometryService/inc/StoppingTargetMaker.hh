@@ -49,6 +49,7 @@ private:
   double _z0InMu2e; // nominal center of foils.
   double _deltaZ ; // nominal spacing of foils.
   double _rIn; // inner radius of foils.  Currently 0.
+	unsigned int _OneNoHole;//avoid make hole in one foil[0-37?]
 
   std::vector<double> _rOut; //outer Radii of foils
   std::vector<double> _halfThicknesses; //half thicknesses of foils

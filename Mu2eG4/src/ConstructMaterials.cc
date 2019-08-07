@@ -244,6 +244,14 @@ namespace mu2e {
       Polyethylene->AddElement( getElementOrThrow("H"), 2);
     }
 
+    mat = uniqueMaterialOrThrow( "Ti6Al4V");
+    {
+      G4Material* Ti6Al4V = new G4Material( mat.name, 4.512*CLHEP::g/CLHEP::cm3, 3);
+      Ti6Al4V->AddElement( getElementOrThrow("Al"), 0.1143);
+      Ti6Al4V->AddElement( getElementOrThrow("Ti"), 0.8454);
+      Ti6Al4V->AddElement( getElementOrThrow("V"), 0.0403);
+    }
+
 
     mat = uniqueMaterialOrThrow( "Half_Poly" );
     {

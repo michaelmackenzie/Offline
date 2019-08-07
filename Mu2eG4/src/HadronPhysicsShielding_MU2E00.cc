@@ -127,7 +127,7 @@ void HadronPhysicsShielding_MU2E00::CreateModels()
 #if G4VERSION>4099
   mf::LogError("PHYS") << " This Mu2e Physics Constructor has not been certified for use with Geant4 v10+.";
   G4cout << "Error: This Mu2e Physics Constructor has not been certified for use with Geant4 v10+." << G4endl;
-  throw cet::exception("BADINPUT")<<"This Mu2e Physics Constructor has not been certified for use with Geant4 v10+.\n";
+//Yaqian Wang commented  throw cet::exception("BADINPUT")<<"This Mu2e Physics Constructor has not been certified for use with Geant4 v10+.\n";
 #endif
 
   const G4double minFTFPEnergy         =  9.5*GeV;

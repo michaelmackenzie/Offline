@@ -42,6 +42,7 @@
 #include "G4SDManager.hh"
 #include "G4Color.hh"
 #include "G4Tubs.hh"
+#include "G4Box.hh"
 #include "G4Cons.hh"
 #include "G4SubtractionSolid.hh"
 #include "G4IntersectionSolid.hh"
@@ -1359,22 +1360,48 @@ namespace mu2e {
       const double x_vd_halflength = (CRS->getSectorHalfLengths("D"))[0];
       //const double y_vd_halflength = (y_crv_max + yExtentLow)/2.0;
       const double y_mother_halflength = yExtentLow;
-      const double dimVD[3] = { x_vd_halflength, y_mother_halflength, vdg->getHalfLength() };
+//w      const double dimVD[3] = { x_vd_halflength, y_mother_halflength, vdg->getHalfLength() };
+//w
+//w      VolumeInfo vdInfo = nestBox(VirtualDetector::volumeName(vdId),
+//w                                  dimVD,
+//w                                  downstreamVacuumMaterial,
+//w                                  0,                              //rotation
+//w                                  vdg->getLocal(vdId),
+//w                                  parent,
+//w                                  vdId,
+//w                                  vdIsVisible,
+//w                                  G4Color::White(),
+//w                                  vdIsSolid,
+//w                                  forceAuxEdgeVisible,
+//w                                  placePV,
+//w                                  false
+//w                                  );
+//>>Yaqian 20180605 make a hole in the VD 86
+    G4Box* bigCRV  = new G4Box("bigCRV",x_vd_halflength, y_mother_halflength, vdg->getHalfLength());
+    G4Box* digCRV  = new G4Box("digCRV",500,407,1);
+    const G4ThreeVector digVector(0.,-550.,0.);
+			VolumeInfo vdInfo;
+      vdInfo.name = VirtualDetector::volumeName(vdId);
+			G4SubtractionSolid *temp1=new G4SubtractionSolid("temp1",bigCRV,digCRV,0,digVector);
+			digCRV  = new G4Box("digCRV",3000,690,1);
+			const G4ThreeVector temp1Vector(0,-1634,0);
+			G4SubtractionSolid *temp2=new G4SubtractionSolid("temp2",temp1,digCRV,0,temp1Vector);
 
-      VolumeInfo vdInfo = nestBox(VirtualDetector::volumeName(vdId),
-                                  dimVD,
-                                  downstreamVacuumMaterial,
-                                  0,                              //rotation
-                                  vdg->getLocal(vdId),
-                                  parent,
-                                  vdId,
-                                  vdIsVisible,
-                                  G4Color::White(),
-                                  vdIsSolid,
-                                  forceAuxEdgeVisible,
-                                  placePV,
-                                  false
-                                  );
+
+			vdInfo.solid = temp2;//new G4SubtractionSolid( vdInfo.name, bigCRV, digCRV, 0, digVector);
+			finishNesting(vdInfo,
+					downstreamVacuumMaterial,
+					0,
+					vdg->getLocal(vdId),
+					parent.logical,
+					vdId,
+					vdIsVisible,
+					G4Color::White(),
+					vdIsSolid,
+					forceAuxEdgeVisible,
+					placePV,
+					false);
+			//<<
 
       if ( verbosityLevel > 0) {
 	cout << __func__ << " constructing " << VirtualDetector::volumeName(vdId) << endl
@@ -1506,6 +1533,136 @@ namespace mu2e {
       }
       doSurfaceCheck && checkForOverlaps(vdInfo.physical, _config, verbosityLevel>0);
     }
+
+		vdId = VirtualDetectorId::STM_Final;
+		if ( vdg->exist(vdId) ) {
+			const VolumeInfo& parent = _helper->locateVolInfo("HallAir");
+			const double vdRIn  = 0.0;
+			const double vdROut = _config.getDouble("vd.STMFin.r");
+			const TubsParams vdParams(vdRIn, vdROut, vdg->getHalfLength());
+
+			VolumeInfo vdInfo = nestTubs(VirtualDetector::volumeName(vdId),
+					vdParams,
+					downstreamVacuumMaterial,
+					0,
+					vdg->getLocal(vdId), //local position w.r.t. parent
+					parent,
+					vdId,
+					vdIsVisible, //
+					G4Color::White(),
+					vdIsSolid,
+					forceAuxEdgeVisible,
+					placePV,
+					false
+					);
+			if ( verbosityLevel > 0) {
+				cout << __func__ << " constructing " << VirtualDetector::volumeName(vdId) << endl
+					<< " at " << vdg->getGlobal(vdId) << endl
+					<< " at " << vdg->getLocal(vdId) << " w.r.t. parent (HallAir) " << endl;
+				cout << __func__ << "    VD parameters: " << vdParams << endl;
+				cout << __func__ << "    VD rel. posit: " << vdg->getLocal(vdId) << endl;
+			}
+			doSurfaceCheck && checkForOverlaps(vdInfo.physical, _config, verbosityLevel>0);
+			vdInfo.logical->SetSensitiveDetector(vdSD);
+		}
+		vdId = VirtualDetectorId::STM_Middle;
+		if ( vdg->exist(vdId) ) {
+		//	const VolumeInfo& parent = _helper->locateVolInfo("HallAir");
+			//const double vdZshift=_config.getDouble("vd.STMMid.zshift");
+			const VolumeInfo& parent = _helper->locateVolInfo("MBSMother");
+		//	if(vdZshift>=-22910)
+			const double vdRIn  = 0.0;
+			const double vdROut = _config.getDouble("vd.STMMid.r");
+			const TubsParams vdParams(vdRIn, vdROut, vdg->getHalfLength());
+
+			VolumeInfo vdInfo = nestTubs(VirtualDetector::volumeName(vdId),
+					vdParams,
+					downstreamVacuumMaterial,
+					0,
+					vdg->getLocal(vdId), //local position w.r.t. parent
+					parent,
+					vdId,
+					vdIsVisible, //
+					G4Color::White(),
+					vdIsSolid,
+					forceAuxEdgeVisible,
+					placePV,
+					false
+					);
+			if ( verbosityLevel > 0) {
+				cout << __func__ << " constructing " << VirtualDetector::volumeName(vdId) << endl
+					<< " at " << vdg->getGlobal(vdId) << endl
+					<< " at " << vdg->getLocal(vdId) << " w.r.t. parent (HallAir) " << endl;
+				cout << __func__ << "    VD parameters: " << vdParams << endl;
+				cout << __func__ << "    VD rel. posit: " << vdg->getLocal(vdId) << endl;
+			}
+			doSurfaceCheck && checkForOverlaps(vdInfo.physical, _config, verbosityLevel>0);
+			vdInfo.logical->SetSensitiveDetector(vdSD);
+		}
+
+		vdId = VirtualDetectorId::STM_Shield_In;
+		if ( vdg->exist(vdId) ) {
+			const VolumeInfo& parent = _helper->locateVolInfo("HallAir");
+			const double vdR=_config.getDouble("vd.STMShieldIn.r");
+			const double vdHalfLength=_config.getDouble("vd.STMShieldIn.halfLength");
+			const TubsParams vdParams(vdR-vdg->getHalfLength(),vdR,vdHalfLength);
+
+			VolumeInfo vdInfo = nestTubs(VirtualDetector::volumeName(vdId),
+					vdParams,
+					downstreamVacuumMaterial,
+					0,
+					vdg->getLocal(vdId), //local position w.r.t. parent
+					parent,
+					vdId,
+					vdIsVisible, //
+					G4Color::White(),
+					vdIsSolid,
+					forceAuxEdgeVisible,
+					placePV,
+					false
+					);
+			if ( verbosityLevel > 0) {
+				cout << __func__ << " constructing " << VirtualDetector::volumeName(vdId) << endl
+					<< " at " << vdg->getGlobal(vdId) << endl
+					<< " at " << vdg->getLocal(vdId) << " w.r.t. parent (HallAir) " << endl;
+				cout << __func__ << "    VD parameters: " << vdParams << endl;
+				cout << __func__ << "    VD rel. posit: " << vdg->getLocal(vdId) << endl;
+			}
+			doSurfaceCheck && checkForOverlaps(vdInfo.physical, _config, verbosityLevel>0);
+			vdInfo.logical->SetSensitiveDetector(vdSD);
+		}
+
+		vdId = VirtualDetectorId::STM_Shield_Out;
+		if ( vdg->exist(vdId) ) {
+			const VolumeInfo& parent = _helper->locateVolInfo("HallAir");
+			const double vdR=_config.getDouble("vd.STMShieldOut.r");
+			const double vdHalfLength=_config.getDouble("vd.STMShieldOut.halfLength");
+			const TubsParams vdParams(vdR,vdR+vdg->getHalfLength(),vdHalfLength);
+
+			VolumeInfo vdInfo = nestTubs(VirtualDetector::volumeName(vdId),
+					vdParams,
+					downstreamVacuumMaterial,
+					0,
+					vdg->getLocal(vdId), //local position w.r.t. parent
+					parent,
+					vdId,
+					vdIsVisible, //
+					G4Color::White(),
+					vdIsSolid,
+					forceAuxEdgeVisible,
+					placePV,
+					false
+					);
+			if ( verbosityLevel > 0) {
+				cout << __func__ << " constructing " << VirtualDetector::volumeName(vdId) << endl
+					<< " at " << vdg->getGlobal(vdId) << endl
+					<< " at " << vdg->getLocal(vdId) << " w.r.t. parent (HallAir) " << endl;
+				cout << __func__ << "    VD parameters: " << vdParams << endl;
+				cout << __func__ << "    VD rel. posit: " << vdg->getLocal(vdId) << endl;
+			}
+			doSurfaceCheck && checkForOverlaps(vdInfo.physical, _config, verbosityLevel>0);
+			vdInfo.logical->SetSensitiveDetector(vdSD);
+		}
 
     vdId = VirtualDetectorId::STM_SpotSizeCollUpStr;
     if ( vdg->exist(vdId) ) {

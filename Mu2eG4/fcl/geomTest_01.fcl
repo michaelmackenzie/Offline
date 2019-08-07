@@ -21,8 +21,10 @@ services : {
   TFileService          : { fileName : "geomtest_01.root" }
   RandomNumberGenerator : {}
 
-  GeometryService        : { inputFile      : "Mu2eG4/geom/geom_common.txt" }  
-//  GeometryService        : { inputFile      : "Mu2eG4/geom/geom_common_DOE_review_2017.txt" }
+  #GeometryService        : { inputFile      : "Mu2eG4/geom/STM/geom_final_hole_IFBTi0d635_FOVa5_ExtLiner20cmL_1cmT_FOVLinerW3cm0.txt" }  
+  #GeometryService        : { inputFile      : "Mu2eG4/geom/STM/geom_final_hole_linerIFB_crack.txt" }  
+  #GeometryService        : { inputFile      : "Mu2eG4/geom/STM/geom_final_hole_thinIFB_NoMagnet.txt" }  
+  GeometryService        : { inputFile      : "Mu2eG4/geom/STM/geom_final_hole_thinIFB_NoMagnet_moveFOV.txt" }  
   ConditionsService      : { conditionsfile : "Mu2eG4/test/conditions_01.txt"  }
   GlobalConstantsService : { inputFile : "Mu2eG4/test/globalConstants_01.txt" }
   G4Helper               : { }
