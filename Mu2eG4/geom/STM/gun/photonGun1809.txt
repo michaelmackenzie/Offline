@@ -1,0 +1,39 @@
+// 2017/05/19 Photon source to study the STM efficiency due to 
+//the thickness of absorber
+// $Author: Yaqian Wang$
+// Original author Rob Kutschke
+// added ParticleGun process
+// enable process
+bool particleGun.do = true;
+// Limits on cos(polar angle):
+double particleGun.czmin =  0.998;
+double particleGun.czmax =  1;
+// Limits on phi angle:
+double particleGun.phimin = 0.0;
+double particleGun.phimax = 6.283185307179586;
+// Time limits in ns, relative to protons on target.
+double particleGun.tmin  =  0.0;
+double particleGun.tmax  =  0.0;
+// position
+// The middle of the production target; in Mu2e coordinates in mm.
+vector<double> particleGun.point = {-3904., 0., 18400};
+//vector<double> particleGun.point = {-3904., 0., 38350};   
+//{-3904., 0., 38350.} upstream of VD 111(,,38387.6)
+vector<double> particleGun.halfLength = { 0., 0., 0. };
+string particleGun.momentumMode="gaussian";
+vector<double> particleGun.momentumParameters = { 1.809, 0.000849257};
+//0.844,1.809 //2keV full width,Gaussian=2keV/2.355
+// Limits on momentum:
+double particleGun.pmin = 1.804;//MeV set 5keV limit to the signal
+double particleGun.pmax = 1.814;
+// Particle Id
+int particleGun.id = 22;
+// Mean particle.
+double particleGun.mean =  -1;
+// Control of histograms.
+bool particleGun.doHistograms = false;
+bool particleGun.verbose = false;
+// This tells emacs to view this file in c++ mode.
+// Local Variables:
+// mode:c++
+// End:

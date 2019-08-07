@@ -1,0 +1,59 @@
+#include "Mu2eG4/geom/geom_common_cd3_s4p2.txt"
+int stm.verbosityLevel = 1;
+int ts.coll.verbosityLevel = 1;
+//---------- Set STM configuration for this study ----------
+string stm.shield.material = "StainlessSteel";
+
+//"absorber" , just upstream of the "spot-size" collimator //
+//bool   stm.absorber.build             =  true; //
+//string stm.absorber.material          = "G4_Pb";//Polyethylene096
+//double stm.absorber.DnStrSpace        = 1500.0; // this parameter not used for this collimator
+//double stm.absorber.halfWidth         =  215.9; // 
+//double stm.absorber.halfHeight        =  228.6; // 
+//double stm.absorber.halfLength=1; // 76.2mm = 3 inch halflength 
+
+//---------- Set VD configuration for this study -----------
+int    vd.verbosityLevel            = 1;
+bool   vd.STMUpStr.build            = true; //VD86 Rectangle in x-y plane, same size as the CRV
+bool   vd.STMMagDnStr.build         = true; //VD87 Rectangle in x-y plane, same size as the CRV
+bool   vd.STMCollDnStr.build        = true; //VD88
+bool   vd.STMDet1UpStr.build        = true; //VD89 Disk in x-y plane, same size as the Ge detector 
+bool   vd.STMDet2UpStr.build        = true; //VD90 Disk in x-y plane, same size as the LaBr3 detector 
+bool   vd.DSNeutronShieldExit.build = true;
+bool   vd.STMFieldOfViewCollDnStr.build = true; //VD100
+bool   vd.STMMid.build = true; //VD111
+double vd.STMMid.r = 2000; //VD111
+//double vd.STMMid.zshift = -34180; //VD111
+double vd.STMMid.zshift = -2100; //VD111
+bool   vd.STMSSCollUpStr.build = true; //VD101 Disk upstream of Spot-Size collimator
+
+double stm.shielding.halfLength        =   350.6;//355.6; //use length btw. SSCollimator and east wall 
+double stm.shielding.halfHeight  =   223.6; //228.6 reach desk 
+double stm.shielding.holeHalfHeight  =223.6; 
+
+//bool   stm.det1.build=true;
+//bool   stm.det2.build=true;
+//bool   stm.SScollimator.build=true;
+//bool   stm.SScollimator.liner.build=true;
+//bool   stm.SScollimator.hole2.build=true;
+
+//---------- Set Geant4 options ----------
+
+//With the default step limit of 100,000 I get skipped events:
+//int g4.steppingActionMaxSteps = 500000;
+//double g4.minRangeCut     = 0.100; // mm
+// These are used in both SteppingAction and StackingAction.
+//bool   g4.killLowEKine  = false;
+//double g4.eKineMin      = -1.0;    // Kinetic energy in MeV: negative to not kill
+//vector<int>    g4.killLowEKinePDG = { 11 }; // kill delta electrons
+//vector<double> g4.eKineMinPDG     = { 0.001 }; // MeV
+//string g4.physicsListName = "QGSP_BERT_HP_MU2E00";
+//string g4.physicsListName = "QGSP_BERT";
+
+
+
+// vim: syntax=c
+// This tells emacs to view this file in c++ mode.
+// Local Variables:
+// mode:c++
+// End:
