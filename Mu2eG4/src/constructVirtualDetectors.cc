@@ -1698,6 +1698,24 @@ namespace mu2e {
       doSurfaceCheck && checkForOverlaps(vdInfo.physical, _config, verbosityLevel>0);
     }
     
+double STMShield_Ttop_Poly=_config.getDouble("STMShield_Ttop_Poly");
+double STMShield_Ttop_Pb2=_config.getDouble("STMShield_Ttop_Pb2");
+double STMShield_Ttop_Cu=_config.getDouble("STMShield_Ttop_Cu");
+double STMShield_Tbot_Al=_config.getDouble("STMShield_Tbot_Al");
+double STMShield_X1=_config.getDouble("STMShield_X1");
+double STMShield_X2=_config.getDouble("STMShield_X2");
+double STMSSChalfLength=_config.getDouble("stm.SScollimator.halfLength");
+double STMDet2HPGe_xOffset=_config.getDouble("STMDet2HPGe_xOffset");
+const double stmZAllowed=_config.getDouble("stm.z.allowed");
+double STMShield_LaBr3_halfT_Pb=_config.getDouble("STMShield_LaBr3_halfT_Pb");
+double STMShield_LaBr3_halfT_Cu=_config.getDouble("STMShield_LaBr3_halfT_Cu");
+double STMShield_LaBr3_halfT_Al=_config.getDouble("STMShield_LaBr3_halfT_Al");
+double STMShield_LaBr3_gap_Al=_config.getDouble("STMShield_LaBr3_gap_Al");
+double STMShield_LaBr3_gap_Pb=_config.getDouble("STMShield_LaBr3_gap_Pb");
+double STMDet1LaBr3_xOffset=_config.getDouble("STMDet1LaBr3_xOffset");
+double STMDet2HPGe_Can_thick=_config.getDouble("STMDet2HPGe_Can_thick");
+double STMDet1CupLaBr3_thick=_config.getDouble("STMDet1CupLaBr3_thick");
+//double STMDet1LaBr3_gap_Upstream=_config.getDouble("STMDet1LaBr3_gap_Upstream");
     vdId = VirtualDetectorId::STM_CollDnStr;
     if ( vdg->exist(vdId) ) {
 
@@ -1705,13 +1723,17 @@ namespace mu2e {
       const VolumeInfo& parent = _helper->locateVolInfo("HallAir");
       const double vdRIn  = 0.0;
       const double vdROut = _config.getDouble("vd.STMCollDnStr.r");
-      const TubsParams vdParams(vdRIn, vdROut, vdg->getHalfLength());
+			std::vector<double> hbox(3);
+			hbox[0]=100;
+			hbox[1]=40;
+			hbox[2]=0.02;
+			const TubsParams vdParams(vdRIn, vdROut, vdg->getHalfLength());
 
-      VolumeInfo vdInfo = nestTubs(VirtualDetector::volumeName(vdId),
-                                   vdParams,
+      VolumeInfo vdInfo = nestBox(VirtualDetector::volumeName(vdId),
+                                   hbox,
                                    downstreamVacuumMaterial,
                                    0,
-                                   vdg->getLocal(vdId), //local position w.r.t. parent
+                                   vdg->getLocal(vdId)+G4ThreeVector(0.0,0.0,2*STMShield_Ttop_Poly+STMShield_Ttop_Pb2+STMShield_Ttop_Cu+STMShield_Tbot_Al), //local position w.r.t. parent
                                    parent,
                                    vdId,
                                    vdIsVisible, //
@@ -1721,6 +1743,22 @@ namespace mu2e {
                                    placePV,
                                    false
                                    );
+///      const TubsParams vdParams(vdRIn, vdROut, vdg->getHalfLength());
+///
+///      VolumeInfo vdInfo = nestTubs(VirtualDetector::volumeName(vdId),
+///                                   vdParams,
+///                                   downstreamVacuumMaterial,
+///                                   0,
+///                                   vdg->getLocal(vdId)+G4ThreeVector(0.0,0.0,2*STMShield_Ttop_Poly+STMShield_Ttop_Pb2+STMShield_Ttop_Cu+STMShield_Tbot_Al), //local position w.r.t. parent
+///                                   parent,
+///                                   vdId,
+///                                   vdIsVisible, //
+///                                   G4Color::White(),
+///                                   vdIsSolid,
+///                                   forceAuxEdgeVisible,
+///                                   placePV,
+///                                   false
+///                                   );
 
       if ( verbosityLevel > 0) {
 	cout << __func__ << " constructing " << VirtualDetector::volumeName(vdId) << endl
@@ -1740,13 +1778,13 @@ namespace mu2e {
       const VolumeInfo& parent = _helper->locateVolInfo("HallAir");
       const double vdRIn  = 0.0;
       const double vdROut = _config.getDouble("stm.det1.rOut");
-      const TubsParams vdParams(vdRIn, vdROut, vdg->getHalfLength());
+      const TubsParams vdParams(vdRIn, vdROut*0.9, vdg->getHalfLength());
 
       VolumeInfo vdInfo = nestTubs(VirtualDetector::volumeName(vdId),
                                    vdParams,
                                    downstreamVacuumMaterial,
                                    0,
-                                   vdg->getLocal(vdId), //local position w.r.t. parent
+                                   vdg->getLocal(vdId)+G4ThreeVector(STMDet1LaBr3_xOffset,0.0,4*(STMShield_LaBr3_halfT_Al+STMShield_LaBr3_halfT_Cu+STMShield_LaBr3_halfT_Pb)+STMShield_LaBr3_gap_Pb+STMShield_LaBr3_gap_Al+STMDet1CupLaBr3_thick), //local position w.r.t. parent
                                    parent,
                                    vdId,
                                    vdIsVisible, //
@@ -1767,7 +1805,10 @@ namespace mu2e {
       doSurfaceCheck && checkForOverlaps(vdInfo.physical, _config, verbosityLevel>0);
     }
 
-    
+double STMShield_Z1=stmZAllowed-STMSSChalfLength*2.0;//901.7;
+double STMShield_right_Theta=atan((STMShield_X2-STMShield_X1)/STMShield_Z1);//top
+CLHEP::HepRotationY angleHPGe(STMShield_right_Theta);
+G4RotationMatrix *rotHPGe = new G4RotationMatrix(angleHPGe);
     vdId = VirtualDetectorId::STM_Det2UpStr;
     if ( vdg->exist(vdId) ) {
 
@@ -1775,13 +1816,13 @@ namespace mu2e {
       const VolumeInfo& parent = _helper->locateVolInfo("HallAir");
       const double vdRIn  = 0.0;
       const double vdROut = _config.getDouble("stm.det2.rOut");
-      const TubsParams vdParams(vdRIn, vdROut, vdg->getHalfLength());
+      const TubsParams vdParams(vdRIn, vdROut*0.9, vdg->getHalfLength());
 
       VolumeInfo vdInfo = nestTubs(VirtualDetector::volumeName(vdId),
                                    vdParams,
                                    downstreamVacuumMaterial,
-                                   0,
-                                   vdg->getLocal(vdId), //local position w.r.t. parent
+                                   rotHPGe,
+                                   vdg->getLocal(vdId)+G4ThreeVector(STMDet2HPGe_xOffset,0.0,2*STMShield_Ttop_Poly+STMShield_Ttop_Pb2+STMShield_Ttop_Cu+STMShield_Tbot_Al+STMDet2HPGe_Can_thick), //local position w.r.t. parent
                                    parent,
                                    vdId,
                                    vdIsVisible, //
