@@ -1793,7 +1793,7 @@ G4ThreeVector stmShieldingPositionInParentShiftX_right=stmShieldingPositionInPar
 		double STMShield_front_zshift=-STMShield_Z1/2.0+0.5*STMShield_Ttop_Poly;
 		G4ThreeVector stmShieldingPositionInParentShift_front=stmShieldingPositionInParent+G4ThreeVector(STMShield_front_xshift,0.0,STMShield_front_zshift)+stmSSCollShift;
     VolumeInfo stmShielding_front_Poly_First;
-		stmShielding_front_Poly_First.name="stmShielding_front_1";
+		stmShielding_front_Poly_First.name="stmShielding_front_Poly_First";
 		stmShielding_front_Poly_First.solid=STMShield_front_Poly_First;
 		finishNesting(stmShielding_front_Poly_First,findMaterialOrThrow("Polyethylene092B050d095"),0,stmShieldingPositionInParentShift_front,parentInfo.logical,0,STMisVisible,G4Color::Cyan(),STMisSolid,forceAuxEdgeVisible,placePV,doSurfaceCheck);
 		
