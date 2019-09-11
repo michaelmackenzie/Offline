@@ -54,6 +54,9 @@ namespace mu2e {
     double       _magnetHoleHalfHeight;
     std::string  _magnetMaterial;
     double       _magnetField;
+    double       _magnetFieldx;
+    double       _magnetFieldy;
+    double       _magnetFieldz;
     bool         _magnetFieldVisible;
     
     bool        _FOVCollimatorBuild;
@@ -73,13 +76,20 @@ namespace mu2e {
     double      _FOVCollimatorHole1RadiusDnStr;
     bool        _FOVCollimatorHole1LinerBuild;
     double      _FOVCollimatorHole1LinerThickness;
+    bool        _FOVCollimatorHole1Liner2Build;//wyq useless
+    double      _FOVCollimatorHole1Liner2Thickness;//wyq useless
     bool        _FOVCollimatorHole2Build;
     double      _FOVCollimatorHole2xOffset;
     double      _FOVCollimatorHole2RadiusUpStr;
     double      _FOVCollimatorHole2RadiusDnStr;
     bool        _FOVCollimatorHole2LinerBuild;
     double      _FOVCollimatorHole2LinerThickness;
+    bool        _FOVCollimatorHole2Liner2Build;//wyq useless
+    double      _FOVCollimatorHole2Liner2Thickness;//wyq useless
     std::string _FOVCollimatorHoleLinerMaterial;
+    std::string _FOVCollimatorHole1Liner2Material;//wyq useless
+    std::string _FOVCollimatorHole2Liner1Material;//wyq useless
+    std::string _FOVCollimatorHole2Liner2Material;//wyq useless
     
     bool         _magnetTableBuild;
     std::string  _magnetTableMaterial;
@@ -102,6 +112,32 @@ namespace mu2e {
     double       _pipeFlangeHalfLength;
     double       _pipeFlangeOverhangR;
 
+    bool        _absorberBuild;//wyq
+    std::string _absorberMaterial;//wyq
+    double      _absorberDnStrSpace;//wyq
+    double      _absorberHalfWidth;//wyq
+    double      _absorberHalfHeight;//wyq
+    double      _absorberHalfLength;//wyq
+//wyq
+    bool        _basorberBuild;//wyq
+    std::string _basorberMaterial;//wyq
+    double      _basorberDnStrSpace;//wyq
+    double      _basorberHalfWidth;//wyq
+    double      _basorberHalfHeight;//wyq
+    double      _basorberHalfLength;//wyq
+
+    bool        _ShieldingBuild;
+    std::string _ShieldingMaterial;
+    double      _ShieldingHalfWidth;
+    double      _ShieldingHalfHeight;
+    double      _ShieldingHalfLength;
+    double      _ShieldingHoleHalfWidth;
+    double      _ShieldingHoleHalfHeight;
+    double      _ShieldingHoleHalfLength;
+    double      _ShieldingHoleXoffset;
+    double      _ShieldingHoleYoffset;
+    double      _ShieldingHoleZoffset;
+
     bool        _SSCollimatorBuild;
     std::string _SSCollimatorMaterial;
     double      _SSCollimatorUpStrSpace;
@@ -117,15 +153,22 @@ namespace mu2e {
     double      _SSCollimatorHole1xOffset;
     double      _SSCollimatorHole1RadiusUpStr;
     double      _SSCollimatorHole1RadiusDnStr;
-    bool        _SSCollimatorHole1LinerBuild;
-    double      _SSCollimatorHole1LinerThickness;
+    bool        _SSCollimatorHole1Liner1Build;
+    double      _SSCollimatorHole1Liner1Thickness;
+    bool        _SSCollimatorHole1Liner2Build;
+    double      _SSCollimatorHole1Liner2Thickness;
     bool        _SSCollimatorHole2Build;
     double      _SSCollimatorHole2xOffset;
     double      _SSCollimatorHole2RadiusUpStr;
     double      _SSCollimatorHole2RadiusDnStr;    
-    bool        _SSCollimatorHole2LinerBuild;
-    double      _SSCollimatorHole2LinerThickness;
-    std::string _SSCollimatorHoleLinerMaterial;
+    bool        _SSCollimatorHole2Liner1Build;
+    double      _SSCollimatorHole2Liner1Thickness;
+    bool        _SSCollimatorHole2Liner2Build;
+    double      _SSCollimatorHole2Liner2Thickness;
+    std::string _SSCollimatorHole1Liner1Material;
+    std::string _SSCollimatorHole1Liner2Material;
+    std::string _SSCollimatorHole2Liner1Material;
+    std::string _SSCollimatorHole2Liner2Material;
     
     bool         _detectorTableBuild;
     std::string  _detectorTableMaterial;

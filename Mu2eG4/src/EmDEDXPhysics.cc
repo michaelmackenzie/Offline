@@ -98,8 +98,13 @@ EmDEDXPhysics::EmDEDXPhysics(G4int ver)
   G4EmParameters* param = G4EmParameters::Instance();
   param->SetDefaults();
   param->SetVerbose(verbose);
-  param->SetLossFluctuations(false); // special case
-  SetPhysicsType(bElectromagnetic);
+	param->SetLossFluctuations(false); // special case
+	SetPhysicsType(bElectromagnetic);
+	//>>Yaqian Wang
+	param->SetFluo(true);
+	param->SetAuger(true);
+	param->SetPixe(true);
+	//<<
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -111,31 +116,31 @@ EmDEDXPhysics::~EmDEDXPhysics()
 
 void EmDEDXPhysics::ConstructParticle()
 {
-  // gamma
-  G4Gamma::Definition();
+	// gamma
+	G4Gamma::Definition();
 
-  // leptons
-  G4Electron::Definition();
-  G4Positron::Definition();
-  G4MuonPlus::Definition();
-  G4MuonMinus::Definition();
+	// leptons
+	G4Electron::Definition();
+	G4Positron::Definition();
+	G4MuonPlus::Definition();
+	G4MuonMinus::Definition();
 
-  // mesons
-  G4PionPlus::Definition();
-  G4PionMinus::Definition();
-  G4KaonPlus::Definition();
-  G4KaonMinus::Definition();
+	// mesons
+	G4PionPlus::Definition();
+	G4PionMinus::Definition();
+	G4KaonPlus::Definition();
+	G4KaonMinus::Definition();
 
-  // barions
-  G4Proton::Definition();
-  G4AntiProton::Definition();
+	// barions
+	G4Proton::Definition();
+	G4AntiProton::Definition();
 
-  // ions
-  G4Deuteron::Definition();
-  G4Triton::Definition();
-  G4He3::Definition();
-  G4Alpha::Definition();
-  G4GenericIon::Definition();
+	// ions
+	G4Deuteron::Definition();
+	G4Triton::Definition();
+	G4He3::Definition();
+	G4Alpha::Definition();
+	G4GenericIon::Definition();
 
 }
 
@@ -143,116 +148,123 @@ void EmDEDXPhysics::ConstructParticle()
 
 void EmDEDXPhysics::ConstructProcess()
 {
-  if(verbose > 1) {
-    G4cout << "### " << GetPhysicsName() << " Construct Processes " << G4endl;
-  }
-  G4PhysicsListHelper* ph = G4PhysicsListHelper::GetPhysicsListHelper();
+	if(verbose > 1) {
+		G4cout << "### " << GetPhysicsName() << " Construct Processes " << G4endl;
+	}
+	G4PhysicsListHelper* ph = G4PhysicsListHelper::GetPhysicsListHelper();
 
-  // muon & hadron bremsstrahlung and pair production
-  G4MuBremsstrahlung* mub = new G4MuBremsstrahlung();
-  G4MuPairProduction* mup = new G4MuPairProduction();
-  G4hBremsstrahlung* pib = new G4hBremsstrahlung();
-  G4hPairProduction* pip = new G4hPairProduction();
-  G4hBremsstrahlung* kb = new G4hBremsstrahlung();
-  G4hPairProduction* kp = new G4hPairProduction();
-  G4hBremsstrahlung* pb = new G4hBremsstrahlung();
-  G4hPairProduction* pp = new G4hPairProduction();
+	// muon & hadron bremsstrahlung and pair production
+	G4MuBremsstrahlung* mub = new G4MuBremsstrahlung();
+	G4MuPairProduction* mup = new G4MuPairProduction();
+	G4hBremsstrahlung* pib = new G4hBremsstrahlung();
+	G4hPairProduction* pip = new G4hPairProduction();
+	G4hBremsstrahlung* kb = new G4hBremsstrahlung();
+	G4hPairProduction* kp = new G4hPairProduction();
+	G4hBremsstrahlung* pb = new G4hBremsstrahlung();
+	G4hPairProduction* pp = new G4hPairProduction();
 
-  // Add standard EM Processes
-  auto myParticleIterator=GetParticleIterator();
-  myParticleIterator->reset();
-  while( (*myParticleIterator)() ){
-    G4ParticleDefinition* particle = myParticleIterator->value();
-    G4String particleName = particle->GetParticleName();
+	// Add standard EM Processes
+	auto myParticleIterator=GetParticleIterator();
+	myParticleIterator->reset();
+	while( (*myParticleIterator)() ){
+		G4ParticleDefinition* particle = myParticleIterator->value();
+		G4String particleName = particle->GetParticleName();
 
-    if (particleName == "gamma") {
+		if (particleName == "gamma") {
 
-      ph->RegisterProcess(new G4PhotoElectricEffect(), particle);
-      ph->RegisterProcess(new G4ComptonScattering(), particle);
-      ph->RegisterProcess(new G4GammaConversion(), particle);
+			ph->RegisterProcess(new G4PhotoElectricEffect(), particle);
+			ph->RegisterProcess(new G4ComptonScattering(), particle);
+			ph->RegisterProcess(new G4GammaConversion(), particle);
 
-    } else if (particleName == "e-") {
+		} else if (particleName == "e-") {
 
-      ph->RegisterProcess(new G4eIonisation(), particle);
-      ph->RegisterProcess(new G4eBremsstrahlung(), particle);
+			ph->RegisterProcess(new G4eIonisation(), particle);
+			ph->RegisterProcess(new G4eBremsstrahlung(), particle);
 
-    } else if (particleName == "e+") {
+		} else if (particleName == "e+") {
 
-      ph->RegisterProcess(new G4eIonisation(), particle);
-      ph->RegisterProcess(new G4eBremsstrahlung(), particle);
-      ph->RegisterProcess(new G4eplusAnnihilation(), particle);
+			ph->RegisterProcess(new G4eIonisation(), particle);
+			ph->RegisterProcess(new G4eBremsstrahlung(), particle);
+			ph->RegisterProcess(new G4eplusAnnihilation(), particle);
 
-    } else if (particleName == "mu+" ||
-               particleName == "mu-"    ) {
+		} else if (particleName == "mu+" ||
+				particleName == "mu-"    ) {
 
-      ph->RegisterProcess(new G4MuIonisation(), particle);
-      ph->RegisterProcess(mub, particle);
-      ph->RegisterProcess(mup, particle);
+			ph->RegisterProcess(new G4MuIonisation(), particle);
+			ph->RegisterProcess(mub, particle);
+			ph->RegisterProcess(mup, particle);
 
-    } else if (particleName == "alpha" ||
-               particleName == "He3") {
+		} else if (particleName == "alpha" ||
+				particleName == "He3") {
 
-      ph->RegisterProcess(new G4ionIonisation(), particle);
+			ph->RegisterProcess(new G4ionIonisation(), particle);
 
-    } else if (particleName == "GenericIon") {
+		} else if (particleName == "GenericIon") {
 
-      ph->RegisterProcess(new G4ionIonisation(), particle);
+			ph->RegisterProcess(new G4ionIonisation(), particle);
 
-    } else if (particleName == "pi+" ||
-               particleName == "pi-" ) {
+		} else if (particleName == "pi+" ||
+				particleName == "pi-" ) {
 
-      ph->RegisterProcess(new G4hIonisation(), particle);
-      ph->RegisterProcess(pib, particle);
-      ph->RegisterProcess(pip, particle);
+			ph->RegisterProcess(new G4hIonisation(), particle);
+			ph->RegisterProcess(pib, particle);
+			ph->RegisterProcess(pip, particle);
 
-    } else if (particleName == "kaon+" ||
-               particleName == "kaon-" ) {
+		} else if (particleName == "kaon+" ||
+				particleName == "kaon-" ) {
 
-      ph->RegisterProcess(new G4hIonisation(), particle);
-      ph->RegisterProcess(kb, particle);
-      ph->RegisterProcess(kp, particle);
+			ph->RegisterProcess(new G4hIonisation(), particle);
+			ph->RegisterProcess(kb, particle);
+			ph->RegisterProcess(kp, particle);
 
-    } else if (particleName == "proton" ||
-	       particleName == "anti_proton") {
+		} else if (particleName == "proton" ||
+				particleName == "anti_proton") {
 
-      ph->RegisterProcess(new G4hIonisation(), particle);
-      ph->RegisterProcess(pb, particle);
-      ph->RegisterProcess(pp, particle);
+			ph->RegisterProcess(new G4hIonisation(), particle);
+			ph->RegisterProcess(pb, particle);
+			ph->RegisterProcess(pp, particle);
 
-    } else if (particleName == "B+" ||
-	       particleName == "B-" ||
-	       particleName == "D+" ||
-	       particleName == "D-" ||
-	       particleName == "Ds+" ||
-	       particleName == "Ds-" ||
-               particleName == "anti_He3" ||
-               particleName == "anti_alpha" ||
-               particleName == "anti_deuteron" ||
-               particleName == "anti_lambda_c+" ||
-               particleName == "anti_omega-" ||
-               particleName == "anti_sigma_c+" ||
-               particleName == "anti_sigma_c++" ||
-               particleName == "anti_sigma+" ||
-               particleName == "anti_sigma-" ||
-               particleName == "anti_triton" ||
-               particleName == "anti_xi_c+" ||
-               particleName == "anti_xi-" ||
-	       particleName == "deuteron" ||
-	       particleName == "lambda_c+" ||
-               particleName == "omega-" ||
-               particleName == "sigma_c+" ||
-               particleName == "sigma_c++" ||
-               particleName == "sigma+" ||
-               particleName == "sigma-" ||
-               particleName == "tau+" ||
-               particleName == "tau-" ||
-	       particleName == "triton" ||
-               particleName == "xi_c+" ||
-               particleName == "xi-" ) {
+		} else if (particleName == "B+" ||
+				particleName == "B-" ||
+				particleName == "D+" ||
+				particleName == "D-" ||
+				particleName == "Ds+" ||
+				particleName == "Ds-" ||
+				particleName == "anti_He3" ||
+				particleName == "anti_alpha" ||
+				particleName == "anti_deuteron" ||
+				particleName == "anti_lambda_c+" ||
+				particleName == "anti_omega-" ||
+				particleName == "anti_sigma_c+" ||
+				particleName == "anti_sigma_c++" ||
+				particleName == "anti_sigma+" ||
+				particleName == "anti_sigma-" ||
+				particleName == "anti_triton" ||
+				particleName == "anti_xi_c+" ||
+				particleName == "anti_xi-" ||
+				particleName == "deuteron" ||
+				particleName == "lambda_c+" ||
+				particleName == "omega-" ||
+				particleName == "sigma_c+" ||
+				particleName == "sigma_c++" ||
+				particleName == "sigma+" ||
+				particleName == "sigma-" ||
+				particleName == "tau+" ||
+				particleName == "tau-" ||
+				particleName == "triton" ||
+				particleName == "xi_c+" ||
+				particleName == "xi-" ) {
 
-      ph->RegisterProcess(new G4hIonisation(), particle);
-    }
-  }
+					ph->RegisterProcess(new G4hIonisation(), particle);
+				}
+	}
+	//>>Yaqian Wang for Deexcitation 
+	G4VAtomDeexcitation* de = new G4UAtomicDeexcitation();
+	de->SetFluo(true);
+	de->SetAuger(true);   
+	de->SetPIXE(true);  
+	G4LossTableManager::Instance()->SetAtomDeexcitation(de);
+	//<<
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

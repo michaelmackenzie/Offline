@@ -1,0 +1,53 @@
+#include "Mu2eG4/geom/geom_common_cd3_s4p2.txt"
+#include "Mu2eG4/geom/studies/crv_counters_v05.txt"
+int stm.verbosityLevel = 1;
+int ts.coll.verbosityLevel = 1;
+//---------- Set STM configuration for this study ----------
+string stm.shield.material = "StainlessSteel";
+
+//"absorber" , just upstream of the "spot-size" collimator //
+bool   stm.absorber.build             =  false; //
+string stm.absorber.material          = "G4_Pb";//Polyethylene096
+double stm.absorber.DnStrSpace        = 1500.0; // this parameter not used for this collimator
+double stm.absorber.halfWidth         =  215.9; // 
+double stm.absorber.halfHeight        =  228.6; // 
+double stm.absorber.halfLength=5; // 76.2mm = 3 inch halflength 
+
+//---------- Set VD configuration for this study -----------
+int    vd.verbosityLevel            = 1;
+bool   vd.STMUpStr.build            = true; //VD86 Rectangle in x-y plane, same size as the CRV
+bool   vd.STMMagDnStr.build         = true; //VD87 Rectangle in x-y plane, same size as the CRV
+bool   vd.STMCollDnStr.build        = true; //VD88
+bool   vd.STMDet1UpStr.build        = true; //VD89 Disk in x-y plane, same size as the Ge detector 
+bool   vd.STMDet2UpStr.build        = true; //VD90 Disk in x-y plane, same size as the LaBr3 detector 
+bool   vd.DSNeutronShieldExit.build = true;
+bool   vd.STMFieldOfViewCollDnStr.build = true; //VD100
+bool   vd.STMMid.build=true; //VD111
+double vd.STMMid.r = 2000; //VD111
+bool   vd.STMSSCollUpStr.build = true; //VD101 Disk upstream of Spot-Size collimator
+int crs.nModulesD4 = 0;  //removes the lowest portion of the CRV-D
+double stm.shield.rOut = 160.0; //which allows the STM to have the correct rOut
+
+bool   stm.det1.build=false;
+bool   stm.det2.build=false;
+string stm.SScollimator.material          = "G4_Pb";
+string stm.SScollimator.liner.material    =  "G4_Pb"; 
+//bool   stm.SScollimator.build=true;
+//bool   stm.SScollimator.liner.build=true;
+//bool   stm.SScollimator.hole2.build=true;
+
+//shield pipe to reduce CRV deadtime
+
+bool   stm.SScollimator.hole1.liner1.build      =false; //wyq liner along the length of the hole itself
+double stm.SScollimator.hole1.liner1.thickness  =  40.0;
+bool   stm.SScollimator.hole1.liner2.build      =  false; //wyq liner along the length of the hole itself
+double stm.SScollimator.hole1.liner2.thickness  =  0.4; //wyq  0.04 cm thick hole liner
+bool   stm.SScollimator.hole2.liner1.build      =  false; //wyq liner along the length of the hole itself
+double stm.SScollimator.hole2.liner1.thickness  =  40.0; //wyq 1cm thick hole liner
+bool   stm.SScollimator.hole2.liner2.build      =  false; //wyq liner along the length of the hole itself
+double stm.SScollimator.hole2.liner2.thickness  =  0.4; //wyq 0.04cm thick hole liner
+// vim: syntax=c
+// This tells emacs to view this file in c++ mode.
+// Local Variables:
+// mode:c++
+// End:

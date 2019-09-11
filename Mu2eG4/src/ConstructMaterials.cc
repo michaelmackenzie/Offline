@@ -244,6 +244,25 @@ namespace mu2e {
       Polyethylene->AddElement( getElementOrThrow("H"), 2);
     }
 
+    mat = uniqueMaterialOrThrow( "Ti6Al4V");//for IFB window
+    {
+      G4Material* Ti6Al4V = new G4Material( mat.name, 4.512*CLHEP::g/CLHEP::cm3, 3);
+      Ti6Al4V->AddElement( getElementOrThrow("Al"), 0.1143);
+      Ti6Al4V->AddElement( getElementOrThrow("Ti"), 0.8454);
+      Ti6Al4V->AddElement( getElementOrThrow("V"), 0.0403);
+    }
+    mat = uniqueMaterialOrThrow( "LaBr3Ce");//for STM Crystal
+    {
+			   G4Element* elLa = new G4Element("Lanthanum","La" ,57,138.905 *CLHEP::g/CLHEP::mole);
+				 G4Element* elBr = new G4Element("Bromide"  ,"Br" ,35, 79.904 *CLHEP::g/CLHEP::mole);
+				 G4Material* LaBr3 = new G4Material("LaBr3",5.08*CLHEP::g/CLHEP::cm3,2);
+				 LaBr3 -> AddElement(elLa,1);
+				 LaBr3 -> AddElement(elBr,3);
+				 G4Element* elCe  = new G4Element("Cerium"  ,"Ce" ,58.,140.116*CLHEP::g/CLHEP::mole);
+				 G4Material* LaBr3Ce = new G4Material(mat.name,5.08*CLHEP::g/CLHEP::cm3,2);
+				 LaBr3Ce -> AddElement(elCe,1.9*CLHEP::perCent);
+				 LaBr3Ce -> AddMaterial(LaBr3,98.1*CLHEP::perCent);
+    }
 
     mat = uniqueMaterialOrThrow( "Half_Poly" );
     {

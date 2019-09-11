@@ -39,6 +39,7 @@ namespace mu2e {
     // all outer radii must be specified.
     c.getVectorDouble("stoppingTarget.radii", _rOut);
     _rIn = c.getDouble("stoppingTarget.holeRadius", 0);
+    _OneNoHole = c.getInt("stoppingTarget.oneNoHole", 100);
 
     // Downstream code counts on this so test it here.
     if ( _rOut.size() < 1 ){
@@ -148,7 +149,8 @@ namespace mu2e {
 
     for ( vector<double>::size_type i=0;
           i<_rOut.size(); ++i){
-
+			double _rIn_temp=_rIn;
+			if(i==_OneNoHole)_rIn=0.0;
       // z position of the center of the foil.
       const double z = offset + (int(i)-n0)*_deltaZ + _zVars[i];
 
@@ -175,6 +177,7 @@ namespace mu2e {
                                            _detSysOrigin
                                            )
                       );
+			_rIn=_rIn_temp;
       // create the TargetFoilSupportStructure
       if (_foilTarget_supportStructure) {
               for ( int j=0; j<_foilTarget_supportStructure_number; ++j){

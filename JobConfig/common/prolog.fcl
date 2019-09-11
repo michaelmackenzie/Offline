@@ -71,7 +71,17 @@ CutAndCountSettings: {
 draTopLevelDefs: {
    source: { module_type: RootInput }
 
-   services : @local::Services.SimAndReco
+   services: {
+      message               : @local::default_message
+      TFileService          : { fileName : @nil }
+      RandomNumberGenerator : {}
+
+      GeometryService        : { inputFile      : "JobConfig/common/geom_baseline.txt" }
+      ConditionsService      : { conditionsfile : "Mu2eG4/test/conditions_01.txt"        }
+      GlobalConstantsService : { inputFile      : "Mu2eG4/test/globalConstants_01.txt"   }
+      BTrkHelper             : @local::BTrkHelperDefault
+      SeedService            : @local::automaticSeeds
+   }
 
    physics : {
       producers: {
@@ -80,7 +90,7 @@ draTopLevelDefs: {
 	 //------------------------------------------------------------------------------
 	 // digitization
          
-	 @table::CommonMC.producers
+	 @table::CommonDigiSim.producers
 	 @table::TrackerMC.producers
          //----------------------------------------------------------------
          // calorimeter
@@ -128,7 +138,7 @@ draTopLevelDefs: {
       //==============================================================================
       draDigiTrigSeq : [
 	 @sequence::draEventMixing.CD3Mixers
-	 , @sequence::CommonMC.DigiSim
+	 , @sequence::CommonDigiSim.DigiSim
 	 , @sequence::CaloDigiMC.DigiSim
 	 , @sequence::TrackerMC.DigiSim
       ]
@@ -156,10 +166,6 @@ draTopLevelDefs: {
       end_paths: @nil
    }
 }
-
-draTopLevelDefs.services.TFileService.fileName : @nil
-draTopLevelDefs.services.GeometryService.inputFile : "JobConfig/common/geom_baseline.txt"
-
 
 dra.filteredOutputDef: {
    filteredOutput: {

@@ -20,7 +20,7 @@ namespace mu2e {
                     double holeHalfX, double holeHalfY, 
                     CLHEP::Hep3Vector const & originInMu2e = CLHEP::Hep3Vector(),
                     CLHEP::HepRotation const & rotation = CLHEP::HepRotation(), 
-                    std::string const & materialName = "", double field=0.0,
+                    std::string const & materialName = "", double field=0.0,double fieldx=0,double fieldy=0,double fieldz=0,
                     bool fieldVisible=false
                    ) :
       _build( build),
@@ -33,6 +33,9 @@ namespace mu2e {
       _rotation    ( rotation     ),
       _materialName( materialName ),
       _field( field ),
+      _fieldx( fieldx ),
+      _fieldy( fieldy ),
+      _fieldz( fieldz ),
       _fieldVisible ( fieldVisible )
     {}
 
@@ -45,6 +48,9 @@ namespace mu2e {
     double zBegin()          const { return _originInMu2e.z() - zHalfLength(); }
     double zEnd()            const { return _originInMu2e.z() + zHalfLength(); }
     double field()           const { return _field; }
+    double fieldx()           const { return _fieldx; }
+    double fieldy()           const { return _fieldy; }
+    double fieldz()           const { return _fieldz; }
     bool   fieldVisible()    const { return _fieldVisible; }
    
     CLHEP::Hep3Vector const &  originInMu2e() const { return _originInMu2e; }
@@ -65,6 +71,9 @@ namespace mu2e {
     CLHEP::HepRotation _rotation; // wrt to parent volume
     std::string        _materialName;
     double _field;
+    double _fieldx;
+    double _fieldy;
+    double _fieldz;
     bool   _fieldVisible;
 
   };

@@ -1,0 +1,64 @@
+#include "Mu2eG4/geom/geom_common_DOE_review_2017.txt"
+#include "Mu2eG4/geom/studies/crv_counters_v05.txt"
+int stm.verbosityLevel = 1;
+int ts.coll.verbosityLevel = 1;
+//---------- Set STM configuration for this study ----------
+string stm.shield.material = "StainlessSteel";
+
+//---------- Set VD configuration for this study -----------
+int    vd.verbosityLevel            = 1;
+bool   vd.DSNeutronShieldExit.build = true;//81
+bool   vd.STMUpStr.build            = true; //VD86 Rectangle in x-y plane, same size as the CRV
+bool   vd.STMMagDnStr.build         = true; //VD87 Rectangle in x-y plane, same size as the CRV
+bool   vd.STMCollDnStr.build        = false; //VD88
+bool   vd.STMDet1UpStr.build        = false; //VD89 Disk in x-y plane, same size as the Ge detector 
+bool   vd.STMDet2UpStr.build        = false; //VD90 Disk in x-y plane, same size as the LaBr3 detector 
+bool   vd.STMFieldOfViewCollDnStr.build = true; //VD100
+bool   vd.STMSSCollUpStr.build = true; //VD101 Disk upstream of Spot-Size collimator
+bool   vd.STMMid.build = true; //VD112
+double vd.STMMid.r=323.2;//319 for middle0 and 1;
+double vd.STMMid.zshift=-23331.7;//shift WRT. SS-Collimator upstream(-)downstream(+)
+//double vd.STMMid.zshift=-23170;//shift WRT. SS-Collimator upstream(-)downstream(+)
+bool   vd.STMFin.build = true; //VD115
+bool   stm.det1.build=false;
+bool   stm.det2.build=false;
+bool   stm.SScollimator.build=true;
+bool   stm.SScollimator.liner.build=true;
+bool   stm.SScollimator.hole2.build=true;
+
+//shield pipe to reduce CRV deadtime
+bool   stm.shield.build                = true;
+double stm.shield.rIn                  = 110.0;
+double stm.shield.widthLiner           = 10.0;
+//min 160,max 230
+double stm.shield.rOut                 = 180.0;//WARNING: should be 160
+double stm.shield.pipe.halfLength      = 209.5;
+string stm.shield.materialLiner        = "Polyethylene096";
+string stm.shield.material             = "StainlessSteel";
+double stm.shield.UpStrSpace           =  10.0;
+double stm.shield.DnStrSpace           =   1.0;
+double stm.shield.DnStrWall.halfLength =  50.0;
+double stm.FOVcollimator.absorber.halfLength=5;//default is 5
+double ifb.endwindow.halfLength = 0.635;//default is also 5
+string ifb.endwindow.material   = "G4_Ti";
+
+//---------- Set Geant4 options ----------
+
+//With the default step limit of 100,000 I get skipped events:
+//int g4.steppingActionMaxSteps = 500000;
+//double g4.minRangeCut     = 0.100; // mm
+// These are used in both SteppingAction and StackingAction.
+//bool   g4.killLowEKine  = false;
+//double g4.eKineMin      = -1.0;    // Kinetic energy in MeV: negative to not kill
+//vector<int>    g4.killLowEKinePDG = { 11 }; // kill delta electrons
+//vector<double> g4.eKineMinPDG     = { 0.001 }; // MeV
+//string g4.physicsListName = "QGSP_BERT_HP_MU2E00";
+//string g4.physicsListName = "QGSP_BERT";
+
+
+
+// vim: syntax=c
+// This tells emacs to view this file in c++ mode.
+// Local Variables:
+// mode:c++
+// End:
