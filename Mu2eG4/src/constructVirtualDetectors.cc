@@ -1563,7 +1563,6 @@ namespace mu2e {
 				cout << __func__ << "    VD rel. posit: " << vdg->getLocal(vdId) << endl;
 			}
 			doSurfaceCheck && checkForOverlaps(vdInfo.physical, _config, verbosityLevel>0);
-			vdInfo.logical->SetSensitiveDetector(vdSD);
 		}
 		vdId = VirtualDetectorId::STM_Middle;
 		if ( vdg->exist(vdId) ) {
@@ -1597,7 +1596,6 @@ namespace mu2e {
 				cout << __func__ << "    VD rel. posit: " << vdg->getLocal(vdId) << endl;
 			}
 			doSurfaceCheck && checkForOverlaps(vdInfo.physical, _config, verbosityLevel>0);
-			vdInfo.logical->SetSensitiveDetector(vdSD);
 		}
 
 		vdId = VirtualDetectorId::STM_Shield_In;
@@ -1629,7 +1627,6 @@ namespace mu2e {
 				cout << __func__ << "    VD rel. posit: " << vdg->getLocal(vdId) << endl;
 			}
 			doSurfaceCheck && checkForOverlaps(vdInfo.physical, _config, verbosityLevel>0);
-			vdInfo.logical->SetSensitiveDetector(vdSD);
 		}
 
 		vdId = VirtualDetectorId::STM_Shield_Out;
@@ -1661,7 +1658,6 @@ namespace mu2e {
 				cout << __func__ << "    VD rel. posit: " << vdg->getLocal(vdId) << endl;
 			}
 			doSurfaceCheck && checkForOverlaps(vdInfo.physical, _config, verbosityLevel>0);
-			vdInfo.logical->SetSensitiveDetector(vdSD);
 		}
 
     vdId = VirtualDetectorId::STM_SpotSizeCollUpStr;

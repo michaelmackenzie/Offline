@@ -58,8 +58,8 @@ namespace mu2e {
       return StepInstanceName::name(StepInstanceName::CRV).c_str();
     }
 
-    static char const * TTrackerPlaneSupport(){
-      return StepInstanceName::name(StepInstanceName::ttrackerDS).c_str();
+    static char const * TrackerPlaneSupport(){
+      return StepInstanceName::name(StepInstanceName::trackerDS).c_str();
     }
 
     static char const * ProtonAbsorber() {
@@ -85,7 +85,7 @@ namespace mu2e {
     static char const * STMDet() {
       return StepInstanceName::name(StepInstanceName::STMDet).c_str();
     }
-    
+		
 		static char const * STMFOVa() {
       return StepInstanceName::name(StepInstanceName::STMFOVa).c_str();
     }

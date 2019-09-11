@@ -15,16 +15,37 @@ bool   stm.solid   = false;
 int    vd.verbosityLevel = 0;
 bool   vd.STMUpStr.build     = false; //VD86 Rectangle in x-y plane, same size as the CRV (1mm dnStr of CRV)
 bool   vd.STMMagDnStr.build  = false; //VD87 Rectangle in x-y plane, same size as the CRV
-bool   vd.STMSSCollUpStr.build = false; //VD101 Disk upstream of Spot-Size collimator
+bool   vd.STMSSCollUpStr.build = true;//false; //VD101 Disk upstream of Spot-Size collimator
 double vd.STMSSCollUpStr.r     = 200.0;// r=20cm 
-bool   vd.STMCollDnStr.build = false; //VD88 Disk downstream of Spot-Size collimator
-double vd.STMCollDnStr.r     = 200.0;// r=20cm 
-bool   vd.STMDet1UpStr.build = false; //VD89 Disk in x-y plane, same size as the Ge detector 1
-bool   vd.STMDet2UpStr.build = false; //VD90 Disk in x-y plane, same size as the Ge detector 2
+bool   vd.STMCollDnStr.build = true;//false; //VD88 Disk downstream of Spot-Size collimator
+double vd.STMCollDnStr.r     = 50.0;// r=15cm 
+bool   vd.STMDet1UpStr.build = true;//false; //VD89 Disk in x-y plane, same size as the Ge detector 1
+bool   vd.STMDet2UpStr.build = true;//false; //VD90 Disk in x-y plane, same size as the Ge detector 2
 bool   vd.STMFieldOfViewCollDnStr.build = false; //VD100
 // build virtual detector inside DS Neutron Shielding
 bool   vd.DSNeutronShieldExit.build = false; //VD81
 double vd.DSNeutronShieldExit.r     =  110.0;//Must be the same as the following 2 values,
+bool   vd.STMMid.build = false; //VD used for multi stage simulation,the position can be changed relative to SS-Collimator 
+double vd.STMMid.xshift=0.0;
+double vd.STMMid.yshift=0.0;
+double vd.STMMid.r=323.2;//319 for middle0 and 1;
+double vd.STMMid.zshift=-23331.7;//shift WRT. SS-Collimator upstream(-)down
+
+bool   vd.STMFin.build = false; //VD used for multi stage simulation,the position can be changed relative to SS-Collimator 
+double vd.STMFin.r     = 2000.0;// r=200cm 
+double vd.STMFin.xshift=0.0;
+double vd.STMFin.yshift=0.0;
+double vd.STMFin.zshift=-2510.0;//shift WRT. SS-Collimator upstream(-)downstream(+)
+//>>For a VD upstr. of IFB window
+//double vd.STMFin.r = 319; //VD111
+//double vd.STMFin.zshift = -23331.7; //VD111
+//<<
+bool   vd.STMShieldIn.build=false;
+double vd.STMShieldIn.r=100;
+double vd.STMShieldIn.halfLength=209.5;
+bool   vd.STMShieldOut.build=false;
+double vd.STMShieldOut.r=160;
+double vd.STMShieldOut.halfLength=209.5;
 
 //External (Neutron) Shielding radius and VD81 radius
 //These should be modified only in ExtShieldDownstream_v??.txt
@@ -37,19 +58,19 @@ double vd.DSNeutronShieldExit.r     =  110.0;//Must be the same as the following
 //double mbs.CLV2.absorber.halfLength     = 15.0;//mm
 
 //Build STM within z = 34 inches (863.6 mm) of downstream hall wall
-double stm.z.allowed = 863.6;
+double stm.z.allowed = 901.7;//863.6;
 
 //STM may have two detectors
 bool   stm.det1.build                     = true;
 string stm.det1.material                  = "G4_Ge";
 double stm.det1.rIn                       =   0.0;
-double stm.det1.rOut                      =  45.0;
-double stm.det1.xoffset                   =  50.0; //45mm = 1.77 inches
+double stm.det1.rOut                      =  40.0;
+double stm.det1.xoffset                   =  40.6;//50.0; //45mm = 1.77 inches
 double stm.det1.halfLength                =  40.0;
 string stm.det1.can.material              = "G4_Al";
 string stm.det1.can.gas                   = "G4_Galactic"; // ~vacuum
-double stm.det1.can.rIn                   =  46.5;
-double stm.det1.can.rOut                  =  47.5; //47.5mm radius is for the 3.75in OD can from Ortec
+double stm.det1.can.rIn                   =  40.95;
+double stm.det1.can.rOut                  =  41.75; //47.5mm radius is for the 3.75in OD can from Ortec
 double stm.det1.can.UpStrSpace            = 100.0;  // z=10cm space between this and previous element
 double stm.det1.can.halfLength            =  50.0;
 string stm.det1.can.UpStrWindowMaterial   = "G4_Al";
@@ -59,35 +80,41 @@ bool   stm.det2.build                     = true;
 string stm.det2.material                  = "G4_Ge";
 double stm.det2.rIn                       =   0.0;
 double stm.det2.rOut                      =  45.0;
-double stm.det2.xoffset                   = -50.0; //45mm = 1.77 inches
+double stm.det2.xoffset                   = -40.6;//-50.0; //45mm = 1.77 inches
 double stm.det2.halfLength                =  40.0;
 string stm.det2.can.material              = "G4_Al";
 string stm.det2.can.gas                   = "G4_Galactic"; // ~vacuum
 double stm.det2.can.rIn                   =  46.5;
 double stm.det2.can.rOut                  =  47.5; //47.5mm radius is for the 3.75in OD can from Ortec
-double stm.det2.can.UpStrSpace            = 100.0;  // z=10cm space between this and previous element
-double stm.det2.can.halfLength            =  50.0;
+double stm.det2.can.UpStrSpace            = 40.47;  // z=10cm space between this and previous element
+double stm.det2.can.halfLength            =  86.5;
 string stm.det2.can.UpStrWindowMaterial   = "G4_Al"; //"G4_Be";
-double stm.det2.can.UpStrWindowHalfLength =   0.5;   //0.381; //Standard Be window is 0.762mm thick
+double stm.det2.can.UpStrWindowHalfLength =   1.5;   //0.381; //Standard Be window is 0.762mm thick
 
 //"spot-size" collimator, just upstream of the detector(s)
 bool   stm.SScollimator.build             =  true; //
 string stm.SScollimator.material          = "G4_Pb";
 double stm.SScollimator.UpStrSpace        =    0.0; // this parameter not used for this collimator
-double stm.SScollimator.halfWidth         =  215.9; // 
-double stm.SScollimator.halfHeight        =  228.6; // 
-double stm.SScollimator.halfLength        =   76.2; // 76.2mm = 3 inch halflength 
+double stm.SScollimator.xshift            = 26.63; 
+double stm.SScollimator.yshift            = 10.16; 
+double stm.SScollimator.halfWidth         =  237.49;//215.9; // 
+double stm.SScollimator.halfHeight        =  60.96;//228.6; // 
+double stm.SScollimator.halfLength        =   50.8;//76.2; // 76.2mm = 3 inch halflength 
 bool   stm.SScollimator.liner.build       =  true; //
 string stm.SScollimator.liner.material    =  "G4_W"; 
-double stm.SScollimator.liner.halfWidth   =  105.0; // 
-double stm.SScollimator.liner.halfHeight  =   55.0; // 
-double stm.SScollimator.liner.halfLength  =   76.2; // 
-double stm.SScollimator.liner.cutOutHalfLength  =  0.0; // no cutout for this collimator
+double stm.SScollimator.liner.halfWidth   =  110.49;//105.0; // 
+double stm.SScollimator.liner.halfHeight  =   55.88;//60.96;//55.0; // 
+double stm.SScollimator.liner.halfLength  =   45.72;//76.2; // 
+double stm.SScollimator.liner.cutOutHalfLength  =  5.08;//flexibility of SSC inZ direction, those in X and Y direction are doubled 
 double stm.SScollimator.hole1.xoffset     =   40.6; // (38.1mm = 1.5 inches)
 double stm.SScollimator.hole1.radiusUpStr =    6.795; // DEPRECATED parameter, no longer used
-double stm.SScollimator.hole1.radiusDnStr =    5.642; // 5.642mm for A=1.0 cm^2 hole
+double stm.SScollimator.hole1.radiusDnStr =    17.841; // 5.642mm for A=1.0 cm^2 hole
 bool   stm.SScollimator.hole1.liner.build      =  false; // liner along the length of the hole itself
 double stm.SScollimator.hole1.liner.thickness  =  10.0; // 1cm thick hole liner
+bool   stm.SScollimator.hole1.liner1.build      =  false; //wyq liner along the length of the hole itself
+double stm.SScollimator.hole1.liner1.thickness  =  10.0; //wyq  1cm thick hole liner
+bool   stm.SScollimator.hole1.liner2.build      =  false; //wyq liner along the length of the hole itself
+double stm.SScollimator.hole1.liner2.thickness  =  0.4; //wyq  0.04 cm thick hole liner
 bool   stm.SScollimator.hole2.build       =   true; // has a second collimation hole?
 double stm.SScollimator.hole2.xoffset     =  -40.6; // (38.1mm = 1.5 inches)
 double stm.SScollimator.hole2.radiusUpStr =    6.795; // DEPRECATED parameter, no longer used
@@ -96,6 +123,33 @@ bool   stm.SScollimator.hole2.liner.build      =  false; // liner along the leng
 double stm.SScollimator.hole2.liner.thickness  =  10.0; // 1cm thick hole liner
 string stm.SScollimator.hole.liner.material    =  "G4_W"; 
 
+bool   stm.SScollimator.hole2.liner1.build      =  false; //wyq liner along the length of the hole itself
+double stm.SScollimator.hole2.liner1.thickness  =  10.0; //wyq 1cm thick hole liner
+bool   stm.SScollimator.hole2.liner2.build      =  false; //wyq liner along the length of the hole itself
+double stm.SScollimator.hole2.liner2.thickness  =  0.4; //wyq 0.04cm thick hole liner
+string stm.SScollimator.hole1.liner1.material    =  "G4_Cu"; //wyq
+string stm.SScollimator.hole1.liner2.material    =  "G4_Al"; //wyq
+string stm.SScollimator.hole2.liner1.material    =  "G4_Cu"; //wyq
+string stm.SScollimator.hole2.liner2.material    =  "G4_Al"; //wyq
+
+//Absorber used to reduce hit rate, before SScolimator//wyq
+//"absorber" , just upstream of the "spot-size" collimator ////wyq
+bool   stm.absorber.build             =  false; ////wyq
+string stm.absorber.material          = "Polyethylene096";//"G4_Pb:7";//Polyethylene096:110//wyq
+//double stm.absorber.DnStrSpace        = 2011.0; // this parameter is the distance upstream of the SScollimator,keep at least 11 mm for the VD101//wyq
+double stm.absorber.DnStrSpace        = 2000.0; // avoid overlap VD115//wyq
+double stm.absorber.halfWidth         =  215.9; // //wyq
+double stm.absorber.halfHeight        =  228.6; // //wyq
+double stm.absorber.halfLength        =   110; //  //wyq
+//if put absorber 2m up stream of SSC, half width=277.59,half height=293.92
+//Basorber used to reduce hit rate, before SScolimator//wyq
+//"basorber" , just upstream of the "spot-size" collimator ////wyq
+bool   stm.basorber.build             =  false; ////wyq
+string stm.basorber.material          = "G4_Cu";//Polyethylene096//wyq
+double stm.basorber.DnStrSpace        = 1; // this parameter is the distance after the SScollimator//wyq
+double stm.basorber.halfWidth         =  215.9; // //wyq
+double stm.basorber.halfHeight        =  228.6; // //wyq
+double stm.basorber.halfLength        =   5.0; //  //wyq
 //"field-of-view" collimator, just downstream of the sweeper magnet
 bool   stm.FOVcollimator.build                  =  true; //
 string stm.FOVcollimator.material               = "G4_Pb";
@@ -124,7 +178,7 @@ string stm.FOVcollimator.hole.liner.material    =  "G4_W";
 bool   stm.FOVcollimator.absorber.build         =   true; //
 double stm.FOVcollimator.absorber.halfLength    =   5.0; //
 string stm.FOVcollimator.absorber.material      =  "Polyethylene096"; 
-
+double stm.FOVcollimator.linerWHalfLength=15;//changed by Yaqian 2019.04.16
 
 //Sweeper magnet
 bool   stm.magnet.build          = true;
@@ -136,7 +190,10 @@ double stm.magnet.halfHeight     =  228.6;  // 1m high magnet
 double stm.magnet.holeHalfHeight =  177.8;  // 12 inch high hole
 double stm.magnet.holeHalfWidth  =   95.0;  // this must be larger than stm.pipe.rOut
 double stm.magnet.field          =    0.051;  // Tesla (510 Gauss)
-bool   stm.magnet.field.visible   = false;
+double stm.magnet.fieldx         =    0.051;  // Tesla (510 Gauss)
+double stm.magnet.fieldy         =    0.0;  // Tesla (510 Gauss)
+double stm.magnet.fieldz         =    0.0;  // Tesla (510 Gauss)
+bool   stm.magnet.fieldVisible   = false;
 
 //Support (Table) on which to put the sweeper magnet and field-of-view collimator
 bool   stm.magnet.stand.build          = true;
@@ -173,14 +230,86 @@ double stm.detector.stand.legRadius      =  50.0;
 bool   stm.shield.build                = true;
 double stm.shield.rIn                  = 110.0;
 double stm.shield.widthLiner           = 10.0;
-double stm.shield.rOut                 = 130.0;//WARNING: should be 160
-double stm.shield.pipe.halfLength      = 209.5;
-string stm.shield.materialLiner        = "Polyethylene096";
+double stm.shield.rOut                 = 160.0;
+double stm.shield.pipe.halfLength      = 212;//209.5;//halfLength of steel only
+double stm.shield.pipe.crack           = 0.0;//25.4;//1-inch crack btw. pipe and concrete
+string stm.shield.materialLiner        = "Polyethylene096";//length+crvshieldWall
 string stm.shield.material             = "StainlessSteel";
 double stm.shield.UpStrSpace           =  10.0;
 double stm.shield.DnStrSpace           =   1.0;
 double stm.shield.DnStrWall.halfLength =  50.0;
 
+bool   stm.shielding.build             =  false; //
+string stm.shielding.material          = "G4_Pb";
+double stm.shielding.halfWidth         =  200.0; // 
+double stm.shielding.halfHeight        =228.6;//  100.0; //228.6 no gas btw. desk and shielding 
+//double stm.shielding.halfLength        =   355.6; //use length btw. SSCollimator and east wall by default 
+double stm.shielding.holeHalfWidth   =150.0; 
+double stm.shielding.holeHalfHeight  =228.6;
+//double stm.shielding.holeHalfLength  =   ; //is same as shielding lengthby default 
+double stm.shielding.holeXoffset  = 0.0  ; // 
+double stm.shielding.holeYoffset  = -50.0  ; // 
+double stm.shielding.holeZoffset  = 0.0  ; // 
+int stoppingTarget.oneNoHole=-1;
+bool stm.IFBWindowLinerUp.build=false;
+bool stm.IFBWindowLinerDn.build=false;
+
+//>To make a liner in the ExtShieldDownstream 
+bool stm.ExtShieldLiner.build=false;
+double ExtShieldDownstream.holeRadiusType11Box4Hole1 =  120.0;//enlarge it
+double stm.ExtShieldLiner.HalfLength=100;
+double stm.ExtShieldLiner.RIn=110;
+double stm.ExtShieldLiner.ROut=120;
+//<
+double STMShield_Ttop_Poly=12.7;//Poly width for all shielding
+double STMShield_Ttop_Pb1=25.4;//1 inch Pb for top shielding
+double STMShield_Ttop_Pb2=50.8;//2 inch Pb for all rest
+double STMShield_Ttop_Cu=12.7;//0.5 inch Copper for all
+double STMShield_Ttop_Al=1.016;//0.04in thickness of Al in top shield
+double STMShield_Tbot_Al=2.54;//0.1in thickness of Al in bot,left,right,front
+double STMShield_X1=474.98;//Pb width of the SSC
+double STMShield_X2=1275.08;//Max X-width at the east wall
+double STMShield_Y1=121.92;//Room height in the shielding house
+double STMShield_Zgap=73.66;//gap at the east wall
+//Read in parameters for STM detectors
+double STMDet2HPGe_Can_R=50.165;//Radius of Al can for HPGe
+double STMDet2HPGe_Can_thick=1.5;//thickness of Al can
+double STMDet2HPGe_Can_halfL=86.5;//half length of the Al can
+double STMDet2HPGe_Can_gap_top=4.0;//gap between the can and cup upsream
+double STMDet2HPGe_Cup0_gap_bar=4.0;//gap between the can and cup on the side
+double STMDet2HPGe_Cup0_gap_bot=48.47;//gap btw. crystal and cup at bottom
+double STMDet2HPGe_Cup0_thick_bar=0.8;//cup thickness on barrel
+double STMDet2HPGe_Cup0_thick_top=0.03;//cup thickness on top
+double STMDet2HPGe_Cup0_thick_bot=3.0;//cup thickness at bottom
+double STMDet2HPGe_R_out_corner=8.0;
+double STMDet2HPGe_R_out=36.05;
+double STMDet2HPGe_L_out=78.5;
+double STMDet2HPGe_R_in_corner=5.0;
+double STMDet2HPGe_R_in=5.25;
+double STMDet2HPGe_L_in=69.7;
+double STMDet2HPGe_xOffset=12.0;
+//>LaBr3
+double STMShield_LaBr3_halfWidth=59.765;//Inner shield for LaBr3
+double STMShield_LaBr3_halfT_Al=0.5;//half Al thickness for inner shield
+double STMShield_LaBr3_gap_Al=172.66;//gap before the 1st Al shielding from front shield
+double STMShield_LaBr3_gap_Pb=225.04;//gap btw. two Pb layers
+double STMShield_LaBr3_halfT_Cu=2.0;//half thickness Cu for inner shield
+double STMShield_LaBr3_halfT_Pb=20.0;//half thickness Pb for inner shield
+double STMShield_LaBr3_Hole_R=30.0;//Hole radius on the inner shield
+//Shield btw. HPGe and LaBr3
+double STMShield_halfLengthI=240.0;//I is for shield to separate HPGe and LaBr3
+double STMShield_halfTI_Pb=10.0;//I
+double STMShield_halfTI_Al=0.05;//I
+double STMShield_halfTI_Cu=2.0;//I
+//Parameters for Det1(LaBr3) and Det2(HPGe)
+double STMDet1CupLaBr3_R=41.75;//Radius for LaBr3 cup
+double STMDet1CupLaBr3_thick=0.8;
+double STMDet1CupLaBr3_halfLength=33.15;
+double STMDet1CupLaBr3_Upstream=9.0;//gap btw cup and the closest inner shield
+double STMDet1LaBr3_R=38.1;//Radius of Crystal
+double STMDet1LaBr3_halfLength=38.1;//Crystal size
+double STMDet1LaBr3_gap_Upstream=5.0;//gap btw crystal and cup
+double STMDet1LaBr3_xOffset=10.0;
 //NOTE: uncomment the next two lines if you want to test the STM design as documented in docDB-XXXX with the thicker CRV shield
 //int crs.nModulesD4 = 0;
 //double stm.shield.rOut = 160.0;
@@ -189,3 +318,4 @@ double stm.shield.DnStrWall.halfLength =  50.0;
 // Local Variables:
 // mode:c++
 // End:
+// vim: syntax=c
