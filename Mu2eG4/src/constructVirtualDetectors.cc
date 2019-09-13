@@ -1566,7 +1566,7 @@ namespace mu2e {
 		}
 		vdId = VirtualDetectorId::STM_Middle;
 		if ( vdg->exist(vdId) ) {
-		//	const VolumeInfo& parent = _helper->locateVolInfo("HallAir");
+			//const VolumeInfo& parent = _helper->locateVolInfo("HallAir");
 			//const double vdZshift=_config.getDouble("vd.STMMid.zshift");
 			const VolumeInfo& parent = _helper->locateVolInfo("MBSMother");
 		//	if(vdZshift>=-22910)

@@ -1,4 +1,4 @@
-#include "Mu2eG4/geom/geom_common_DOE_review_2017.txt"
+#include "Mu2eG4/geom/geom_common_current.txt"//DOE_review_2017.txt"
 #include "Mu2eG4/geom/studies/crv_counters_v05.txt"
 int stm.verbosityLevel = 1;
 int ts.coll.verbosityLevel = 1;
