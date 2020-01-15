@@ -41,7 +41,7 @@ namespace mu2e {
       calorimeter,    calorimeterRO,     calorimeterROCard, calorimeterCrate,  ExtMonUCITof,     
       trackerDS,     protonabsorber,    PSVacuum,          stepper,           trackerSWires,     
       itrackerFWires, trackerWalls,      STMDet,            panelEBKey,
-      DSCableRun, STMFOVa,lastEnum
+      DSCableRun, STMFOVa,STMFOVd,lastEnum
     };
 
     // Keep this in sync with the enum. Used in StepInstanceName.cc
@@ -50,7 +50,7 @@ namespace mu2e {
       "tracker",       "virtualdetector", "timeVD",            "stoppingtarget",   "CRV",            \
       "calorimeter",   "calorimeterRO",   "calorimeterROCard", "calorimeterCrate", "ExtMonUCITof",   \
       "trackerDS",    "protonabsorber",  "PSVacuum",          "stepper",          "trackerSWires",  \
-	"itrackerFWires", "trackerWalls",   "STMDet",            "panelEBKey", "DSCableRun","STMFOVa" 
+	"itrackerFWires", "trackerWalls",   "STMDet",            "panelEBKey", "DSCableRun","STMFOVa","STMFOVd" 
 
   public:
 

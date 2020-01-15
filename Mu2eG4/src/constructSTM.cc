@@ -13,7 +13,6 @@
 #include "CLHEP/Units/PhysicalConstants.h"
 
 // Mu2e includes.
-
 #include "Mu2eG4/inc/constructSTM.hh"
 #include "DetectorSolenoidGeom/inc/DetectorSolenoid.hh"
 #include "CosmicRayShieldGeom/inc/CosmicRayShield.hh"
@@ -97,6 +96,7 @@ namespace mu2e {
     const G4ThreeVector zeroVector(0.,0.,0.);
 		const double stmSSCollxshift=_config.getDouble("stm.SScollimator.xshift");
 		const double stmSSCollyshift=_config.getDouble("stm.SScollimator.yshift");
+		const int stmSSCollShape=_config.getInt("stm.SScollimator.shape",1);
 G4ThreeVector stmSSCollShift(stmSSCollxshift,stmSSCollyshift,0.0);
 //Read in parameters from configuration
 const double STMShield_Ttop_Poly=_config.getDouble("STMShield_Ttop_Poly");
@@ -105,6 +105,7 @@ const double STMShield_Ttop_Pb2=_config.getDouble("STMShield_Ttop_Pb2");
 const double STMShield_Ttop_Cu=_config.getDouble("STMShield_Ttop_Cu");
 const double STMShield_Ttop_Al=_config.getDouble("STMShield_Ttop_Al");
 const double STMShield_Tbot_Al=_config.getDouble("STMShield_Tbot_Al");
+const double STMShield_Ttop_Ycrack=_config.getDouble("STMShield_Ttop_Ycrack",0.0);
 const double STMShield_X1=_config.getDouble("STMShield_X1");
 const double STMShield_X2=_config.getDouble("STMShield_X2");
 const double STMShield_Y1=_config.getDouble("STMShield_Y1");
@@ -413,7 +414,7 @@ double STMShield_Ttop_CenterX=(STMShield_X2+STMShield_X1)/4.0-STMShield_X1/2.0;/
     G4ThreeVector STMIFBLinerDnPositionInParent = G4ThreeVector(0,0,17415);
 //    G4ThreeVector STMIFBLinerDnPositionInParent = pSTMMagnetParams.originInMu2e() -G4ThreeVector(0,0,pSTMMagnetParams.zHalfLength()+2*pSTMShieldPipeParams.pipeHalfLength()+pSTMShieldPipeParams.dnStrWallHalflength()*2+1150);
 //		const VolumeInfo& mbsParent = _helper->locateVolInfo("MBSMother");
-if(_config.getBool("stm.IFBWindowLinerUp.build")){
+if(_config.getBool("stm.IFBWindowLinerUp.build",false)){
     finishNesting(STMIFBLinerUp,
        findMaterialOrThrow(pSTMShieldPipeParams.materialLiner()),
        0x0,
@@ -428,7 +429,7 @@ if(_config.getBool("stm.IFBWindowLinerUp.build")){
        doSurfaceCheck
        );
 }
-if(_config.getBool("stm.IFBWindowLinerDn.build")){
+if(_config.getBool("stm.IFBWindowLinerDn.build",false)){
     finishNesting(STMIFBLinerDn,
        findMaterialOrThrow(pSTMShieldPipeParams.materialLiner()),
        0x0,
@@ -459,10 +460,11 @@ if(_config.getBool("stm.IFBWindowLinerDn.build")){
 			 ExtShieldlinerHalfLength,//half length 
 			 0.0,//
 			 CLHEP::twopi);
+    const double pipeCrack = _config.getDouble("stm.shield.pipe.crack",0.0);
 		VolumeInfo ExtShieldLinerInfo;
 		ExtShieldLinerInfo.name="ExtShieldLiner";
 		ExtShieldLinerInfo.solid=ExtShieldLiner;
-    G4ThreeVector stmExtShieldLinerPositionInParent = pSTMMagnetParams.originInMu2e() - parentCenterInMu2e-G4ThreeVector(0,0,pSTMMagnetParams.zHalfLength()+2*pSTMShieldPipeParams.pipeHalfLength()+pSTMShieldPipeParams.dnStrWallHalflength()*2+ExtShieldlinerHalfLength+5);//5 is crack dn concrete
+    G4ThreeVector stmExtShieldLinerPositionInParent = pSTMMagnetParams.originInMu2e() - parentCenterInMu2e-G4ThreeVector(0,0,pSTMMagnetParams.zHalfLength()+2*pSTMShieldPipeParams.pipeHalfLength()+pSTMShieldPipeParams.dnStrWallHalflength()*2+ExtShieldlinerHalfLength);//5 is crack dn concrete
 		vector<double> tolsType11;//tolerance, 2nd is for y,rotate later
 		_config.getVectorDouble("ExtShieldDownstream.tolsType11",tolsType11,3);
 		vector<double> outlineType11VVerts;
@@ -1032,20 +1034,25 @@ if(_config.getBool("stm.ExtShieldLiner.build")){
 					placePV,//wyq
 					doSurfaceCheck);//wyq
 		}//wyq
-		//======================Basorber to reduce event rate on STM=================
+		//======================Basorber as a scintilator STM=================
 		const double stmBasorberHalfLength1 = pSTMBasorberParams.halfLength(); //wyq
 		const double stmBasorberHalfWidth1  = pSTMBasorberParams.halfWidth();//wyq
 		const double stmBasorberHalfHeight1 = pSTMBasorberParams.halfHeight();//wyq
-		// position of basorber 
+		// position of stmFOVd1 
 		G4ThreeVector stmBasorberPositionInMu2e1   = pSTMBasorberParams.originInMu2e();//wyq
 		G4ThreeVector stmBasorberPositionInParent1 = pSTMBasorberParams.originInMu2e() - parentCenterInMu2e;//wyq
-		// Make the box for the basorber
+		G4ThreeVector stmBasorberPositionInParent2 = stmBasorberPositionInParent1+G4ThreeVector(0,0,2*stmBasorberHalfLength1);//wyq
+		// Make the box for the stmFOVd1
 		if (pSTMBasorberParams.build()&&stmBasorberHalfLength1>0.0){//wyq
 			G4Box* boxBasorber = new G4Box("boxBasorber",stmBasorberHalfWidth1,stmBasorberHalfHeight1,stmBasorberHalfLength1);//wyq
-			VolumeInfo basorber;//wyq
-			basorber.name = "basorber";//wyq
-			basorber.solid=boxBasorber; //wyq
-			finishNesting(basorber,//wyq
+			G4Box* boxSTMFOVdd = new G4Box("boxSTMFOVdd",stmBasorberHalfWidth1,stmBasorberHalfHeight1,stmBasorberHalfLength1);//wyq
+			VolumeInfo stmFOVd1;//wyq
+			stmFOVd1.name = "stmFOVd1";//wyq
+			stmFOVd1.solid=boxBasorber; //wyq
+			VolumeInfo stmFOVd2;//wyq
+			stmFOVd2.name = "stmFOVd2";//wyq
+			stmFOVd2.solid=boxSTMFOVdd; //wyq
+			finishNesting(stmFOVd1,//wyq
 					findMaterialOrThrow(pSTMBasorberParams.material()),//wyq
 					0,//wyq
 					stmBasorberPositionInParent1,//wyq
@@ -1057,6 +1064,22 @@ if(_config.getBool("stm.ExtShieldLiner.build")){
 					forceAuxEdgeVisible,//wyq
 					placePV,//wyq
 					doSurfaceCheck);//wyq
+      G4VSensitiveDetector *sd4 = G4SDManager::GetSDMpointer()->FindSensitiveDetector(SensitiveDetectorName::STMFOVd());
+      if(sd4) stmFOVd1.logical->SetSensitiveDetector(sd4);
+			finishNesting(stmFOVd2,//wyq
+					findMaterialOrThrow(pSTMBasorberParams.material()),//wyq
+					0,//wyq
+					stmBasorberPositionInParent2,//wyq
+					parentInfo.logical,//wyq
+					1,//wyq
+					true,//wyq
+					G4Colour::Magenta(),//wyq
+					false,//wyq
+					forceAuxEdgeVisible,//wyq
+					placePV,//wyq
+					doSurfaceCheck);//wyq
+    G4VSensitiveDetector *sd5 = G4SDManager::GetSDMpointer()->FindSensitiveDetector(SensitiveDetectorName::STMFOVd());
+    if(sd5) stmFOVd2.logical->SetSensitiveDetector(sd5);
 		}//wyq
     
     //===================== Spot-Size (SS) Collimator ==========================
@@ -1195,11 +1218,17 @@ if(_config.getBool("stm.ExtShieldLiner.build")){
     
     //Make a box to subtract so liner can fit inside
     G4Box* boxSSCollLinerToSubt = new G4Box("boxSSCollLinerToSubt",stmSSCollHalfWidth2+2*stmSSCollLinerCutOutHalfLength+0.001,stmSSCollHalfHeight2+2*stmSSCollLinerCutOutHalfLength+0.001,stmSSCollHalfLength2+stmSSCollLinerCutOutHalfLength+0.001+100);
+      G4Box* boxSSCollLinerToSubtLsub=new G4Box("boxSSCollLinerToSubtLsub",stmSSCollHalfWidth2/8,stmSSCollHalfHeight2+2*stmSSCollLinerCutOutHalfLength+0.001,stmSSCollHalfLength2*2/3);
+      G4SubtractionSolid* boxSSCollLinerToSubtL=new G4SubtractionSolid("boxSSCollLinerToSubtL",boxSSCollLinerToSubt,boxSSCollLinerToSubtLsub,0,G4ThreeVector(-stmSSCollHalfWidth2*7/8-2*stmSSCollLinerCutOutHalfLength+0.001,0,-stmSSCollHalfLength2/3-stmSSCollLinerCutOutHalfLength-0.001));
     // Combine into the collimator with the liner cut-out and collimation hole
     VolumeInfo collimatorSS;
     collimatorSS.name = "collimatorSS";
     if (pSTMSSCollimatorParams.linerBuild()){
+    if(stmSSCollShape==2){//L shape
+       collimatorSS.solid = new G4SubtractionSolid(collimatorSS.name,collimatorSStemp2,boxSSCollLinerToSubtL,0,G4ThreeVector(0.0,0.0,0.0));    
+    }else{
        collimatorSS.solid = new G4SubtractionSolid(collimatorSS.name,collimatorSStemp2,boxSSCollLinerToSubt,0,G4ThreeVector(0.0,0.0,0.0));    
+    }
     } else {
        collimatorSS.solid = collimatorSStemp2;
     }
@@ -1226,10 +1255,16 @@ if(_config.getBool("stm.ExtShieldLiner.build")){
     } else {
       collimatorSSLinerTemp2 = collimatorSSLinerTemp1;
     }
+    G4Box *collimatorSSLinerTemp2Lsub=new G4Box("collimatorSSLinerTemp2Lsub",stmSSCollHalfWidth2/8,stmSSCollHalfHeight2+0.001,stmSSCollHalfLength2*2/3);
+    G4SubtractionSolid *collimatorSSLinerTemp2L=new G4SubtractionSolid("collimatorSSLinerTemp2L",collimatorSSLinerTemp2,collimatorSSLinerTemp2Lsub,0,G4ThreeVector(-stmSSCollHalfWidth2*7/8-0.001,0,-stmSSCollHalfLength2/3-0.001));
     
     VolumeInfo collimatorSSliner;
     collimatorSSliner.name = "collimatorSSliner";
-    collimatorSSliner.solid = collimatorSSLinerTemp2;
+    if(stmSSCollShape==2){
+      collimatorSSliner.solid = collimatorSSLinerTemp2L;
+    }else{
+      collimatorSSliner.solid = collimatorSSLinerTemp2;
+    }
 		/////__________________//wyq
 		//wyq hole1 liner1
 		G4Cons* hole1Liner1 = new G4Cons( "hole1Liner1", //wyq
@@ -1588,7 +1623,7 @@ G4UnionSolid* STMShield_bot_Poly=new G4UnionSolid("STMShield_bot_Poly",STMShield
 
 			G4ThreeVector stmShieldingPositionInMu2e=pSTMShieldingParams.originInMu2e();//G4ThreeVector(-3904,0,40900-stmShieldingHalfLength);//wyq
 			G4ThreeVector stmShieldingPositionInParent=stmShieldingPositionInMu2e-parentCenterInMu2e;
-			G4ThreeVector stmShieldingPositionInParentShiftX_top=stmShieldingPositionInParent+G4ThreeVector(-STMShield_Ttop_CenterX,STMShield_Y1/2.0+0.5*STMShield_Ttop_Al,0.0)+stmSSCollShift;//wyq
+			G4ThreeVector stmShieldingPositionInParentShiftX_top=stmShieldingPositionInParent+G4ThreeVector(-STMShield_Ttop_CenterX,STMShield_Y1/2.0+0.5*STMShield_Ttop_Al+STMShield_Ttop_Ycrack,0.0)+stmSSCollShift;//wyq
 			G4ThreeVector stmShieldingPositionInParentShiftX_bot=stmShieldingPositionInParent+G4ThreeVector(-STMShield_Ttop_CenterX,-STMShield_Y1/2.0-0.5*STMShield_Tbot_Al,0.0)+stmSSCollShift;//wyq
     VolumeInfo stmShielding_top_1;
 		stmShielding_top_1.name="stmShielding_top_1";
@@ -1846,8 +1881,8 @@ G4ThreeVector stmShieldingPositionInParentShiftX_right=stmShieldingPositionInPar
     const TubsParams stmDet2CanUpStrWindowParams(0., stmDet2CanRIn, stmDet2CanUpStrWindowHalfLength);
     const TubsParams stmDet2CanDnStrWindowParams(0., stmDet2CanRIn, stmDet2CanDnStrWindowHalfLength);
     
-    G4ThreeVector stmDet2PositionInMu2e   = pSTMDetector2Params.originInMu2e();   
-    G4ThreeVector stmDet2PositionInParent = pSTMDetector2Params.originInMu2e() - parentCenterInMu2e+G4ThreeVector(0.0,0.0,0.0);
+    G4ThreeVector stmHPGePositionInMu2e   = pSTMDetector2Params.originInMu2e();   
+    G4ThreeVector stmHPGePositionInParent = pSTMDetector2Params.originInMu2e() - parentCenterInMu2e;
 
     G4Tubs *stmDet2outPart1=new G4Tubs("stmDet2outPart1",0.0,STMDet2HPGe_R_out,0.5*(STMDet2HPGe_L_out-STMDet2HPGe_R_out_corner),0.0,CLHEP::twopi );//72.1/2 for radius, 78.5-8 for length
 		G4Torus *stmDet2outPart2=new G4Torus("stmDet2outPart2",0.0,STMDet2HPGe_R_out_corner,STMDet2HPGe_R_out-STMDet2HPGe_R_out_corner,0.0,CLHEP::twopi);//36.05-8
@@ -1874,33 +1909,33 @@ G4SubtractionSolid* STMDet2HPGe_Can=new G4SubtractionSolid("STMDet2HPGe_Can",STM
 //>Positions for the HPGe related
 CLHEP::HepRotationY angleHPGe(STMShield_right_Theta);
 G4RotationMatrix *rotHPGe = new G4RotationMatrix(angleHPGe);
-G4ThreeVector stmDet2HPGeCanPositionInParent=stmDet2PositionInParent+G4ThreeVector(STMDet2HPGe_Can_halfL*sin(-STMShield_right_Theta)+STMDet2HPGe_xOffset,0.0,-STMDet2HPGe_Can_halfL*(1-cos(STMShield_right_Theta))+STMShield_thick_front);//+stmSSCollShift;
-    VolumeInfo stmDet2HPGeCan;
-    stmDet2HPGeCan.name="stmDet2HPGeCan";
-    stmDet2HPGeCan.solid=STMDet2HPGe_Can;
-    finishNesting(stmDet2HPGeCan,
-				findMaterialOrThrow("G4_Al"),rotHPGe,stmDet2HPGeCanPositionInParent,
+G4ThreeVector stmDet2CanPositionInParent=stmHPGePositionInParent+G4ThreeVector(STMDet2HPGe_Can_halfL*sin(-STMShield_right_Theta)+STMDet2HPGe_xOffset,0.0,-STMDet2HPGe_Can_halfL*(1-cos(STMShield_right_Theta))+STMShield_thick_front);//+stmSSCollShift;
+    VolumeInfo stmDet2Can;
+    stmDet2Can.name="stmDet2Can";
+    stmDet2Can.solid=STMDet2HPGe_Can;
+    finishNesting(stmDet2Can,
+				findMaterialOrThrow("G4_Al"),rotHPGe,stmDet2CanPositionInParent,
        parentInfo.logical, 0, STMisVisible, G4Color::Gray(), STMisSolid, forceAuxEdgeVisible, placePV, doSurfaceCheck);
 
 double shiftDistanceXY_Cup=STMDet2HPGe_Can_gap_bot/2.0-(STMDet2HPGe_Can_thick+STMDet2HPGe_Can_gap_top)/2.0;
-G4ThreeVector stmDet2HPGeCupPositionInParent=stmDet2HPGeCanPositionInParent+G4ThreeVector(shiftDistanceXY_Cup*sin(STMShield_right_Theta),0.0,-shiftDistanceXY_Cup*cos(STMShield_right_Theta));
-    VolumeInfo stmDet2HPGeCup;
-    stmDet2HPGeCup.name="stmDet2HPGeCup";
-    stmDet2HPGeCup.solid=STMDet2HPGe_Cup;
-    finishNesting(stmDet2HPGeCup,
-				findMaterialOrThrow("G4_Al"),rotHPGe,stmDet2HPGeCupPositionInParent,
+G4ThreeVector stmDet2CupPositionInParent=stmDet2CanPositionInParent+G4ThreeVector(shiftDistanceXY_Cup*sin(STMShield_right_Theta),0.0,-shiftDistanceXY_Cup*cos(STMShield_right_Theta));
+    VolumeInfo stmDet2Cup;
+    stmDet2Cup.name="stmDet2Cup";
+    stmDet2Cup.solid=STMDet2HPGe_Cup;
+    finishNesting(stmDet2Cup,
+				findMaterialOrThrow("G4_Al"),rotHPGe,stmDet2CupPositionInParent,
        parentInfo.logical, 0, STMisVisible, G4Color::Gray(), STMisSolid, forceAuxEdgeVisible, placePV, doSurfaceCheck);
 
 double shiftDistanceXY_Ge=(STMDet2HPGe_Can_gap_bot+STMDet2HPGe_Cup0_thick_bot+STMDet2HPGe_Cup0_gap_bot)/2.0-(STMDet2HPGe_Can_thick+STMDet2HPGe_Can_gap_top+STMDet2HPGe_Cup0_thick_top+STMDet2HPGe_R_out_corner+0.001)/2.0;
-G4ThreeVector stmDet2HPGePositionInParent=stmDet2HPGeCanPositionInParent+G4ThreeVector(shiftDistanceXY_Ge*sin(STMShield_right_Theta),0.0,-shiftDistanceXY_Ge*cos(STMShield_right_Theta));
-    VolumeInfo stmDet2HPGe;
-    stmDet2HPGe.name="stmDet2HPGe";
-    stmDet2HPGe.solid=STMDet2HPGe;
-    finishNesting(stmDet2HPGe,stmDet2Material,rotHPGe, 
-			 stmDet2HPGePositionInParent, parentInfo.logical, 0,
+G4ThreeVector stmDet2PositionInParent=stmDet2CanPositionInParent+G4ThreeVector(shiftDistanceXY_Ge*sin(STMShield_right_Theta),0.0,-shiftDistanceXY_Ge*cos(STMShield_right_Theta));
+    VolumeInfo stmDet2;
+    stmDet2.name="stmDet2";
+    stmDet2.solid=STMDet2HPGe;
+    finishNesting(stmDet2,stmDet2Material,rotHPGe, 
+			 stmDet2PositionInParent, parentInfo.logical, 1,
        STMisVisible, G4Color::Gray(), STMisSolid, forceAuxEdgeVisible, placePV, doSurfaceCheck);
-    G4VSensitiveDetector *sd2 = G4SDManager::GetSDMpointer()->FindSensitiveDetector(SensitiveDetectorName::STMDet());
-    if(sd2) stmDet2HPGe.logical->SetSensitiveDetector(sd2);
+    G4VSensitiveDetector* sd2=G4SDManager::GetSDMpointer()->FindSensitiveDetector(SensitiveDetectorName::STMDet());
+  if(sd2)stmDet2.logical->SetSensitiveDetector(sd2);
 //define inner solids
 G4Tubs* STMShield_LaBr3_hole=new G4Tubs("STMShield_LaBr3_hole",0.0,STMShield_LaBr3_Hole_R,STMShield_LaBr3_halfT_Pb*1.1,0.0,CLHEP::twopi);//make the hole
 G4Box* _STMShield_LaBr3_Al=new G4Box("_STMShield_LaBr3_Al",STMShield_LaBr3_halfWidth,STMShield_Y1/2.0,STMShield_LaBr3_halfT_Al);
@@ -2003,15 +2038,15 @@ G4Tubs* STMDet1LaBr3=new G4Tubs("STMDet1LaBr3",0.0,STMDet1LaBr3_R,STMDet1LaBr3_h
     finishNesting(stmDet1CupLaBr3_Al,findMaterialOrThrow("G4_Al"),0, 
 				stmDet1CupPositionInParent,parentInfo.logical, 0,
 				STMisVisible, G4Color::Gray(), STMisSolid, forceAuxEdgeVisible, placePV, doSurfaceCheck);
-    VolumeInfo stmDet1LaBr3;
-    stmDet1LaBr3.name="stmDet1LaBr3";
-    stmDet1LaBr3.solid=STMDet1LaBr3;
-    finishNesting(stmDet1LaBr3,findMaterialOrThrow("LaBr3Ce"),0, 
+    VolumeInfo stmDet1;
+    stmDet1.name="stmDet1";
+    stmDet1.solid=STMDet1LaBr3;
+    finishNesting(stmDet1,findMaterialOrThrow("LaBr3Ce"),0, 
 				stmDet1CupPositionInParent+G4ThreeVector(0.0,0.0,-STMDet1CupLaBr3_halfLength+STMDet1CupLaBr3_thick+STMDet1LaBr3_gap_Upstream+STMDet1LaBr3_halfLength),parentInfo.logical, 0,
 				STMisVisible, G4Color::Gray(), STMisSolid, forceAuxEdgeVisible, placePV, doSurfaceCheck);
     // Make stmDet1 a sensitive detector.
-    G4VSensitiveDetector *sd1 = G4SDManager::GetSDMpointer()->FindSensitiveDetector(SensitiveDetectorName::STMDet());
-    if(sd1) stmDet1LaBr3.logical->SetSensitiveDetector(sd1);
+    G4VSensitiveDetector* sd1 = G4SDManager::GetSDMpointer()->FindSensitiveDetector(SensitiveDetectorName::STMDet());
+    if(sd1) stmDet1.logical->SetSensitiveDetector(sd1);
 
 ///    if(pSTMDetector2Params.build()){ 
 ///    G4Material*  stmDet2Material                 =  findMaterialOrThrow(pSTMDetector2Params.crystalMaterial());
@@ -2041,8 +2076,8 @@ G4Tubs* STMDet1LaBr3=new G4Tubs("STMDet1LaBr3",0.0,STMDet1LaBr3_R,STMDet1LaBr3_h
 ///    
 ///    G4ThreeVector stmDet2CanPositionInMu2e   = pSTMDetector2Params.originInMu2e();   
 ///    G4ThreeVector stmDet2CanPositionInParent = pSTMDetector2Params.originInMu2e() - parentCenterInMu2e;
-///    G4ThreeVector stmDet2PositionInMu2e      = stmDet2CanPositionInMu2e;
-///    G4ThreeVector stmDet2PositionInParent    = stmDet2CanPositionInParent;
+///    G4ThreeVector stmHPGePositionInMu2e      = stmDet2CanPositionInMu2e;
+///    G4ThreeVector stmHPGePositionInParent    = stmDet2CanPositionInParent;
 ///
 ///    VolumeInfo stmDet2CanInfo = nestTubs( "stmDet2Can",
 ///                                         stmDet2CanParams,
@@ -2120,7 +2155,6 @@ G4Tubs* STMDet1LaBr3=new G4Tubs("STMDet1LaBr3",0.0,STMDet1LaBr3_R,STMDet1LaBr3_h
     const double mstmCRVShieldHalfWidth      =  pSTMMagnetParams.xHalfLength();
     const double mstmCRVShieldHalfHeight     =  pSTMMagnetParams.yHalfLength();
 		
-    const double pipeCrack = _config.getDouble("stm.shield.pipe.crack",0.0);
     
     G4ThreeVector mstmCRVShieldPositionInMu2e   = stmMagnetPositionInMu2e + G4ThreeVector(0.0,0.0, -pSTMMagnetParams.zHalfLength()-mstmCRVShieldDnStrSpace-mstmCRVShieldHalfLength);
     G4ThreeVector mstmCRVShieldPositionInParent = mstmCRVShieldPositionInMu2e - parentCenterInMu2e;

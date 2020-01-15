@@ -89,6 +89,9 @@ namespace mu2e {
 		static char const * STMFOVa() {
       return StepInstanceName::name(StepInstanceName::STMFOVa).c_str();
     }
+		static char const * STMFOVd() {
+      return StepInstanceName::name(StepInstanceName::STMFOVd).c_str();
+    }
 
     static char const * panelEBKey() {
       return StepInstanceName::name(StepInstanceName::panelEBKey).c_str();

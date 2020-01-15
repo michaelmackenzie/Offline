@@ -1602,7 +1602,8 @@ namespace mu2e {
 		if ( vdg->exist(vdId) ) {
 			const VolumeInfo& parent = _helper->locateVolInfo("HallAir");
 			const double vdR=_config.getDouble("vd.STMShieldIn.r");
-			const double vdHalfLength=_config.getDouble("vd.STMShieldIn.halfLength");
+			//const double vdHalfLength=_config.getDouble("vd.STMShieldIn.halfLength");
+			const double vdHalfLength=_config.getDouble("stm.shield.pipe.halfLength");
 			const TubsParams vdParams(vdR-vdg->getHalfLength(),vdR,vdHalfLength);
 
 			VolumeInfo vdInfo = nestTubs(VirtualDetector::volumeName(vdId),
@@ -1633,7 +1634,8 @@ namespace mu2e {
 		if ( vdg->exist(vdId) ) {
 			const VolumeInfo& parent = _helper->locateVolInfo("HallAir");
 			const double vdR=_config.getDouble("vd.STMShieldOut.r");
-			const double vdHalfLength=_config.getDouble("vd.STMShieldOut.halfLength");
+			//const double vdHalfLength=_config.getDouble("vd.STMShieldOut.halfLength");
+			const double vdHalfLength=_config.getDouble("stm.shield.pipe.halfLength");
 			const TubsParams vdParams(vdR,vdR+vdg->getHalfLength(),vdHalfLength);
 
 			VolumeInfo vdInfo = nestTubs(VirtualDetector::volumeName(vdId),
@@ -1711,6 +1713,7 @@ double STMShield_LaBr3_gap_Pb=_config.getDouble("STMShield_LaBr3_gap_Pb");
 double STMDet1LaBr3_xOffset=_config.getDouble("STMDet1LaBr3_xOffset");
 double STMDet2HPGe_Can_thick=_config.getDouble("STMDet2HPGe_Can_thick");
 double STMDet1CupLaBr3_thick=_config.getDouble("STMDet1CupLaBr3_thick");
+const double stmSSCollxshift=_config.getDouble("stm.SScollimator.xshift");
 //double STMDet1LaBr3_gap_Upstream=_config.getDouble("STMDet1LaBr3_gap_Upstream");
     vdId = VirtualDetectorId::STM_CollDnStr;
     if ( vdg->exist(vdId) ) {
@@ -1720,8 +1723,8 @@ double STMDet1CupLaBr3_thick=_config.getDouble("STMDet1CupLaBr3_thick");
       const double vdRIn  = 0.0;
       const double vdROut = _config.getDouble("vd.STMCollDnStr.r");
 			std::vector<double> hbox(3);
-			hbox[0]=100;
-			hbox[1]=40;
+			hbox[0]=140;
+			hbox[1]=90;
 			hbox[2]=0.02;
 			const TubsParams vdParams(vdRIn, vdROut, vdg->getHalfLength());
 
@@ -1729,7 +1732,7 @@ double STMDet1CupLaBr3_thick=_config.getDouble("STMDet1CupLaBr3_thick");
                                    hbox,
                                    downstreamVacuumMaterial,
                                    0,
-                                   vdg->getLocal(vdId)+G4ThreeVector(0.0,0.0,2*STMShield_Ttop_Poly+STMShield_Ttop_Pb2+STMShield_Ttop_Cu+STMShield_Tbot_Al), //local position w.r.t. parent
+                                   vdg->getLocal(vdId)+G4ThreeVector(stmSSCollxshift,0.0,2*STMShield_Ttop_Poly+STMShield_Ttop_Pb2+STMShield_Ttop_Cu+STMShield_Tbot_Al), //local position w.r.t. parent
                                    parent,
                                    vdId,
                                    vdIsVisible, //

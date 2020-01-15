@@ -5,7 +5,6 @@
 //
 // Notes: All dimensions in mm
 
-
 bool   stm.build  = true;
 int    stm.verbosityLevel = 0;
 bool   stm.visible = true;
@@ -42,10 +41,10 @@ double vd.STMFin.zshift=-2510.0;//shift WRT. SS-Collimator upstream(-)downstream
 //<<
 bool   vd.STMShieldIn.build=false;
 double vd.STMShieldIn.r=100;
-double vd.STMShieldIn.halfLength=209.5;
+//double vd.STMShieldIn.halfLength=;
 bool   vd.STMShieldOut.build=false;
 double vd.STMShieldOut.r=160;
-double vd.STMShieldOut.halfLength=209.5;
+//double vd.STMShieldOut.halfLength=209.5;
 
 //External (Neutron) Shielding radius and VD81 radius
 //These should be modified only in ExtShieldDownstream_v??.txt
@@ -97,6 +96,7 @@ string stm.SScollimator.material          = "G4_Pb";
 double stm.SScollimator.UpStrSpace        =    0.0; // this parameter not used for this collimator
 double stm.SScollimator.xshift            = 26.63; 
 double stm.SScollimator.yshift            = 10.16; 
+int stm.SScollimator.shape                = 1;//1 for normal, 2 for L, 3 fortriangle 
 double stm.SScollimator.halfWidth         =  237.49;//215.9; // 
 double stm.SScollimator.halfHeight        =  60.96;//228.6; // 
 double stm.SScollimator.halfLength        =   50.8;//76.2; // 76.2mm = 3 inch halflength 
@@ -142,11 +142,10 @@ double stm.absorber.halfWidth         =  215.9; // //wyq
 double stm.absorber.halfHeight        =  228.6; // //wyq
 double stm.absorber.halfLength        =   110; //  //wyq
 //if put absorber 2m up stream of SSC, half width=277.59,half height=293.92
-//Basorber used to reduce hit rate, before SScolimator//wyq
-//"basorber" , just upstream of the "spot-size" collimator ////wyq
+//"basorber" , just downstream of the FOV collimator, a scintilator ////wyq
 bool   stm.basorber.build             =  false; ////wyq
-string stm.basorber.material          = "G4_Cu";//Polyethylene096//wyq
-double stm.basorber.DnStrSpace        = 1; // this parameter is the distance after the SScollimator//wyq
+string stm.basorber.material          = "Polyethylene096";//Polyethylene096//wyq
+double stm.basorber.DnStrSpace        = 0; // this parameter is the distance after the collimator//wyq
 double stm.basorber.halfWidth         =  215.9; // //wyq
 double stm.basorber.halfHeight        =  228.6; // //wyq
 double stm.basorber.halfLength        =   5.0; //  //wyq
@@ -180,6 +179,13 @@ double stm.FOVcollimator.absorber.halfLength    =   5.0; //
 string stm.FOVcollimator.absorber.material      =  "Polyethylene096"; 
 double stm.FOVcollimator.linerWHalfLength=15;//changed by Yaqian 2019.04.16
 
+//IFB window change to Ti, 1.27mm thick
+double ifb.endwindow.halfLength = 0.635;//default is also 5
+string ifb.endwindow.material   = "G4_Ti";
+bool stm.IFBWindowLinerUp.build=true; //1cm poly upstream of the Ti
+//double ifb.endwindow.z=3260; //move ifb window uptsream to make apace for
+//bool stm.IFBWindowLinerDn.build=false;//another 1cm poly downstr. of Ti. 
+
 //Sweeper magnet
 bool   stm.magnet.build          = true;
 string stm.magnet.material       = "G4_Fe";
@@ -196,6 +202,9 @@ double stm.magnet.fieldz         =    0.0;  // Tesla (510 Gauss)
 bool   stm.magnet.fieldVisible   = false;
 
 //Support (Table) on which to put the sweeper magnet and field-of-view collimator
+///string stm.magnet.material       = "G4_AIR";//use this to remove the magnet
+///double stm.magnet.fieldx         =    0.0;//and keep the FOV unchanged
+
 bool   stm.magnet.stand.build          = true;
 string stm.magnet.stand.material       = "StainlessSteel";
 double stm.magnet.stand.topExtraWidth  = 300.0;
@@ -231,12 +240,12 @@ bool   stm.shield.build                = true;
 double stm.shield.rIn                  = 110.0;
 double stm.shield.widthLiner           = 10.0;
 double stm.shield.rOut                 = 160.0;
-double stm.shield.pipe.halfLength      = 212;//209.5;//halfLength of steel only
-double stm.shield.pipe.crack           = 0.0;//25.4;//1-inch crack btw. pipe and concrete
+double stm.shield.pipe.halfLength      = 156.5;//156.5;//212;//212;//209.5;//halfLength of steel only
+double stm.shield.pipe.crack           = 25.4;//25.4;//1-inch crack btw. pipe and concrete
 string stm.shield.materialLiner        = "Polyethylene096";//length+crvshieldWall
 string stm.shield.material             = "StainlessSteel";
-double stm.shield.UpStrSpace           =  10.0;
-double stm.shield.DnStrSpace           =   1.0;
+double stm.shield.UpStrSpace           =  10.0;//not used
+double stm.shield.DnStrSpace           =   1.0;//not used
 double stm.shield.DnStrWall.halfLength =  50.0;
 
 bool   stm.shielding.build             =  false; //
@@ -251,13 +260,15 @@ double stm.shielding.holeXoffset  = 0.0  ; //
 double stm.shielding.holeYoffset  = -50.0  ; // 
 double stm.shielding.holeZoffset  = 0.0  ; // 
 int stoppingTarget.oneNoHole=-1;
-bool stm.IFBWindowLinerUp.build=false;
+bool stm.IFBWindowLinerUp.build=true;//1cm Poly
 bool stm.IFBWindowLinerDn.build=false;
 
-//>To make a liner in the ExtShieldDownstream 
-bool stm.ExtShieldLiner.build=false;
+//>To make a liner in the ExtShieldDownstream,
+bool stm.ExtShieldLiner.build=true;
 double ExtShieldDownstream.holeRadiusType11Box4Hole1 =  120.0;//enlarge it
-double stm.ExtShieldLiner.HalfLength=100;
+double ExtShieldDownstream.holeRadiusType27Box2Hole1 = 120.0;//new model
+double ExtShieldDownstream.detecHoleRadius=120.0;
+double stm.ExtShieldLiner.HalfLength=200;
 double stm.ExtShieldLiner.RIn=110;
 double stm.ExtShieldLiner.ROut=120;
 //<
@@ -271,6 +282,7 @@ double STMShield_X1=474.98;//Pb width of the SSC
 double STMShield_X2=1275.08;//Max X-width at the east wall
 double STMShield_Y1=121.92;//Room height in the shielding house
 double STMShield_Zgap=73.66;//gap at the east wall
+double STMShield_Ttop_Ycrack=0.0;//gap in Y-axis between top and the rest
 //Read in parameters for STM detectors
 double STMDet2HPGe_Can_R=50.165;//Radius of Al can for HPGe
 double STMDet2HPGe_Can_thick=1.5;//thickness of Al can
@@ -309,7 +321,7 @@ double STMDet1CupLaBr3_Upstream=9.0;//gap btw cup and the closest inner shield
 double STMDet1LaBr3_R=38.1;//Radius of Crystal
 double STMDet1LaBr3_halfLength=38.1;//Crystal size
 double STMDet1LaBr3_gap_Upstream=5.0;//gap btw crystal and cup
-double STMDet1LaBr3_xOffset=10.0;
+double STMDet1LaBr3_xOffset=10.0;//Additional shift to avoid overlap
 //NOTE: uncomment the next two lines if you want to test the STM design as documented in docDB-XXXX with the thicker CRV shield
 //int crs.nModulesD4 = 0;
 //double stm.shield.rOut = 160.0;

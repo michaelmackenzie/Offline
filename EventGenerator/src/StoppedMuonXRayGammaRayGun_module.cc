@@ -87,8 +87,12 @@ namespace mu2e {
     TH1F* _hphi;
     TH1F* _hmomentum;
     TH1F* _hradius;
-    //TH1F* _hzPos;
+    TH1F* _hzPos;
     TH1F* _htime;
+    TH1F* _htime_66;
+    TH1F* _htime_347;
+    TH1F* _htime_844;
+    TH1F* _htime_1809;
     TH2F* _hxyPos;
     //TH2F* _hrzPos;
 
@@ -123,8 +127,12 @@ namespace mu2e {
     _hphi(0),
     _hmomentum(0),
     _hradius(0),
-    //_hzPos(0),
+    _hzPos(0),
     _htime(0),
+    _htime_66(0),
+    _htime_347(0),
+    _htime_844(0),
+    _htime_1809(0),
     _hxyPos(0){ //,_hrzPos(0)
 
     produces<mu2e::GenParticleCollection>();
@@ -151,32 +159,39 @@ namespace mu2e {
     // create X Rays and Gamma Rays:
     double prob = _randFlat.fire();
     if (_do66 && prob < 0.625){  // 3d-2p line
+      if(prob < 0.625||(!_do347&&!_do1809&&!_do844)){
       ++nphotons;
       photonEnergy.push_back(0.0661);
       photonTime.push_back(time);
+      }
     }
     prob = _randFlat.fire();
-    if (_do347 && prob < 0.798){  // 2p-1s line
+    if (_do347){  // 2p-1s line
+      if(prob < 0.798||(!_do844&&!_do1809&&!_do66)){
       ++nphotons;
       photonEnergy.push_back(0.3468);
       photonTime.push_back(time);
+      }
     }
     prob = _randFlat.fire();
-    if (_do844 && prob < 0.040){  //
+    if (_do844){  //
+      if(prob < 0.04||(!_do347&&!_do1809&&!_do66)){
       ++nphotons;
       photonEnergy.push_back(0.844);
       //Note: This is a delayed gamma, need to add delay time
       double meanLifetime844 = 822.0*CLHEP::second; //822 second lifetime (same as 9.5min(570s) halflife)
       photonTime.push_back(time + _randExp.fire(meanLifetime844));
-
+      }
     }
     prob = _randFlat.fire();
-    if (_do1809 && prob < 0.300){  //
+    if (_do1809){  //
+      if(prob < 0.3111||(!_do844&&!_do347&&!_do66)){
       ++nphotons;
       photonEnergy.push_back(1.809);
       //Note: This is a semi-prompt gamma, need to add delay time
       double meanLifetime1809 = 864.0*CLHEP::ns; //864ns, same lifetime as muonic Aluminum
       photonTime.push_back(time + _randExp.fire(meanLifetime1809));
+      }
     }
 
     for (int ithphoton=0; ithphoton < nphotons; ++ithphoton){
@@ -206,7 +221,12 @@ namespace mu2e {
           _hradius->Fill( genRadius );
           //_hzPos->Fill(stop.z);
           _htime->Fill(timephoton);
+          if(_p<0.1)_htime_66->Fill(timephoton);
+					else if(_p<0.5)_htime_347->Fill(timephoton);
+					else if(_p<1.0)_htime_844->Fill(timephoton/1.0e9);
+					else _htime_1809->Fill(timephoton);
           _hxyPos->Fill( stop.x+3904.0, stop.y   );
+          _hzPos->Fill( stop.z   );
           //_hrzPos->Fill( stop.z, genRadius );
       }
     }
@@ -247,9 +267,24 @@ namespace mu2e {
     _htime         = tfdir.make<TH1F>( "htime",
                                        "MuonicXRay Photon time at Production;(ns)",
                                        210, -200., 3000. );
+    _htime_66         = tfdir.make<TH1F>( "htime_66",
+                                       "MuonicXRay Photon time at Production;(ns)",
+                                       320, -200., 3000. );
+    _htime_347         = tfdir.make<TH1F>( "htime_347",
+                                       "MuonicXRay Photon time at Production;(ns)",
+                                       320, -200., 3000. );
+    _htime_844         = tfdir.make<TH1F>( "htime_844",
+                                       "MuonicXRay Photon time at Production;(s)",
+                                       320, -200., 3000. );
+    _htime_1809         = tfdir.make<TH1F>( "htime_1809",
+                                       "MuonicXRay Photon time at Production;(ns)",
+                                       520, -200., 5000. );
     _hxyPos        = tfdir.make<TH2F>( "hxyPos",
                                        "MuonicXRay Photon (x,y) at Production;(mm)",
-                                       60,  -120., 120., 60, -120., 120. );
+                                       240,  -120., 120., 240, -120., 120. );
+    _hzPos        = tfdir.make<TH1F>( "hzPos",
+                                       "MuonicXRay Photon (z) at Production;(mm)",
+                                       200,5400,6400 );
     //_hrzPos        = tfdir.make<TH2F>( "hrzPos",
     //                                   "MuonicXRay Photon (z,r) at Production;(mm)",
     //                                   bins2.nbins(), bins2.low(), bins2.high(), 60, 0., 120. );

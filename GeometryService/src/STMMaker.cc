@@ -267,7 +267,8 @@ namespace mu2e {
 
 			//////basorber
 			const CLHEP::HepRotation _basorberRotation     = CLHEP::HepRotation::IDENTITY;//wyq
-			const CLHEP::Hep3Vector  _basorberOffsetInMu2e = _SSCollimatorOffsetInMu2e + CLHEP::Hep3Vector(0.0,0.,0.0+_SSCollimatorHalfLength+_basorberHalfLength+_basorberDnStrSpace);    //wyq
+			const CLHEP::Hep3Vector  _basorberOffsetInMu2e = _FOVCollimatorOffsetInMu2e+CLHEP::Hep3Vector(0.0,0.0,_FOVCollimatorHalfLength+_basorberHalfLength+_basorberDnStrSpace+0.001);
+//const CLHEP::Hep3Vector  _basorberOffsetInMu2e = _SSCollimatorOffsetInMu2e + CLHEP::Hep3Vector(0.0,0.,0.0+_SSCollimatorHalfLength+_basorberHalfLength+_basorberDnStrSpace);    //wyq
 			//if (_basorberBuild){//wyq
 			stm._pSTMBasorberParams = std::unique_ptr<STMBasorber>//wyq
 				(new STMBasorber(_basorberBuild,           //wyq

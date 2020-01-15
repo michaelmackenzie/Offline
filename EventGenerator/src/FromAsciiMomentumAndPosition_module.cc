@@ -181,8 +181,8 @@ namespace mu2e {
         art::ServiceHandle<art::TFileService> tfs;
         art::TFileDirectory tfdir = tfs->mkdir( "FromAsciiMomentumAndPosition" );
         hIndexOfParticle = tfdir.make<TH1D>("hIndexOfParticle","index of chosen particle",2000,0.,2000.);
-        hTimeOfParticle = tfdir.make<TH1D> ("hTimeOfParticle","particle time folded to accelerator cycle",200,0.,2000.);
-        hRadiusOfParticle = tfdir.make<TH1D> ("hRadiusOfParticle","particle radius at starting z",100,0.,250.);
+        hTimeOfParticle = tfdir.make<TH1D> ("hTimeOfParticle","particle time folded to accelerator cycle",200,0.,20000.);
+        hRadiusOfParticle = tfdir.make<TH1D> ("hRadiusOfParticle","particle radius at starting z",100,0.,2500.);
         hMomentumOfParticle = tfdir.make<TH1D> ("hMomentumOfParticle","particle momentum (mag) at starting z",2000,0.,2000.);
       }
 
@@ -214,9 +214,9 @@ namespace mu2e {
      double eInitialAntiProton = sqrt(momInitialAntiProton.mag()*momInitialAntiProton.mag() + protonMass_*protonMass_);
      CLHEP::HepLorentzVector fourMomInitialAntiProton(eInitialAntiProton,momInitialAntiProton);
 
-     if (timeTrial_ > 1695.){
-       timeTrial_ = timeTrial_ - static_cast<int>(timeTrial_/1695.)*1695.;
-     }
+//w     if (timeTrial_ > 1695.){
+//w       timeTrial_ = timeTrial_ - static_cast<int>(timeTrial_/1695.)*1695.;
+//w     }
      if (doHistograms_){
        hIndexOfParticle->Fill(ithPart);
        hTimeOfParticle->Fill(timeTrial_);

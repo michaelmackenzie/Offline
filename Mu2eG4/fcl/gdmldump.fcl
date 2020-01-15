@@ -24,7 +24,8 @@ physics : {
    trigger_paths  : [p1]
 }
 
-services.GeometryService.inputFile : "Mu2eG4/geom/geom_common.txt"
+services.GeometryService.inputFile : "Mu2eG4/fcl/geom_test.txt"
+#services.GeometryService.inputFile : "Mu2eG4/geom/STM/geom_n0_SSCXshift_innerShift.txt"
 
 // Disable all physics except transport.
 physics.producers.g4run.physics.physicsListName: "Minimal"

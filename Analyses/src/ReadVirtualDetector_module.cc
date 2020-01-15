@@ -54,6 +54,8 @@ namespace mu2e {
     Int_t trk;
 
     Int_t pdg;
+    Float_t lastke;
+    Float_t endke;
     Float_t time;
     Float_t gtime;
     Float_t x;
@@ -321,27 +323,13 @@ namespace mu2e {
 
     if (write_ntpart){
       _ntpart = tfs->make<TTree>("ntpart", "Particles ntuple");
-      /*
-	_ntpart->Branch("all",nt,
-	"evt:trk:pdg:"
-	"time:gtime:x:y:z:px:py:pz:"
-	"isstop:tstop:gtstop:xstop:ystop:zstop:"
-	"g4bl_evt:g4bl_trk:g4bl_weight:g4bl_time:"
-	"parent_id:parent_pdg:"
-	"parent_x:parent_y:parent_z:"
-	"parent_px:parent_py:parent_pz:"
-	"nvd:isvd[20]:"
-	"tvd[20]:gtvd[20]:xvd[20]:yvd[20]:zvd[20]:"
-	"pxvd[20]:pyvd[20]:pzvd[20]:"
-	"xlvd[20]:ylvd[20]:zlvd[20]"
-	);
-      */
-
       _ntpart->Branch("run",        &ntp.run,        "run/I");
       _ntpart->Branch("subrun",     &ntp.subrun,     "subrun/I");
       _ntpart->Branch("evt",        &ntp.evt,        "evt/I");
       _ntpart->Branch("trk",        &ntp.trk,        "trk/I");
       _ntpart->Branch("pdg",        &ntp.pdg,        "pdg/I");
+      _ntpart->Branch("lastke",     &ntp.lastke,     "lastke/F");
+      _ntpart->Branch("endke",     &ntp.endke,     "endke/F");
       _ntpart->Branch("time",       &ntp.time,       "time/F");
       _ntpart->Branch("gtime",      &ntp.gtime,      "gtime/F");
       _ntpart->Branch("x",          &ntp.x,          "x/F");
@@ -603,21 +591,21 @@ namespace mu2e {
 	    int parent_pdg = 0;
 	    CLHEP::Hep3Vector origin(0.0,0.0,0.0);
 	    int this_creation_code = sim.creationCode();
-	    if (sim.isPrimary()){ //creation code 56=mu2ePrimary, means it was the first particle of this stage
+	    if (sim.isPrimary()||sim.creationCode()==56){ //creation code 56=mu2ePrimary, means it was the first particle of this stage
 	      //loop back through all parents until we find one that wasn't a mu2ePrimary
 	      SimParticle const* sim_parent = &sim;
 	      while( sim_parent && sim_parent->hasParent() ) {
 		sim_parent = simParticles->getOrNull(sim_parent->parentId());
 		if( sim_parent && sim_parent->endDefined() ) {
-		  if (!sim_parent->isPrimary()){
-		    //when creation code is 56, the parent is actually the same particle.
-		    //so it's real parent would be the grandparent in this hierarchy
-		    SimParticle const* sim_grandparent = simParticles->getOrNull(sim_parent->parentId());
-		    if (sim_grandparent && sim_grandparent->endDefined()) parent_pdg = sim_grandparent->pdgId();
-		    //else throw cet::exception("ReadVirtualDetector")<< " (Grand)parent not defined. \n";
-                  
+      if(sim_parent->isPrimary()){
+        origin = sim_parent->startPosition();
+        this_creation_code = sim_parent->creationCode();
+        parent_pdg=sim_parent->pdgId();
+      }
+      else if(sim_parent->creationCode()!=56){
 		    origin = sim_parent->startPosition();
 		    this_creation_code = sim_parent->creationCode();
+        parent_pdg=sim_parent->pdgId();
 		    break;//we're just looking for the first one that's not a primary
 		  }
 		}
@@ -778,6 +766,8 @@ namespace mu2e {
         ntp.evt = event.id().event();    // event_id
         ntp.trk = sim.id().asInt();      // track_id
         ntp.pdg = sim.pdgId();           // PDG id
+        ntp.lastke = sim.preLastStepKineticEnergy(); 
+        ntp.endke = sim.endKineticEnergy(); 
 
 	if (_debugout > 1){
 	  std::cout << "ntp.pdg = " << ntp.pdg <<std::endl;

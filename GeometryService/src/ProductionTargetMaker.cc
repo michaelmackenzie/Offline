@@ -21,7 +21,7 @@ namespace mu2e {
                             c.getDouble("targetPS_rotX") * CLHEP::degree,
                             c.getDouble("targetPS_rotY") * CLHEP::degree,
                             CLHEP::Hep3Vector(solenoidOffset,
-                                              0,
+                                              c.getDouble("targetPS_Y",0),
                                               c.getDouble("productionTarget.zNominal")
                                               )
                             + c.getHep3Vector("productionTarget.offset", CLHEP::Hep3Vector(0,0,0)),

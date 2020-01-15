@@ -151,7 +151,7 @@ setup -B gdb v8_2_1
 # where to search for geometry and other configuration
 export MU2E_SEARCH_PATH=$MU2E_BASE_RELEASE:$MU2E_DATA_PATH
 # Search path for fcl files (overwrites any path from products above)
-export FHICL_FILE_PATH=${MU2E_BASE_RELEASE}
+export FHICL_FILE_PATH=${MU2E_BASE_RELEASE}:${MU2E_BASE_RELEASE}/fcl
 # other paths needed to run from this release
 export CET_PLUGIN_PATH=`dropit -p $CET_PLUGIN_PATH -sf $MU2E_BASE_RELEASE/lib`
 export LD_LIBRARY_PATH=`dropit -p $LD_LIBRARY_PATH -sf $MU2E_BASE_RELEASE/lib`
