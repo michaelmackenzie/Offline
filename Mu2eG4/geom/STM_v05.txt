@@ -1,0 +1,48 @@
+// (Muon) Stoping Target Monitor (STM)
+
+#include "Mu2eG4/geom/STM_v04.txt"
+
+bool vd.STMShieldIn.build = true;
+bool vd.STMShieldOut.build = true;
+bool vd.STMSSCollUpStr.build = true;
+bool vd.STMMid.build = true;
+bool vd.STMFin.build = true;
+double vd.STMUpStr.yCenter = 600.;
+int vd.verbosityLevel = 1;
+bool   vd.STMUpStr.build     = false; //VD86 Rectangle in x-y plane, same size as the CRV (1mm dnStr of CRV)
+bool   vd.STMMagDnStr.build  = false; //VD87 Rectangle in x-y plane, same size as the CRV
+bool   vd.STMSSCollUpStr.build = true;//false; //VD101 Disk upstream of Spot-Size collimator
+double vd.STMSSCollUpStr.r     = 200.0;// r=20cm 
+bool   vd.STMCollDnStr.build = true;//false; //VD88 Disk downstream of Spot-Size collimator
+double vd.STMCollDnStr.r     = 50.0;// r=15cm 
+bool   vd.STMDet1UpStr.build = true;//false; //VD89 Disk in x-y plane, same size as the Ge detector 1
+bool   vd.STMDet2UpStr.build = true;//false; //VD90 Disk in x-y plane, same size as the Ge detector 2
+bool   vd.STMFieldOfViewCollDnStr.build = false; //VD100
+// build virtual detector inside DS Neutron Shielding
+bool   vd.DSNeutronShieldExit.build = false; //VD81
+double vd.DSNeutronShieldExit.r     =  110.0;//Must be the same as the following 2 values,
+bool   vd.STMMid.build = false; //VD used for multi stage simulation,the position can be changed relative to SS-Collimator 
+double vd.STMMid.xshift=0.0;
+double vd.STMMid.yshift=0.0;
+double vd.STMMid.r=323.2;//319 for middle0 and 1;
+double vd.STMMid.zshift=-23331.7;//shift WRT. SS-Collimator upstream(-)down
+
+bool   vd.STMFin.build = false; //VD used for multi stage simulation,the position can be changed relative to SS-Collimator 
+double vd.STMFin.r     = 2000.0;// r=200cm 
+double vd.STMFin.xshift=0.0;
+double vd.STMFin.yshift=0.0;
+double vd.STMFin.zshift=-2510.0;//shift WRT. SS-Collimator upstream(-)downstream(+)
+//>>For a VD upstr. of IFB window
+//double vd.STMFin.r = 319; //VD111
+//double vd.STMFin.zshift = -23331.7; //VD111
+//<<
+bool   vd.STMShieldIn.build=false;
+double vd.STMShieldIn.r=100;
+//double vd.STMShieldIn.halfLength=;
+bool   vd.STMShieldOut.build=false;
+double vd.STMShieldOut.r=160;
+
+// This tells emacs to view this file in c++ mode.
+// Local Variables:
+// mode:c++
+// End:
