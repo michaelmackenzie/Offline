@@ -43,7 +43,8 @@ namespace mu2e {
       itrackerFWires, trackerWalls,      STMDet,            panelEBKey, DSCableRun,
       ProductionTargetCoreSection, ProductionTargetStartingCoreSection, 
       ProductionTargetFinStartingSection,ProductionTargetNegativeEndRing, ProductionTargetPositiveEndRing,
-      ProductionTargetFinSection,ProductionTargetFinTopSection,ProductionTargetFinTopStartingSection,lastEnum
+      ProductionTargetFinSection,ProductionTargetFinTopSection,ProductionTargetFinTopStartingSection,
+      STMFOVa,STMFOVd,lastEnum
     };
 
     // Keep this in sync with the enum. Used in StepInstanceName.cc
@@ -55,7 +56,8 @@ namespace mu2e {
 	"itrackerFWires", "trackerWalls",   "STMDet",            "panelEBKey", "DSCableRun", \
       "ProductionTargetCoreSection", "ProductionTargetStartingCoreSection", \
       "ProductionTargetFinStartingSection","ProductionTargetNegativeEndRing","ProductionTargetPositiveEndRing",\
-	"ProductionTargetFinSection","ProductionTargetFinTopSection","ProductionTargetFinTopStartingSection"
+	"ProductionTargetFinSection","ProductionTargetFinTopSection","ProductionTargetFinTopStartingSection",\
+	"STMFOVa","STMFOVd"
 
   public:
 
