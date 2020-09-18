@@ -1164,11 +1164,11 @@ namespace mu2e {
 
       for(G4LogicalVolumeStore::iterator pos=store->begin(); pos!=store->end(); pos++){
         G4String LVname = (*pos)->GetName();
-
-        if ( LVname == "stmDet1" || LVname == "stmDet2" ){
-          (*pos)->SetSensitiveDetector(STMDetSD);
-        }
-      }//for
+            if ( LVname == "stmDet1LaBr3" || LVname == "stmDet2HPGe"||LVname == "stmDet1" || LVname == "stmDet2"){
+            //if ( LVname == "stmDet1LaBr3" || LVname == "stmDet2HPGe" ){
+              (*pos)->SetSensitiveDetector(STMDetSD);
+            }
+        }//for
     }//if STMDet
 
 
@@ -1188,6 +1188,32 @@ namespace mu2e {
         }
       }//for
     }//if panelEBKey
+    //>>Yaqian Wang for E deposit test
+		if(sdHelper_->enabled(StepInstanceName::STMFOVa)){
+      Mu2eSensitiveDetector* STMFOVa=
+        new Mu2eSensitiveDetector(SensitiveDetectorName::STMFOVa(),  _config);
+      SDman->AddNewDetector(STMFOVa);
+        for(G4LogicalVolumeStore::iterator pos=store->begin(); pos!=store->end(); pos++){
+            G4String LVname = (*pos)->GetName();
+
+            if ( LVname == "collimatorFOVAbsorber" ){
+              (*pos)->SetSensitiveDetector(STMFOVa);
+            }
+        }//for
+    }
+		if(sdHelper_->enabled(StepInstanceName::STMFOVd)){
+      Mu2eSensitiveDetector* STMFOVdSD=
+        new Mu2eSensitiveDetector(SensitiveDetectorName::STMFOVd(),  _config);
+      SDman->AddNewDetector(STMFOVdSD);
+        for(G4LogicalVolumeStore::iterator pos=store->begin(); pos!=store->end(); pos++){
+            G4String LVname = (*pos)->GetName();
+
+            if ( LVname == "stmFOVd1" || LVname == "stmFOVd2"){
+              (*pos)->SetSensitiveDetector(STMFOVdSD);
+            }
+        }//for
+    }
+		//<<
 
 
     /************************** DSCableRun **************************/

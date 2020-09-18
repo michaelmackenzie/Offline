@@ -27,7 +27,6 @@
 #include "CosmicRayShieldGeom/inc/CosmicRayShield.hh"
 #include "Mu2eHallGeom/inc/Mu2eHall.hh"
 #include "ConfigTools/inc/SimpleConfig.hh"
-#include "GeometryService/inc/G4GeometryOptions.hh"
 
 using namespace std;
 
@@ -78,13 +77,17 @@ namespace mu2e {
                              _magnetRotation,
                              _magnetMaterial,
                              _magnetField,
+                             _magnetFieldx,
+                             _magnetFieldy,
+                             _magnetFieldz,
                              _magnetFieldVisible
                             ));
     //}
 
     
     const CLHEP::HepRotation _FOVCollimatorRotation     = CLHEP::HepRotation::IDENTITY;
-    const CLHEP::Hep3Vector  _FOVCollimatorOffsetInMu2e = _STMMOffsetInMu2e + CLHEP::Hep3Vector(0.0,0.,_magnetUpStrSpace+2.0*_magnetHalfLength+2.0*_pipeDnStrHalfLength+_FOVCollimatorUpStrSpace+_FOVCollimatorHalfLength);    
+    CLHEP::Hep3Vector  _FOVCollimatorOffsetInMu2e = _STMMOffsetInMu2e + CLHEP::Hep3Vector(0.0,0.,_magnetUpStrSpace+2.0*_magnetHalfLength+2.0*_pipeDnStrHalfLength+_FOVCollimatorUpStrSpace+_FOVCollimatorHalfLength);   
+    if(!_pipeBuild) _FOVCollimatorOffsetInMu2e = _STMMOffsetInMu2e + CLHEP::Hep3Vector(0.0,0.,_magnetUpStrSpace+2.0*_magnetHalfLength+_FOVCollimatorUpStrSpace+_FOVCollimatorHalfLength);   
     //if (_FOVCollimatorBuild){
       stm._pSTMFOVCollimatorParams = std::unique_ptr<STMCollimator>
         (new STMCollimator(_FOVCollimatorBuild,           
@@ -101,17 +104,24 @@ namespace mu2e {
                            _FOVCollimatorHole1RadiusDnStr,
                            _FOVCollimatorHole1LinerBuild,
                            _FOVCollimatorHole1LinerThickness,
+                           _FOVCollimatorHole1Liner2Build,//wyq useless
+                           _FOVCollimatorHole1Liner2Thickness,//wyq useless
                            _FOVCollimatorHole2Build,      
                            _FOVCollimatorHole2xOffset,    
                            _FOVCollimatorHole2RadiusUpStr,
                            _FOVCollimatorHole2RadiusDnStr,
                            _FOVCollimatorHole2LinerBuild,
                            _FOVCollimatorHole2LinerThickness,
+                           _FOVCollimatorHole2Liner2Build,//wyq useless
+                           _FOVCollimatorHole2Liner2Thickness,//wyq useless
                            _FOVCollimatorOffsetInMu2e,
                            _FOVCollimatorRotation,
                            _FOVCollimatorMaterial,        
                            _FOVCollimatorLinerMaterial,
-                           _FOVCollimatorHoleLinerMaterial
+                           _FOVCollimatorHoleLinerMaterial,
+                           _FOVCollimatorHole1Liner2Material,//wyq useless
+                           _FOVCollimatorHole2Liner1Material,//wyq useless
+                           _FOVCollimatorHole2Liner2Material
                           ));       
     //}
     
@@ -193,22 +203,84 @@ namespace mu2e {
                            _SSCollimatorHole1xOffset,    
                            _SSCollimatorHole1RadiusUpStr,
                            _SSCollimatorHole1RadiusDnStr,
-                           _SSCollimatorHole1LinerBuild,
-                           _SSCollimatorHole1LinerThickness,
+                           _SSCollimatorHole1Liner1Build,//wyq
+                           _SSCollimatorHole1Liner1Thickness,//wyq
+                           _SSCollimatorHole1Liner2Build,//wyq
+                           _SSCollimatorHole1Liner2Thickness,//wyq
                            _SSCollimatorHole2Build,      
                            _SSCollimatorHole2xOffset,    
                            _SSCollimatorHole2RadiusUpStr,
                            _SSCollimatorHole2RadiusDnStr,
-                           _SSCollimatorHole2LinerBuild,
-                           _SSCollimatorHole2LinerThickness,
+                           _SSCollimatorHole2Liner1Build,//wyq
+                           _SSCollimatorHole2Liner1Thickness,//wyq
+                           _SSCollimatorHole2Liner2Build,//wyq
+                           _SSCollimatorHole2Liner2Thickness,//wyq
                            _SSCollimatorOffsetInMu2e,
                            _SSCollimatorRotation,
                            _SSCollimatorMaterial,        
                            _SSCollimatorLinerMaterial,
-                           _SSCollimatorHoleLinerMaterial
+                           _SSCollimatorHole1Liner1Material,//wyq
+                           _SSCollimatorHole1Liner2Material,//wyq
+                           _SSCollimatorHole2Liner1Material,//wyq
+                           _SSCollimatorHole2Liner2Material//wyq
                           ));       
     //}
+    ////wyq Shielding
+			if(_ShieldingHalfLength==0){
+				_ShieldingHalfLength=(_stmZAllowed-_SSCollimatorHalfLength*2)/2.0;
+			}
+			if(_ShieldingHoleHalfLength==0)_ShieldingHoleHalfLength=_ShieldingHalfLength;
+				const CLHEP::HepRotation _ShieldingRotation     = CLHEP::HepRotation::IDENTITY;
+			///const CLHEP::Hep3Vector  _ShieldingOffsetInMu2e = BeamAxisAtEastWallInMu2e + CLHEP::Hep3Vector(0.0,0.,-1*_stmZAllowed+_SSCollimatorHalfLength*2+_ShieldingHalfLength);    //place the shielding next to SSColimator
+			const CLHEP::Hep3Vector  _ShieldingOffsetInMu2e = BeamAxisAtEastWallInMu2e + CLHEP::Hep3Vector(0.0,0.,-0.5*_stmZAllowed+_SSCollimatorHalfLength);    //place shielding at the center of the space dnstr. of SSC
+			stm._pSTMShieldingParams = std::unique_ptr<STMShielding>
+				(new STMShielding(_ShieldingBuild,           
+													_ShieldingHalfWidth,       
+													_ShieldingHalfHeight,      
+													_ShieldingHalfLength,      
+													_ShieldingHoleHalfWidth,  
+													_ShieldingHoleHalfHeight, 
+													_ShieldingHoleHalfLength,
+													_ShieldingOffsetInMu2e,
+													_ShieldingRotation,
+													_ShieldingHoleXoffset,
+													_ShieldingHoleYoffset,
+													_ShieldingHoleZoffset,
+													_ShieldingMaterial
+												 ));
      
+			//////absorber
+			const CLHEP::HepRotation _absorberRotation     = CLHEP::HepRotation::IDENTITY;//wyq
+			const CLHEP::Hep3Vector  _absorberOffsetInMu2e = _SSCollimatorOffsetInMu2e + CLHEP::Hep3Vector(0.0,0.,0.0-_SSCollimatorHalfLength-_absorberHalfLength-_absorberDnStrSpace);    //wyq
+			//if (_absorberBuild){//wyq
+			stm._pSTMAbsorberParams = std::unique_ptr<STMAbsorber>//wyq
+				(new STMAbsorber(_absorberBuild,           //wyq
+												 _absorberHalfWidth,       //wyq
+												 _absorberHalfHeight,      //wyq
+												 _absorberHalfLength,      //wyq
+												 _absorberOffsetInMu2e,//wyq
+												 _absorberRotation,//wyq
+												 _absorberMaterial        //wyq
+												));       //wyq
+			//}//wyq
+			////wyq
+
+			//////basorber
+			const CLHEP::HepRotation _basorberRotation     = CLHEP::HepRotation::IDENTITY;//wyq
+			const CLHEP::Hep3Vector  _basorberOffsetInMu2e = _FOVCollimatorOffsetInMu2e+CLHEP::Hep3Vector(0.0,0.0,_FOVCollimatorHalfLength+_basorberHalfLength+_basorberDnStrSpace+0.001);
+//const CLHEP::Hep3Vector  _basorberOffsetInMu2e = _SSCollimatorOffsetInMu2e + CLHEP::Hep3Vector(0.0,0.,0.0+_SSCollimatorHalfLength+_basorberHalfLength+_basorberDnStrSpace);    //wyq
+			//if (_basorberBuild){//wyq
+			stm._pSTMBasorberParams = std::unique_ptr<STMBasorber>//wyq
+				(new STMBasorber(_basorberBuild,           //wyq
+												 _basorberHalfWidth,       //wyq
+												 _basorberHalfHeight,      //wyq
+												 _basorberHalfLength,      //wyq
+												 _basorberOffsetInMu2e,//wyq
+												 _basorberRotation,//wyq
+												 _basorberMaterial        //wyq
+												));       //wyq
+			//}//wyq
+			////wyq
 
     double _detectorTableTopHalfWidth = _SSCollimatorHalfWidth + _detectorTableTopExtraWidth;    
     double _detectorTableTopHalfLength = 0.5*_stmZAllowed - 1.0;
@@ -296,10 +368,6 @@ namespace mu2e {
 
   void STMMaker::parseConfig( SimpleConfig const & _config ){
 
-    const auto geomOptions = art::ServiceHandle<GeometryService>()->geomOptions();
-    geomOptions->loadEntry( _config, "stmMagnetField", "stm.magnet.field");
-
-
     _verbosityLevel            = _config.getInt("stm.verbosityLevel",0);
     _stmZAllowed               = _config.getDouble("stm.z.allowed");
     
@@ -311,9 +379,11 @@ namespace mu2e {
     _magnetHoleHalfWidth       = _config.getDouble("stm.magnet.holeHalfWidth");
     _magnetHoleHalfHeight      = _config.getDouble("stm.magnet.holeHalfHeight");    
     _magnetMaterial            = _config.getString("stm.magnet.material");
-    _magnetField               = _config.getDouble("stm.magnet.field");
-    //_magnetFieldVisible        = _config.getBool(  "stm.magnet.fieldVisible",false);
-    _magnetFieldVisible        = geomOptions->isVisible("stmMagnetField");
+    _magnetField               = _config.getDouble("stm.magnet.field",0.0);
+    _magnetFieldx               = _config.getDouble("stm.magnet.fieldx",0.0);
+    _magnetFieldy               = _config.getDouble("stm.magnet.fieldy",0.0);
+    _magnetFieldz               = _config.getDouble("stm.magnet.fieldz",0.0);
+    _magnetFieldVisible        = _config.getBool(  "stm.magnet.fieldVisible",false);
     
     _FOVCollimatorBuild            = _config.getBool(  "stm.FOVcollimator.build");
     _FOVCollimatorMaterial         = _config.getString("stm.FOVcollimator.material");       
@@ -360,6 +430,21 @@ namespace mu2e {
     _magnetTableTopExtraLength = _config.getDouble("stm.magnet.stand.topExtraLength");
     _magnetTableTopHalfHeight  = _config.getDouble("stm.magnet.stand.topHalfHeight");
     _magnetTableLegRadius      = _config.getDouble("stm.magnet.stand.legRadius");
+		////////absorber//wyq
+		_absorberBuild            = _config.getBool("stm.absorber.build");//wyq
+		_absorberMaterial         = _config.getString("stm.absorber.material");       //wyq
+		_absorberDnStrSpace       = _config.getDouble("stm.absorber.DnStrSpace");//wyq
+		_absorberHalfWidth        = _config.getDouble("stm.absorber.halfWidth");//wyq
+		_absorberHalfHeight       = _config.getDouble("stm.absorber.halfHeight");//wyq
+		_absorberHalfLength       = _config.getDouble("stm.absorber.halfLength");//wyq
+		//
+		////////basorber//wyq
+		_basorberBuild            = _config.getBool("stm.basorber.build");//wyq
+		_basorberMaterial         = _config.getString("stm.basorber.material");       //wyq
+		_basorberDnStrSpace       = _config.getDouble("stm.basorber.DnStrSpace");//wyq
+		_basorberHalfWidth        = _config.getDouble("stm.basorber.halfWidth");//wyq
+		_basorberHalfHeight       = _config.getDouble("stm.basorber.halfHeight");//wyq
+		_basorberHalfLength       = _config.getDouble("stm.basorber.halfLength");//wyq
     
     _SSCollimatorBuild            = _config.getBool(  "stm.SScollimator.build");
     _SSCollimatorMaterial         = _config.getString("stm.SScollimator.material");       
@@ -376,15 +461,22 @@ namespace mu2e {
     _SSCollimatorHole1xOffset     = _config.getDouble("stm.SScollimator.hole1.xoffset");
     _SSCollimatorHole1RadiusUpStr = _config.getDouble("stm.SScollimator.hole1.radiusUpStr");
     _SSCollimatorHole1RadiusDnStr = _config.getDouble("stm.SScollimator.hole1.radiusDnStr");
-    _SSCollimatorHole1LinerBuild     = _config.getBool(  "stm.SScollimator.hole1.liner.build");
-    _SSCollimatorHole1LinerThickness = _config.getDouble("stm.SScollimator.hole1.liner.thickness");
+		_SSCollimatorHole1Liner1Build     = _config.getBool(  "stm.SScollimator.hole1.liner1.build");//wyq
+		_SSCollimatorHole1Liner1Thickness = _config.getDouble("stm.SScollimator.hole1.liner1.thickness");//wyq
+		_SSCollimatorHole1Liner2Build     = _config.getBool(  "stm.SScollimator.hole1.liner2.build");//wyq
+		_SSCollimatorHole1Liner2Thickness = _config.getDouble("stm.SScollimator.hole1.liner2.thickness");//wyq
     _SSCollimatorHole2Build       = _config.getBool(  "stm.SScollimator.hole2.build");
     _SSCollimatorHole2xOffset     = _config.getDouble("stm.SScollimator.hole2.xoffset");
     _SSCollimatorHole2RadiusUpStr = _config.getDouble("stm.SScollimator.hole2.radiusUpStr");
     _SSCollimatorHole2RadiusDnStr = _config.getDouble("stm.SScollimator.hole2.radiusDnStr");    
-    _SSCollimatorHole2LinerBuild     = _config.getBool(  "stm.SScollimator.hole2.liner.build");
-    _SSCollimatorHole2LinerThickness = _config.getDouble("stm.SScollimator.hole2.liner.thickness");
-    _SSCollimatorHoleLinerMaterial = _config.getString("stm.SScollimator.hole.liner.material");       
+		_SSCollimatorHole2Liner1Build     = _config.getBool(  "stm.SScollimator.hole2.liner1.build");//wyq
+		_SSCollimatorHole2Liner1Thickness = _config.getDouble("stm.SScollimator.hole2.liner1.thickness");//wyq
+		_SSCollimatorHole2Liner2Build     = _config.getBool(  "stm.SScollimator.hole2.liner2.build");//wyq
+		_SSCollimatorHole2Liner2Thickness = _config.getDouble("stm.SScollimator.hole2.liner2.thickness");//wyq
+		_SSCollimatorHole1Liner1Material = _config.getString("stm.SScollimator.hole1.liner1.material");       //wyq
+		_SSCollimatorHole1Liner2Material = _config.getString("stm.SScollimator.hole1.liner2.material");       //wyq
+		_SSCollimatorHole2Liner1Material = _config.getString("stm.SScollimator.hole2.liner1.material");       //wyq
+		_SSCollimatorHole2Liner2Material = _config.getString("stm.SScollimator.hole2.liner2.material");       //wyq
     
     _detectorTableBuild          = _config.getBool(  "stm.detector.stand.build",false);
     _detectorTableMaterial       = _config.getString("stm.detector.stand.material");       
@@ -434,6 +526,17 @@ namespace mu2e {
     _shieldDnStrSpace           = _config.getDouble("stm.shield.DnStrSpace");
     _shieldDnStrWallHalfLength  = _config.getDouble("stm.shield.DnStrWall.halfLength");
 
+		_ShieldingBuild            = _config.getBool(  "stm.shielding.build");
+		_ShieldingMaterial         = _config.getString("stm.shielding.material");       
+		_ShieldingHalfWidth        = _config.getDouble("stm.shielding.halfWidth");
+		_ShieldingHalfHeight       = _config.getDouble("stm.shielding.halfHeight");
+		_ShieldingHalfLength       = _config.getDouble("stm.shielding.halfLength",0.0);
+		_ShieldingHoleHalfWidth    = _config.getDouble("stm.shielding.holeHalfWidth");
+		_ShieldingHoleHalfHeight   = _config.getDouble("stm.shielding.holeHalfHeight");
+		_ShieldingHoleHalfLength   = _config.getDouble("stm.shielding.holeHalfLength",0.0);
+		_ShieldingHoleXoffset      = _config.getDouble("stm.shielding.holeXoffset",0.0);
+		_ShieldingHoleYoffset      = _config.getDouble("stm.shielding.holeYoffset",0.0);
+		_ShieldingHoleZoffset      = _config.getDouble("stm.shielding.holeZoffset",0.0);
     
   }
 
