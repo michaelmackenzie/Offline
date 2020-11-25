@@ -51,6 +51,10 @@ namespace mu2e {
     // Load flags
     int const verbosityLevel = _config.getInt("ds.verbosityLevel",0);
     bool const inGaragePosition = _config.getBool("inGaragePosition",false);
+    double zOffGarage = (inGaragePosition) ? _config.getDouble("garage.zOffset") : 0.;
+    
+    //insert Z offset for the extracted position
+    CLHEP::Hep3Vector relPosExtracted(0.,0., zOffGarage);
 
     G4GeometryOptions* geomOptions = art::ServiceHandle<GeometryService>()->geomOptions();
     geomOptions->loadEntry( _config, "ds"         , "ds"           );
@@ -439,6 +443,21 @@ namespace mu2e {
                 "dsVacuum"
                 );
 
+    //create volume for detector elements in the extracted position
+    if(inGaragePosition) {
+      G4Material*  airMaterial = findMaterialOrThrow( _config.getString("hall.insideMaterialName","G4_AIR") );
+
+      VolumeInfo dsShieldParent = nestTubs( "garageFakeDS2Vacuum",
+					    ds2VacParams,
+					    airMaterial,
+					    0,
+					    ds2Position - _hallOriginInMu2e + relPosExtracted,
+					    parent,
+					    0,
+					    G4Colour::Yellow(),
+					    "dsVacuum"
+					    );
+    }
     // Polycone geometry allows for MBS to extend beyond solenoid
     // physical boundaries
 
@@ -493,23 +512,24 @@ namespace mu2e {
                                               G4Colour::Yellow(),
                                               "dsVacuum"
                                               );
-
+    VolumeInfo tmpDS;
+    //create a volume for the extracted detector elements
     if ( inGaragePosition ) {
-      double zOffGarage = _config.getDouble("garage.zOffset",14000.0);
-      CLHEP::Hep3Vector relPosFake(0.,0., zOffGarage);
       G4Material*  airMaterial = findMaterialOrThrow( _config.getString("hall.insideMaterialName","G4_AIR") );
 
-      VolumeInfo dsShieldParent = nestPolycone( "garageFakeDS3Vacuum",
-                                                ds3PolyParams,
-                                                airMaterial,
-                                                0,
-                                                ds3positionInMu2e - parent.centerInMu2e() + relPosFake,
-                                                parent,
-                                                0,
-                                                G4Colour::Yellow(),
-                                                "dsVacuum"
-                                                );
-    }
+      tmpDS = nestPolycone( "garageFakeDS3Vacuum",
+			    ds3PolyParams,
+			    airMaterial,
+			    0,
+			    ds3positionInMu2e - parent.centerInMu2e() + relPosExtracted,
+			    parent,
+			    0,
+			    G4Colour::Yellow(),
+				     "dsVacuum"
+			    );
+    } else
+      tmpDS = dsShieldParent;
+    VolumeInfo & dsShieldPointer = tmpDS;
 
 
     // Construct shielding downstream of DS
@@ -682,14 +702,17 @@ namespace mu2e {
      if ( ds->hasMBSS() ) {
        std::vector<double> uOutlineMBSS = ds->uOutlineMBSS();
        std::vector<double> vOutlineMBSS = ds->vOutlineMBSS();
-       VolumeInfo MBSS = nestExtrudedSolid
-	 ( "MBSSphericalSupport", ds->lengthMBSS()/2.0*CLHEP::mm,
-	   uOutlineMBSS, vOutlineMBSS,
-	   findMaterialOrThrow(ds->MBSSmaterial()),
-	   0, ds->MBSSlocation(),
-	   dsShieldParent, 0, isDSVisible,
-	   G4Colour::Blue(), isDSSolid,
-	   forceAuxEdgeVisible, placePV, doSurfaceCheck );
+       VolumeInfo MBSS = nestExtrudedSolid( "MBSSphericalSupport", 
+					    ds->lengthMBSS()/2.0*CLHEP::mm,
+					    uOutlineMBSS,
+					    vOutlineMBSS,
+					    findMaterialOrThrow(ds->MBSSmaterial()),
+					    0,
+					    ds->MBSSlocation(),
+					    dsShieldParent, 
+					    0, 
+					    G4Colour::Blue(),
+					    "ds");
      }  // end of if ( ds->hasMBSS() )
 
      // End of MBS spherical shielding, begin cable runs for Cal and Tracker
@@ -707,13 +730,12 @@ namespace mu2e {
 					ds->dPhiCableRunCal()*CLHEP::degree);
 
        CLHEP::Hep3Vector calCableRunLoc( 0.0, 0.0, ds->zCCableRunCal() );
-
        VolumeInfo ccrTemp = nestTubs( "CalCableRun",
 				      calCableRunParams,
 				      findMaterialOrThrow(ds->calCableRunMaterial()),
 				      0,
-				      calCableRunLoc,
-				      dsShieldParent,
+				      calCableRunLoc /*+ relPosExtracted*/,
+				      dsShieldPointer,
 				      0,
 				      G4Color::Magenta(),
 				      "ds"
@@ -751,8 +773,8 @@ namespace mu2e {
 					   upCalCableRunParm1,
 					   findMaterialOrThrow(ds->calCableRunMaterial()),
 					   0,
-					   upCalCableRunLoc1,
-					   dsShieldParent,
+					   upCalCableRunLoc1/* + relPosExtracted*/,
+					   dsShieldPointer,
 					   0,
 					   G4Color::Magenta(),
 					   "ds"
@@ -787,8 +809,8 @@ namespace mu2e {
 					  upCalCableRunParm2,
 					  findMaterialOrThrow(ds->calCableRunMaterial()),
 					  0,
-					  upCalCableRunLoc2,
-					  dsShieldParent,
+					  upCalCableRunLoc2/* + relPosExtracted*/,
+					  dsShieldPointer,
 					  0,
 					  G4Color::Magenta(),
 					  "ds"
@@ -814,7 +836,8 @@ namespace mu2e {
 	 // And last but not least the connector between the top of the Cal
 	 // and the top of the MBS
 	 // Implement this as a Polycone
-	 std::vector<double> zs = { ds->upZC2CableRunCal() + ds->upHL2CableRunCal() + 4.0, ds->zCCableRunCal() - ds->lengthCableRunCal() };
+	 std::vector<double> zs = { ds->upZC2CableRunCal() + ds->upHL2CableRunCal() + 4.0 /* + relPosExtracted.z()*/,
+				    ds->zCCableRunCal() - ds->lengthCableRunCal() /* + relPosExtracted.z()*/};
 	 std::vector<double> rins = { ds->upRInCableRunCal(), ds->rInCableRunCal()};
 	 std::vector<double> routs= { ds->upROutCableRunCal(), ds->rOutCableRunCal()};
 	 PolyconsParams myPars( zs, rins, routs,
@@ -826,7 +849,7 @@ namespace mu2e {
 					     findMaterialOrThrow(ds->calCableRunMaterial()),
 					     0,
 					     G4ThreeVector(0,0,0),
-					     dsShieldParent,
+					     dsShieldPointer,
 					     0,
 					     G4Colour::Magenta(),
 					     "ds" );
@@ -925,7 +948,7 @@ namespace mu2e {
 					     ds->calPhi0CableRunIFB()*CLHEP::degree,
 					     ds->calDPhiCableRunIFB()*CLHEP::degree);
 
-	 CLHEP::Hep3Vector calIFBCableRunLoc( 0.0, 0.0, ds->zCCableRunIFB() );
+	 CLHEP::Hep3Vector calIFBCableRunLoc( 0.0, 0.0, ds->zCCableRunIFB() +relPosExtracted.z() );
 	 
 	 VolumeInfo icrTmp1 = nestTubs( "CalIFBCableRun1",
 					calIFBCableRun1Params,
@@ -966,7 +989,6 @@ namespace mu2e {
 					findMaterialOrThrow(ds->materialCalCableRunIFB()),
 					0,
 					calIFBCableRunLoc+dsShieldParent.centerInMu2e()-_hallOriginInMu2e,
-					// dsShieldParent,
 					parent,
 					0,
 					G4Color::Magenta(),
@@ -999,7 +1021,7 @@ namespace mu2e {
 					boxwidth/2.,
 					ds->zHLCableRunIFB()};
 	 CLHEP::Hep3Vector calIFBCableRunEndLoc1( (deltar + ds->calREndCableRunIFB())/2.,
-						 0.0, ds->zCCableRunIFB() );
+						  0.0, ds->zCCableRunIFB() + relPosExtracted.z());
 
 	 calIFBCableRunEndLoc1.rotateZ(ds->calPhiECableRunIFB()*CLHEP::degree);
 
@@ -1008,11 +1030,9 @@ namespace mu2e {
 				       findMaterialOrThrow(ds->materialCalCableRunIFB()),
 				       turn,
 				       calIFBCableRunEndLoc1+dsShieldParent.centerInMu2e()-_hallOriginInMu2e,
-				       // dsShieldParent,
 				       parent,
 				       0,
 				       G4Color::Magenta(),
-				       // "ds"
 				       "ds"
 				       );
 	 double calIFBCableRunEndCore[] = { calIFBCableRunEnd[0],
@@ -1035,7 +1055,7 @@ namespace mu2e {
 	 turn2->rotateZ((ds->calPhiECableRunIFB()-180.)*CLHEP::degree);
 
 	 CLHEP::Hep3Vector calIFBCableRunEndLoc2( (deltar + ds->calREndCableRunIFB())/2.,
-						 0.0, ds->zCCableRunIFB() );
+						  0.0, ds->zCCableRunIFB() +relPosExtracted.z() );
 
 	 calIFBCableRunEndLoc2.rotateZ((180.-ds->calPhiECableRunIFB())*CLHEP::degree);
 
@@ -1044,11 +1064,9 @@ namespace mu2e {
 				       findMaterialOrThrow(ds->materialCalCableRunIFB()),
 				       turn2,
 				       calIFBCableRunEndLoc2+dsShieldParent.centerInMu2e()-_hallOriginInMu2e,
-				       // dsShieldParent,
 				       parent,
 				       0,
 				       G4Color::Magenta(),
-				       // "ds"
 				       "ds"
 				       );
 
@@ -1072,7 +1090,8 @@ namespace mu2e {
 					ds->calBLCableRunIFB()/2., //length of the piece
 					ds->zHLCableRunIFB()}; //same width in z as the rest
 	 CLHEP::Hep3Vector calIFBCableRunBotLoc1( ds->calBCXCableRunIFB(), 
-						 -r_bot_ifb-calIFBCableRunBot[1], ds->zCCableRunIFB() );
+						  -r_bot_ifb-calIFBCableRunBot[1], ds->zCCableRunIFB() + relPosExtracted.z() );
+
 
 	 VolumeInfo icbTmp1 = nestBox( "CalIFBCableRunBottom1",
 				       calIFBCableRunBot,
@@ -1101,7 +1120,8 @@ namespace mu2e {
 					);
 
 	 CLHEP::Hep3Vector calIFBCableRunBotLoc2(-ds->calBCXCableRunIFB(), 
-						 -r_bot_ifb-calIFBCableRunBot[1], ds->zCCableRunIFB() );
+						 -r_bot_ifb-calIFBCableRunBot[1], ds->zCCableRunIFB() +relPosExtracted.z() );
+
 
 	 VolumeInfo icbTmp2 = nestBox( "CalIFBCableRunBottom2",
 				       calIFBCableRunBot,
@@ -1142,14 +1162,14 @@ namespace mu2e {
 					      ds->calPDPhiCableRunIFB()*CLHEP::degree);
 
 	 CLHEP::Hep3Vector calIFBCablePInLoc( 0.0, 0.0, ds->calPZInCableRunIFB() );
-	 CLHEP::Hep3Vector calIFBCablePOutLoc( 0.0, 0.0, ds->calPZOutCableRunIFB() );
+	 CLHEP::Hep3Vector calIFBCablePOutLoc( 0.0, 0.0, ds->calPZOutCableRunIFB() + relPosExtracted.z());
 	 
 	 VolumeInfo icpTmp1 = nestTubs( "CalIFBCablePanelIn1",
 					calIFBCableExit1Params,
 					findMaterialOrThrow(ds->calPMatCableRunIFB()),
 					0,
 					calIFBCablePInLoc,
-					dsShieldParent,
+					dsShieldPointer,
 					0,
 					G4Color::Magenta(),
 					"ds"
@@ -1196,7 +1216,7 @@ namespace mu2e {
 					findMaterialOrThrow(ds->calPMatCableRunIFB()),
 					0,
 					calIFBCablePInLoc,
-					dsShieldParent,
+					dsShieldPointer,
 					0,
 					G4Color::Magenta(),
 					"ds"
@@ -1317,8 +1337,7 @@ namespace mu2e {
 	 if(trkIFBCableRunEnd[0] < 0.) 	 trkIFBCableRunEnd[0] = 0.;
 
 	 CLHEP::Hep3Vector trkIFBCableRunEndLoc1( ds->trkREndCableRunIFB() + trkIFBCableRunEnd[0],
-						 0.0, ds->zCCableRunIFB() );
-
+						  0.0, ds->zCCableRunIFB() + relPosExtracted.z() );
 	 trkIFBCableRunEndLoc1.rotateZ(ds->trkPhiECableRunIFB()*CLHEP::degree);
 
 	 VolumeInfo iceTmp3 = nestBox( "TrkIFBCableRunEnd1",
@@ -1350,8 +1369,7 @@ namespace mu2e {
 	 turn4->rotateZ((ds->trkPhiECableRunIFB()-180.)*CLHEP::degree);
 
 	 CLHEP::Hep3Vector trkIFBCableRunEndLoc2( ds->trkREndCableRunIFB() + trkIFBCableRunEnd[0],
-						 0.0, ds->zCCableRunIFB() );
-
+						  0.0, ds->zCCableRunIFB() + relPosExtracted.z() );
 	 trkIFBCableRunEndLoc2.rotateZ((180.-ds->trkPhiECableRunIFB())*CLHEP::degree);
 
 	 VolumeInfo iceTmp4 = nestBox( "TrkIFBCableRunEnd2",
@@ -1381,8 +1399,7 @@ namespace mu2e {
 					ds->trkBLCableRunIFB()/2., //length of the piece
 					ds->zHLCableRunIFB()}; //same width in z as the rest
 	 CLHEP::Hep3Vector trkIFBCableRunBotLoc1( ds->trkBCXCableRunIFB(), 
-						 -r_bot_ifb-trkIFBCableRunBot[1], ds->zCCableRunIFB() );
-
+						  -r_bot_ifb-trkIFBCableRunBot[1], ds->zCCableRunIFB() + relPosExtracted.z() );
 	 VolumeInfo icbTmp3 = nestBox( "TrkIFBCableRunBottom1",
 				       trkIFBCableRunBot,
 				       findMaterialOrThrow(ds->materialTrkCableRunIFB()),
@@ -1410,7 +1427,7 @@ namespace mu2e {
 					);
 
 	 CLHEP::Hep3Vector trkIFBCableRunBotLoc2(-ds->trkBCXCableRunIFB(), 
-						 -r_bot_ifb-trkIFBCableRunBot[1], ds->zCCableRunIFB() );
+						 -r_bot_ifb-trkIFBCableRunBot[1], ds->zCCableRunIFB() + relPosExtracted.z() );
 
 	 VolumeInfo icbTmp4 = nestBox( "TrkIFBCableRunBottom2",
 				       trkIFBCableRunBot,
@@ -1449,14 +1466,14 @@ namespace mu2e {
 					      ds->trkPDPhiCableRunIFB()*CLHEP::degree);
 
 	 CLHEP::Hep3Vector trkIFBCablePInLoc( 0.0, 0.0, ds->trkPZInCableRunIFB() );
-	 CLHEP::Hep3Vector trkIFBCablePOutLoc( 0.0, 0.0, ds->trkPZOutCableRunIFB() );
+	 CLHEP::Hep3Vector trkIFBCablePOutLoc( 0.0, 0.0, ds->trkPZOutCableRunIFB() + relPosExtracted.z());
 	 
 	 VolumeInfo icpTmp5 = nestTubs( "TrkIFBCablePanelIn1",
 					trkIFBCableExit1Params,
 					findMaterialOrThrow(ds->trkPMatCableRunIFB()),
 					0,
 					trkIFBCablePInLoc,
-					dsShieldParent,
+					dsShieldPointer,
 					0,
 					G4Color::Magenta(),
 					"ds"
@@ -1506,7 +1523,7 @@ namespace mu2e {
 					findMaterialOrThrow(ds->trkPMatCableRunIFB()),
 					0,
 					trkIFBCablePInLoc,
-					dsShieldParent,
+					dsShieldPointer,
 					0,
 					G4Color::Magenta(),
 					"ds"
@@ -1570,7 +1587,7 @@ namespace mu2e {
 				      findMaterialOrThrow(ds->trkCableRunMaterial()),
 				      0,
 				      trkCableRunLoc,
-				      dsShieldParent,
+				      dsShieldPointer,
 				      0,
 				      G4Color::Magenta(),
 				      "ds"
@@ -1607,7 +1624,7 @@ namespace mu2e {
 				    findMaterialOrThrow(ds->trkCableRunMaterial()),
 				    0,
 				    trkCableRunLoc,
-				    dsShieldParent,
+				    dsShieldPointer,
 				    0,
 				    G4Color::Magenta(),
 				    "ds"
@@ -1645,7 +1662,7 @@ namespace mu2e {
 				       findMaterialOrThrow(ds->trkCableRunMaterial()),
 				       0,
 				       upTrkCableRunLoc1,
-				       dsShieldParent,
+				       dsShieldPointer,
 				       0,
 				       G4Color::Magenta(),
 				       "ds"
@@ -1681,7 +1698,7 @@ namespace mu2e {
 					findMaterialOrThrow(ds->trkCableRunMaterial()),
 					0,
 					upTrkCableRunLoc1,
-					dsShieldParent,
+					dsShieldPointer,
 					0,
 					G4Color::Magenta(),
 					"ds"
@@ -1717,7 +1734,7 @@ namespace mu2e {
 				       findMaterialOrThrow(ds->trkCableRunMaterial()),
 				       0,
 				       upTrkCableRunLoc2,
-				       dsShieldParent,
+				       dsShieldPointer,
 				       0,
 				       G4Color::Magenta(),
 				       "ds"
@@ -1753,7 +1770,7 @@ namespace mu2e {
 					 findMaterialOrThrow(ds->trkCableRunMaterial()),
 					 0,
 					 upTrkCableRunLoc2,
-					 dsShieldParent,
+					 dsShieldPointer,
 					 0,
 					 G4Color::Magenta(),
 					 "ds"

@@ -60,6 +60,9 @@ namespace mu2e {
     const bool doSurfaceCheck          = geomOptions->doSurfaceCheck("stoppingTarget"); 
     const bool placePV                 = geomOptions->placePV("stoppingTarget"); 
 
+    bool const inGaragePosition = config.getBool("inGaragePosition",false);
+    double zOffGarage = (inGaragePosition) ? config.getDouble("garage.zOffset") : 0.;
+    CLHEP::Hep3Vector relPosFake(0.,0., zOffGarage); //for offsetting target in garage position
 
     int verbosity(config.getInt("stoppingTarget.verbosity",0));
 
@@ -106,7 +109,7 @@ namespace mu2e {
 			    targetMotherParams,
 			    findMaterialOrThrow(target->fillMaterial()),
 			    0,
-			    target->centerInMu2e() - parent.centerInMu2e(),
+			    target->centerInMu2e() - parent.centerInMu2e() + relPosFake,
 			    parent,
 			    0,
 			    false/*visible*/,
@@ -126,7 +129,7 @@ namespace mu2e {
 			    motherParams,
 			    findMaterialOrThrow(target->fillMaterial()),
 			    0,
-			    target->centerInMu2e() - parent.centerInMu2e(),
+			    target->centerInMu2e() - parent.centerInMu2e() + relPosFake,
 			    parent,
 			    0,
 			    false/*visible*/,
@@ -173,7 +176,7 @@ namespace mu2e {
         // rotation matrix...
         G4RotationMatrix* rot = 0; //... will have to wait
 
-        G4ThreeVector foilOffset(foil.centerInMu2e() - targetInfo.centerInMu2e());
+        G4ThreeVector foilOffset(foil.centerInMu2e() - targetInfo.centerInMu2e() + relPosFake);
         if ( verbosity > 1 ) std::cout << "foil " 
                                   << itf
                                   << " centerInMu2e=" 
@@ -258,7 +261,7 @@ namespace mu2e {
 
         // vector where to place to support tube
         // first find target center
-        G4ThreeVector supportStructureOffset(supportStructure.centerInMu2e() - targetInfo.centerInMu2e()); 
+        G4ThreeVector supportStructureOffset(supportStructure.centerInMu2e() - targetInfo.centerInMu2e() + relPosFake); 
 
         if ( verbosity > 1 ) std::cout << supportStructureInfo.name << " "
                                   << itf 

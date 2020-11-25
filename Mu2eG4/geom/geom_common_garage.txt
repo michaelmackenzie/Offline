@@ -19,14 +19,14 @@ bool hasSTM             = false;
 // Offset the detector system
 double mu2e.detectorSystemZ0 = 24171.;   // mm  
 
-// Modify the pit ceiling to be a layer of blocks toward the East end of
-// the pit, per George Ginther Dec 2017
-double building.dsArea.upstreamCeiling.yHalfThickness  = 457.2;
-double building.dsArea.upstreamCeiling.offsetFromFloorSurface.y = 6400.8;
-vector<double> building.dsArea.upstreamCeiling.xPositions = {
-  24333.2, 29362.4, 29362.4, 24333.2 };
-vector<double> building.dsArea.upstreamCeiling.yPositions = {
-  -1041.4, -1041.4, -8661.4, -8661.4 };
+//Reduce shielding block above DS, only cover some of extracted detectors
+vector<double> building.dsArea.hatchblock.xPositions = {
+  27249.28,   // B
+  29078.08,   // C
+  29078.08,   // C1
+  27249.28   // E
+};
+
 
 // Turn off downstream external shields
 int ExtShieldDownstream.numberOfBoxTypes = 0;
