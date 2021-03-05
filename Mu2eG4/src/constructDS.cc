@@ -52,7 +52,7 @@ namespace mu2e {
     int const verbosityLevel = _config.getInt("ds.verbosityLevel",0);
     bool const inGaragePosition = _config.getBool("inGaragePosition",false);
     double zOffGarage = (inGaragePosition) ? _config.getDouble("garage.zOffset") : 0.;
-    
+    bool const OPA_IPA_ST_Extracted = (inGaragePosition) ? _config.getBool("garage.extractOPA_IPA_ST") : false;
     //insert Z offset for the extracted position
     CLHEP::Hep3Vector relPosExtracted(0.,0., zOffGarage);
 
@@ -444,19 +444,19 @@ namespace mu2e {
                 );
 
     //create volume for detector elements in the extracted position
-    if(inGaragePosition) {
+    if(inGaragePosition && OPA_IPA_ST_Extracted) {
       G4Material*  airMaterial = findMaterialOrThrow( _config.getString("hall.insideMaterialName","G4_AIR") );
 
       VolumeInfo dsShieldParent = nestTubs( "garageFakeDS2Vacuum",
-					    ds2VacParams,
-					    airMaterial,
-					    0,
-					    ds2Position - _hallOriginInMu2e + relPosExtracted,
-					    parent,
-					    0,
-					    G4Colour::Yellow(),
-					    "dsVacuum"
-					    );
+                                            ds2VacParams,
+                                            airMaterial,
+                                            0,
+                                            ds2Position - _hallOriginInMu2e + relPosExtracted,
+                                            parent,
+                                            0,
+                                            G4Colour::Yellow(),
+                                            "dsVacuum"
+                                            );
     }
     // Polycone geometry allows for MBS to extend beyond solenoid
     // physical boundaries
@@ -518,15 +518,15 @@ namespace mu2e {
       G4Material*  airMaterial = findMaterialOrThrow( _config.getString("hall.insideMaterialName","G4_AIR") );
 
       tmpDS = nestPolycone( "garageFakeDS3Vacuum",
-			    ds3PolyParams,
-			    airMaterial,
-			    0,
-			    ds3positionInMu2e - parent.centerInMu2e() + relPosExtracted,
-			    parent,
-			    0,
-			    G4Colour::Yellow(),
-				     "dsVacuum"
-			    );
+                            ds3PolyParams,
+                            airMaterial,
+                            0,
+                            ds3positionInMu2e - parent.centerInMu2e() + relPosExtracted,
+                            parent,
+                            0,
+                            G4Colour::Yellow(),
+                            "dsVacuum"
+                            );
     } else
       tmpDS = dsShieldParent;
     VolumeInfo & dsShieldPointer = tmpDS;

@@ -62,25 +62,26 @@ namespace mu2e {
   void constructProtonAbsorber( const SimpleConfig& _config ){
 
     if( !_config.getBool("hasProtonAbsorber", true) ) return;
-    
+
     int  const verbosityLevel           = _config.getInt("protonabsorber.verbosityLevel", 0);
-      
+
     // Access to the G4HelperService.
     G4Helper* _helper = &(*(art::ServiceHandle<G4Helper>()));
-    
+
     bool const inGaragePosition = _config.getBool("inGaragePosition",false); //offset detector train elements for extracted position
-    double zOffGarage = (inGaragePosition) ? _config.getDouble("garage.zOffset") : 0.;
+    bool const OPA_IPA_ST_Extracted = (inGaragePosition) ? _config.getBool("garage.extractOPA_IPA_ST") : false;
+    double zOffGarage = (inGaragePosition && OPA_IPA_ST_Extracted) ? _config.getDouble("garage.zOffset") : 0.;
     CLHEP::Hep3Vector relPosFake(0.,0., zOffGarage);
 
     std::string theDS2("DS2Vacuum");
     std::string theDS3("DS3Vacuum");
-    if (inGaragePosition) {
+    if (inGaragePosition && OPA_IPA_ST_Extracted) {
       theDS2 = "garageFakeDS2Vacuum";
       theDS3 = "garageFakeDS3Vacuum";
-    }    
+    }
     VolumeInfo const & parent1Info  = _helper->locateVolInfo(theDS2);
     VolumeInfo const & parent2Info  = _helper->locateVolInfo(theDS3);
-    
+
     // Fetch DS geometry
     GeomHandle<DetectorSolenoid> ds;
 
