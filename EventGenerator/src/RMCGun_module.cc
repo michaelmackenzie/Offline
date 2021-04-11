@@ -42,6 +42,9 @@
 #include "Mu2eUtilities/inc/BinnedSpectrum.hh"
 #include "Mu2eUtilities/inc/Table.hh"
 #include "Mu2eUtilities/inc/RootTreeSampler.hh"
+#include "Mu2eUtilities/inc/PeakedSpectrum.hh"
+#include "Mu2eUtilities/inc/PeakedPowerSpectrum.hh"
+#include "Mu2eUtilities/inc/PeakedTriangleSpectrum.hh"
 #include "GeneralUtilities/inc/RSNTIO.hh"
 
 // ROOT includes
@@ -61,7 +64,6 @@ namespace mu2e {
     struct PhysConfig {
       using Name=fhicl::Name;
       using Comment=fhicl::Comment;
-      //      fhicl::Atom<int> generateIntConversion{Name("generateIntConversion"), Comment("Generate internal conversion (>=0)"), 0};
       fhicl::Atom<std::string> genId{Name("genId"), Comment("gen process ID: InternalRMC/ExternalRMC")};
       fhicl::Atom<double> elow{Name("elow"), Comment("Minimum energy value (MeV)")};
       fhicl::Atom<double> ehi{Name("ehi"), Comment("Maximum energy value (MeV)")};
@@ -75,6 +77,7 @@ namespace mu2e {
       fhicl::OptionalAtom<unsigned> nbins{Name("nbins"), Comment("Number of bins")};
       fhicl::OptionalAtom<std::string> spectrumFileName{Name("spectrumFileName"), Comment("Name of spectrum file")};
       fhicl::OptionalAtom<bool> binCenter{Name("binCenter"), Comment("If spectrum uses bin centers")};
+      fhicl::Table<fhicl::ParameterSet> peakedSpectrum{Name("peakedSpectrum")};
     };
 
 
@@ -99,8 +102,6 @@ namespace mu2e {
       fhicl::Atom<bool> doHistograms{Name("doHistograms"), Comment("Whether or not to make generation histograms (true/false)"), false};
       fhicl::Atom<bool> doCosWeights{Name("doCosWeights"), Comment("Whether or not to use a user cos(theta) generation function (true/false)"), false};
       fhicl::Atom<bool> doEnergyWeights{Name("doEnergyWeights"), Comment("Whether or not to use a user energy generation function (true/false)"), false};
-      fhicl::Atom<std::string> energyFuncString{Name("energyFuncString"), Comment("User energy generation function (string)"), ""};
-      fhicl::Atom<std::string> czFuncString{Name("czFuncString"), Comment("User cos(theta) generation function (string)"), ""};
     };
     typedef art::EDProducer::Table<Config> Parameters;
 
@@ -133,19 +134,14 @@ namespace mu2e {
     // generating weighted cos(theta) and energy spectra
     bool doCosWeights_;
     bool doEnergyWeights_;
-    std::string energyFuncString_;
-    std::string czFuncString_;
 
     BinnedSpectrum spectrum_;
     CLHEP::RandGeneral*  randSpectrum_;
-
-    TF1* cosThetaFunc_;
-    TF1* energyFunc_;
+    PeakedSpectrum* peakedEnergySpectrum_;
+    PeakedSpectrum* peakedCosSpectrum_;
 
     double ehi_;
     double elow_;
-    double enweightnorm_; //for weights
-    double czweightnorm_;
 
     double generateEnergy();
 
@@ -154,7 +150,7 @@ namespace mu2e {
 
     // for weights to produce flat spectra from generation spectra
     double getEnergyWeight(double energy);
-    double getCosWeight(double energy);
+    double getCosWeight(double cz);
 
 
     TH1F* _hmomentum;
@@ -192,8 +188,6 @@ namespace mu2e {
     , doHistograms_( pset().doHistograms() )
     , doCosWeights_( pset().doCosWeights() )
     , doEnergyWeights_( pset().doEnergyWeights() )
-    , energyFuncString_( pset().energyFuncString())
-    , czFuncString_    ( pset().czFuncString())
     , spectrum_ ()
     , randSpectrum_(0)
   {
@@ -256,15 +250,7 @@ namespace mu2e {
         throw cet::exception("BADCONFIG")
           << "RMCGun: Cos generation weights not defined for internal conversions!\n";
       else {
-        cosThetaFunc_ = new TF1("cosThetaFunc", czFuncString_.c_str());
-        if(cosThetaFunc_->GetMinimum(czmin_,czmax_) < 0.)
-          throw cet::exception("BADCONFIG")
-            << "RMCGun: Cos generation weight function not positive for the entire spectrum!\n";
-
-        czweightnorm_ = cosThetaFunc_->Integral(czmin_,czmax_)/(czmax_-czmin_);
-        if(verbosityLevel_ > 0)
-          printf("RMCGun: Cos generation using function string %s with %.2f < cz < %.2f\n",
-                 czFuncString_.c_str(), czmin_, czmax_);
+        //Initialize cos peaked spectrum
       }
     }
     if(doEnergyWeights_) {
