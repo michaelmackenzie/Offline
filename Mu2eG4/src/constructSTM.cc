@@ -795,7 +795,7 @@ namespace mu2e {
                                        doSurfaceCheck);
         if (verbosityLevel>0) {
           std::cout << __func__ << ": STM_FOVCollimatorPlug\n center" << plugOrigin << std::endl
-                    << " center in Mu2e = " << plugOrigin + parentInfo.centerInMu2e() << std::endl;
+                    << " center in Mu2e = " << plugOrigin + parentInfo.centerInMu2e() << std::endl
                     << " material = " << _config.getString("stm.FOVcollimator.plug.material") << std::endl
                     << " rOut = " << FOVPlugParams[1] << " length = " << 2.*FOVPlugParams[2] << std::endl;
         }
