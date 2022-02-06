@@ -76,7 +76,6 @@ namespace mu2e {
     const bool doSurfaceCheck               = geomOptions->doSurfaceCheck("ExtShield");
     const bool placePV                      = geomOptions->placePV("ExtShield");
 
-
     //----------------------------------------------------------------
     // Upstream External Shielding Boxes <=====
     //----------------------------------------------------------------
@@ -148,6 +147,10 @@ namespace mu2e {
 
     nBox = outlDS.size();
 
+    const int verbosityLevel = config.getInt("ExtShieldDownstream.verbosityLevel", 0);
+
+    if(verbosityLevel > 0) { std::cout << __func__ << ": printing downstream shielding information:\n"; }
+
     for(int i = 0; i < nBox; i++)
       {
         // combine the tolerances with the outline dimensions.
@@ -161,6 +164,11 @@ namespace mu2e {
         double yCnt[vertices.size()];
         double epsilon = 1.0e-4;
 
+        if(verbosityLevel > 0) {
+          std::cout << "Constructing box number " << i+1 << std::endl
+                    << " du = " << du << " dv = " << dv << " dw = " << dw << std::endl
+                    << " hlen = " << hlen << " vertices size = " << vertices.size() << std::endl;
+        }
         for ( unsigned int idim = 0; idim < vertices.size(); idim++ ) {
           // Decide how to apply tolerances by looking where other vertices
           // lie relative to this vertex.
@@ -247,11 +255,13 @@ namespace mu2e {
 
         } // loop over all vertices to find xCnt and yCnt
 
+        if(verbosityLevel > 1) { std::cout << " vertices:\n"; }
         for ( unsigned int idim = 0; idim < vertices.size(); idim++ ) {
           vertices[idim][0] += xCnt[idim] * du;
           vertices[idim][1] += yCnt[idim] * dv;
 
           G4TwoVector vertex( vertices[idim][0], vertices[idim][1] );
+          if(verbosityLevel > 1) { std::cout << "  (x,y) = (" << vertices[idim][0] << "," << vertices[idim][1] << ")\n"; }
           itsOutline.push_back(vertex);
         } // modified all the vertices appropriately
         hlen += dw;
@@ -259,12 +269,17 @@ namespace mu2e {
         //  Make the name of the box
         std::ostringstream name;
         name << "ExtShieldDownstreamBox_" << i+1 ;
+        if(verbosityLevel > 0) { std::cout << " name = " << name.str() << std::endl; }
 
         // Make the needed rotation by parsing orientation
         std::string orientDSInit = orientsDS[i];
 
         CLHEP::HepRotation* itsDSRotat = reg.add(CLHEP::HepRotation(CLHEP::HepRotation::IDENTITY));
         OR->getRotationFromOrientation( *itsDSRotat, orientDSInit );
+
+        if(verbosityLevel > 1) {
+          std::cout << " rotation:\n" << *itsDSRotat << std::endl;
+        }
 
         // ****************************************
         // Now add holes and notches
@@ -394,6 +409,13 @@ namespace mu2e {
 
           extShieldVol.solid = aSolid;
 
+          if(verbosityLevel > 0) {
+            std::cout << " centerInParent = " << extShieldVol.centerInParent << std::endl
+                      << " centerInMu2e = " << extShieldVol.centerInMu2e() << std::endl
+                      << " Parent name = " << parent.name << std::endl
+                      << " Parent centerInMu2e = " << parent.centerInMu2e() << std::endl
+                      << std::endl;
+          }
           finishNesting(extShieldVol,
                         findMaterialOrThrow(matsDS[i]),
                         itsDSRotat,

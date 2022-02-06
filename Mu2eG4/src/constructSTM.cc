@@ -778,27 +778,38 @@ namespace mu2e {
                                         0.,
                                         CLHEP::twopi};
         const double FOVPlugZOffset = stmFOVCollHalfLength1 + _config.getDouble("stm.FOVcollimator.plug.offset") - FOVPlugParams[2];
-        nestTubs("STM_FOVCollimatorPlug",
-                 FOVPlugParams,
-                 findMaterialOrThrow(_config.getString("stm.FOVcollimator.plug.material")),
-                 0, //no rotation
-                 G4ThreeVector(0., 0., FOVPlugZOffset) + stmFOVCollPositionInParent1,
-                 parentInfo.logical,
-                 0,
-                 STMisVisible,
-                 G4Color::Gray(),
-                 STMisSolid,
-                 forceAuxEdgeVisible,
-                 placePV,
-                 doSurfaceCheck);
+        CLHEP::Hep3Vector plugOrigin(0., 0., FOVPlugZOffset);
+        plugOrigin += stmFOVCollPositionInParent1;
+        VolumeInfo polyPlug = nestTubs("STM_FOVCollimatorPlug",
+                                       FOVPlugParams,
+                                       findMaterialOrThrow(_config.getString("stm.FOVcollimator.plug.material")),
+                                       0, //no rotation
+                                       plugOrigin,
+                                       parentInfo.logical,
+                                       0,
+                                       STMisVisible,
+                                       G4Color::Gray(),
+                                       STMisSolid,
+                                       forceAuxEdgeVisible,
+                                       placePV,
+                                       doSurfaceCheck);
+        if (verbosityLevel>0) {
+          std::cout << __func__ << ": STM_FOVCollimatorPlug\n center" << plugOrigin << std::endl
+                    << " center in Mu2e = " << plugOrigin + parentInfo.centerInMu2e() << std::endl;
+                    << " material = " << _config.getString("stm.FOVcollimator.plug.material") << std::endl
+                    << " rOut = " << FOVPlugParams[1] << " length = " << 2.*FOVPlugParams[2] << std::endl;
+        }
       }
     }
 
-    G4Tubs *tubFOVCollAbsorber = new G4Tubs("tubFOVCollAbsorber", 0.0, pSTMFOVCollimatorParams.hole1RadiusUpStr()-0.01, _config.getDouble("stm.FOVcollimator.absorber.halfLength"), 0.0, CLHEP::twopi );
+    G4Tubs *tubFOVCollAbsorber = new G4Tubs("tubFOVCollAbsorber", 0.0,
+                                            pSTMFOVCollimatorParams.hole1RadiusUpStr()-0.01,
+                                            _config.getDouble("stm.FOVcollimator.absorber.halfLength"), 0.0, CLHEP::twopi );
     VolumeInfo collimatorFOVAbsorber;
     collimatorFOVAbsorber.name = "collimatorFOVAbsorber";
     collimatorFOVAbsorber.solid = tubFOVCollAbsorber;
-    G4ThreeVector stmFOVCollAbsorberPositionInParent = stmFOVCollPositionInParent2 + G4ThreeVector(0.0,0.0, stmFOVCollHalfLength2-_config.getDouble("stm.FOVcollimator.absorber.halfLength"));
+    G4ThreeVector stmFOVCollAbsorberPositionInParent = stmFOVCollPositionInParent2 +
+      G4ThreeVector(0.0,0.0, stmFOVCollHalfLength2-_config.getDouble("stm.FOVcollimator.absorber.halfLength"));
     if (_config.getBool("stm.FOVcollimator.absorber.build",false)){
              finishNesting(collimatorFOVAbsorber,
                     findMaterialOrThrow(_config.getString("stm.FOVcollimator.absorber.material")),
@@ -1055,7 +1066,9 @@ namespace mu2e {
     G4SubtractionSolid *collimatorSSLinerTemp1 = 0;
     if (pSTMSSCollimatorParams.linerBuild()){
       boxSSCollLiner = new G4Box("boxSSCollLiner",stmSSCollHalfWidth2,stmSSCollHalfHeight2,stmSSCollHalfLength2);
-      collimatorSSLinerTemp1 = new G4SubtractionSolid("collimatorSSLinerTemp1",boxSSCollLiner,collWindow1,rotMatrixYforCone1,G4ThreeVector(xoffset_hole1/2.0,0.0,-1.0*z_distance_tgt_coll/2.0+stmSSCollHalfLength1+z_shift1 ));
+      collimatorSSLinerTemp1 = new G4SubtractionSolid("collimatorSSLinerTemp1",boxSSCollLiner,
+                                                      collWindow1,rotMatrixYforCone1,
+                                                      G4ThreeVector(xoffset_hole1/2.0,0.0,-1.0*z_distance_tgt_coll/2.0+stmSSCollHalfLength1+z_shift1 ));
     } else {
       collimatorSSLinerTemp1 = 0;
     }
@@ -1530,6 +1543,10 @@ namespace mu2e {
                     forceAuxEdgeVisible,
                     placePV,
                     doSurfaceCheck);
+      if(verbosityLevel > 0) {
+        std::cout << __func__ << ": " << crvsteelshieldtube.name << " center in Mu2e = "
+                  << mstmCRVShieldTubePositionInParent + parentInfo.centerInMu2e() << std::endl;
+      }
     }
 
   } // end of constructSTM;
