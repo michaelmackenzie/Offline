@@ -10,7 +10,7 @@
 #include "fhiclcpp/ParameterSet.h"
 
 #include "art/Framework/Principal/Handle.h"
-#include "artdaq-core-mu2e/Data/TrackerDataDecoder.hh"
+#include "artdaq-core-mu2e/Overlays/Decoders/TrackerDataDecoder.hh"
 #include "artdaq-core-mu2e/Overlays/FragmentType.hh"
 
 #include "Offline/DataProducts/inc/TrkTypes.hh"

@@ -7,7 +7,7 @@
 
 #include "Offline/RecoDataProducts/inc/CrvDAQerror.hh"
 #include "art/Framework/Principal/Handle.h"
-#include "artdaq-core-mu2e/Data/CRVDataDecoder.hh"
+#include "artdaq-core-mu2e/Overlays/Decoders/CRVDataDecoder.hh"
 #include <artdaq-core/Data/Fragment.hh>
 
 #include <iostream>

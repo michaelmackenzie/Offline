@@ -11,9 +11,9 @@
 #include "fhiclcpp/ParameterSet.h"
 
 #include "art/Framework/Principal/Handle.h"
-#include "artdaq-core-mu2e/Data/CRVDataDecoder.hh"
-#include "artdaq-core-mu2e/Data/CalorimeterDataDecoder.hh"
-#include "artdaq-core-mu2e/Data/TrackerDataDecoder.hh"
+// #include "artdaq-core-mu2e/Overlays/Decoders/CRVDataDecoder.hh"
+// #include "artdaq-core-mu2e/Overlays/Decoders/CalorimeterDataDecoder.hh"
+// #include "artdaq-core-mu2e/Overlays/Decoders/TrackerDataDecoder.hh"
 #include <artdaq-core-mu2e/Data/EventHeader.hh>
 #include "artdaq-core-mu2e/Overlays/DTCEventFragment.hh"
 #include "artdaq-core-mu2e/Overlays/FragmentType.hh"
@@ -76,18 +76,18 @@ art::ProcessDTCAndCFOEvents::ProcessDTCAndCFOEvents(
     diagLevel_(config().diagLevel()), makeCaloFrag_(config().makeCaloFrag()),
     makeTrkFrag_(config().makeTrkFrag()), makeCRVFrag_(config().makeCRVFrag()) {
 
-  if (config().makeCaloFrag() > 0) {
-    produces<std::vector<mu2e::CalorimeterDataDecoder>>();
-  }
-  if (config().makeTrkFrag() > 0) {
-    produces<std::vector<mu2e::TrackerDataDecoder>>();
-  }
-  if (config().makeCRVFrag() > 0) {
-    produces<std::vector<mu2e::CRVDataDecoder>>();
-  }
+  // if (config().makeCaloFrag() > 0) {
+  //   produces<std::vector<mu2e::CalorimeterDataDecoder>>();
+  // }
+  // if (config().makeTrkFrag() > 0) {
+  //   produces<std::vector<mu2e::TrackerDataDecoder>>();
+  // }
+  // if (config().makeCRVFrag() > 0) {
+  //   produces<std::vector<mu2e::CRVDataDecoder>>();
+  // }
 
   produces<mu2e::EventHeader>();
-  produces<mu2e::DAQerrorCollection>();
+  // produces<mu2e::DAQerrorCollection>();
 }
 
 // ----------------------------------------------------------------------
@@ -97,13 +97,13 @@ void art::ProcessDTCAndCFOEvents::produce(Event& event) {
   art::EventNumber_t eventNumber = event.event();
 
   // Collection of CaloHits for the event
-  std::unique_ptr<std::vector<mu2e::CalorimeterDataDecoder>> caloFragColl(
-      new std::vector<mu2e::CalorimeterDataDecoder>);
-  std::unique_ptr<std::vector<mu2e::TrackerDataDecoder>> trkFragColl(
-      new std::vector<mu2e::TrackerDataDecoder>);
-  std::unique_ptr<std::vector<mu2e::CRVDataDecoder>> crvFragColl(new std::vector<mu2e::CRVDataDecoder>);
+  // std::unique_ptr<std::vector<mu2e::CalorimeterDataDecoder>> caloFragColl(
+  //     new std::vector<mu2e::CalorimeterDataDecoder>);
+  // std::unique_ptr<std::vector<mu2e::TrackerDataDecoder>> trkFragColl(
+  //     new std::vector<mu2e::TrackerDataDecoder>);
+  // std::unique_ptr<std::vector<mu2e::CRVDataDecoder>> crvFragColl(new std::vector<mu2e::CRVDataDecoder>);
   std::unique_ptr<mu2e::EventHeader> evtHdr(new mu2e::EventHeader);
-  std::unique_ptr<mu2e::DAQerrorCollection> daqErrors(new mu2e::DAQerrorCollection);
+  // std::unique_ptr<mu2e::DAQerrorCollection> daqErrors(new mu2e::DAQerrorCollection);
 
   artdaq::Fragments fragments;
   artdaq::FragmentPtrs containerFragments;
@@ -144,52 +144,52 @@ void art::ProcessDTCAndCFOEvents::produce(Event& event) {
 
   size_t nFrags(0);
 
-  for (size_t fragIdx=0; const auto& frag : fragments) {
+  for (/*size_t fragIdx=0;*/ const auto& frag : fragments) {
     mu2e::DTCEventFragment bb(frag);
 
-    if (makeTrkFrag_ > 0) { // TRACKER
-      auto trkSEvents = bb.getSubsystemData(DTCLib::DTC_Subsystem::DTC_Subsystem_Tracker);
-      for (auto const& subevent : trkSEvents) {
-        trkFragColl->emplace_back(subevent);
-        ++nFrags;
-      }
-    }
+    // if (makeTrkFrag_ > 0) { // TRACKER
+    //   auto trkSEvents = bb.getSubsystemData(DTCLib::DTC_Subsystem::DTC_Subsystem_Tracker);
+    //   for (auto const& subevent : trkSEvents) {
+    //     trkFragColl->emplace_back(subevent);
+    //     ++nFrags;
+    //   }
+    // }
 
-    if (makeCaloFrag_ > 0) { // CALORIMETER
-      auto caloSEvents = bb.getSubsystemData(DTCLib::DTC_Subsystem::DTC_Subsystem_Calorimeter);
-      for (auto& subevent : caloSEvents) {
-        caloFragColl->emplace_back(subevent);
-        ++nFrags;
-      }
-    }
+    // if (makeCaloFrag_ > 0) { // CALORIMETER
+    //   auto caloSEvents = bb.getSubsystemData(DTCLib::DTC_Subsystem::DTC_Subsystem_Calorimeter);
+    //   for (auto& subevent : caloSEvents) {
+    //     caloFragColl->emplace_back(subevent);
+    //     ++nFrags;
+    //   }
+    // }
 
-    if (makeCRVFrag_ > 0) { // CRV
-      auto crvSEvents = bb.getSubsystemData(DTCLib::DTC_Subsystem::DTC_Subsystem_CRV);
-      for (auto& subevent : crvSEvents) {
-        crvFragColl->emplace_back(subevent);
-        ++nFrags;
-      }
-      auto crvSEventsTmp = bb.getSubsystemData(DTCLib::DTC_Subsystem::DTC_Subsystem_Tracker);  //currently wrongly encoded in the DTC Subevent header
-      for (auto& subevent : crvSEventsTmp) {
-        crvFragColl->emplace_back(subevent);
-        ++nFrags;
-      }
-    }
+    // if (makeCRVFrag_ > 0) { // CRV
+    //   auto crvSEvents = bb.getSubsystemData(DTCLib::DTC_Subsystem::DTC_Subsystem_CRV);
+    //   for (auto& subevent : crvSEvents) {
+    //     crvFragColl->emplace_back(subevent);
+    //     ++nFrags;
+    //   }
+    //   auto crvSEventsTmp = bb.getSubsystemData(DTCLib::DTC_Subsystem::DTC_Subsystem_Tracker);  //currently wrongly encoded in the DTC Subevent header
+    //   for (auto& subevent : crvSEventsTmp) {
+    //     crvFragColl->emplace_back(subevent);
+    //     ++nFrags;
+    //   }
+    // }
 
-    const DTCLib::DTC_Event &dtcEvent =  bb.getData();
-    const std::vector<DTCLib::DTC_SubEvent> &dtcSubEvents = dtcEvent.GetSubEvents();
-    size_t expectedSize = dtcEvent.GetEventByteCount();
-    size_t actualSize = sizeof(DTCLib::DTC_EventHeader);
-    for(size_t iSubEvent=0; iSubEvent<dtcSubEvents.size(); ++iSubEvent) actualSize+=dtcSubEvents.at(iSubEvent).GetSubEventByteCount();
-    if(diagLevel_ > 0)
-    {
-      std::cout << "[ProcessDTCAndCFOEvents::produce] expected event size: " << expectedSize << ", actual event size: " << actualSize << std::endl;
-    }
-    if(expectedSize!=actualSize)
-    {
-      std::cerr << "[ProcessDTCAndCFOEvents::produce] mismatch between expected event size and actual event size!" << std::endl;
-      daqErrors->emplace_back(mu2e::DAQerrorCode::byteCountMismatch,fragIdx);
-    }
+    // const DTCLib::DTC_Event &dtcEvent =  bb.getData();
+    // const std::vector<DTCLib::DTC_SubEvent> &dtcSubEvents = dtcEvent.GetSubEvents();
+    // size_t expectedSize = dtcEvent.GetEventByteCount();
+    // size_t actualSize = sizeof(DTCLib::DTC_EventHeader);
+    // for(size_t iSubEvent=0; iSubEvent<dtcSubEvents.size(); ++iSubEvent) actualSize+=dtcSubEvents.at(iSubEvent).GetSubEventByteCount();
+    // if(diagLevel_ > 0)
+    // {
+    //   std::cout << "[ProcessDTCAndCFOEvents::produce] expected event size: " << expectedSize << ", actual event size: " << actualSize << std::endl;
+    // }
+    // if(expectedSize!=actualSize)
+    // {
+    //   std::cerr << "[ProcessDTCAndCFOEvents::produce] mismatch between expected event size and actual event size!" << std::endl;
+    //   // daqErrors->emplace_back(mu2e::DAQerrorCode::byteCountMismatch,fragIdx);
+    // }
   }
 
   if ( (diagLevel_ > 0) && (nFrags == 0)) {
@@ -201,17 +201,17 @@ void art::ProcessDTCAndCFOEvents::produce(Event& event) {
               << (int)(event.event()) << " / timestamp=" << (int)eventNumber << std::endl;
   }
 
-  if (makeCaloFrag_ > 0) {
-    event.put(std::move(caloFragColl));
-  }
-  if (makeTrkFrag_ > 0) {
-    event.put(std::move(trkFragColl));
-  }
-  if (makeCRVFrag_ > 0) {
-    event.put(std::move(crvFragColl));
-  }
+  // if (makeCaloFrag_ > 0) {
+  //   event.put(std::move(caloFragColl));
+  // }
+  // if (makeTrkFrag_ > 0) {
+  //   event.put(std::move(trkFragColl));
+  // }
+  // if (makeCRVFrag_ > 0) {
+  //   event.put(std::move(crvFragColl));
+  // }
   event.put(std::move(evtHdr));
-  event.put(std::move(daqErrors));
+  // event.put(std::move(daqErrors));
 } // produce()
 
 // ======================================================================

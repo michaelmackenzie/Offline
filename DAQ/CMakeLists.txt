@@ -3,6 +3,7 @@ cet_make_library(
       src/CaloDAQUtilities.cc
     LIBRARIES PUBLIC
       artdaq-core-mu2e::Data
+      artdaq-core-mu2e::Overlays
 
 )
 
@@ -21,11 +22,11 @@ cet_build_plugin(ArtBinaryPacketsFromDigis art::module
       Offline::SeedService
 )
 
-cet_build_plugin(ProcessDTCAndCFOEvents art::module
-    REG_SOURCE src/ProcessDTCAndCFOEvents_module.cc
-    LIBRARIES REG
-      Offline::DAQ
-)
+# cet_build_plugin(ProcessDTCAndCFOEvents art::module
+#     REG_SOURCE src/ProcessDTCAndCFOEvents_module.cc
+#     LIBRARIES REG
+#       Offline::DAQ
+# )
 
 cet_build_plugin(EventHeaderFromCFOFragment art::module
     REG_SOURCE src/EventHeaderFromCFOFragment_module.cc
@@ -53,32 +54,35 @@ cet_build_plugin(CaloDigisFromDataDecoders art::module
       Offline::ProditionsService
       Offline::RecoDataProducts
       artdaq-core-mu2e::Data
+      artdaq-core-mu2e::Overlays
       artdaq-core-mu2e::Data_dict
 )
 
-cet_build_plugin(CRVDigisFromDataDecoders art::module
-    REG_SOURCE src/CRVDigisFromDataDecoders_module.cc
-    LIBRARIES REG
-      Offline::DAQ
+# cet_build_plugin(CRVDigisFromDataDecoders art::module
+#     REG_SOURCE src/CRVDigisFromDataDecoders_module.cc
+#     LIBRARIES REG
+#       Offline::DAQ
 
-      Offline::CRVConditions
-      Offline::ProditionsService
-      Offline::RecoDataProducts
-      artdaq-core-mu2e::Data
-      artdaq-core-mu2e::Data_dict
-)
+#       Offline::CRVConditions
+#       Offline::ProditionsService
+#       Offline::RecoDataProducts
+#       artdaq-core-mu2e::Data
+#       artdaq-core-mu2e::Overlays
+#       artdaq-core-mu2e::Data_dict
+# )
 
-cet_build_plugin(CRVGlobalRunDataFromDataDecoders art::module
-    REG_SOURCE src/CRVGlobalRunDataFromDataDecoders_module.cc
-    LIBRARIES REG
-      Offline::DAQ
+# cet_build_plugin(CRVGlobalRunDataFromDataDecoders art::module
+#     REG_SOURCE src/CRVGlobalRunDataFromDataDecoders_module.cc
+#     LIBRARIES REG
+#       Offline::DAQ
 
-      Offline::CRVConditions
-      Offline::ProditionsService
-      Offline::RecoDataProducts
-      artdaq-core-mu2e::Data
-      artdaq-core-mu2e::Data_dict
-)
+#       Offline::CRVConditions
+#       Offline::ProditionsService
+#       Offline::RecoDataProducts
+#       artdaq-core-mu2e::Data
+#       artdaq-core-mu2e::Overlays
+#       artdaq-core-mu2e::Data_dict
+# )
 
 cet_build_plugin(DataDecodersAna art::module
     REG_SOURCE src/DataDecodersAna_module.cc
@@ -103,6 +107,7 @@ cet_build_plugin(LumiInfoAna art::module
     Offline::RecoDataProducts
     art_root_io::TFileService_service
     artdaq-core-mu2e::Data
+    artdaq-core-mu2e::Overlays
     artdaq-core-mu2e::Data_dict
 )
 
@@ -155,6 +160,8 @@ cet_build_plugin(STMWaveformDigisFromFragments art::module
 cet_build_plugin(StrawDigisFromArtdaqFragments art::module
   REG_SOURCE src/StrawDigisFromArtdaqFragments_module.cc
   LIBRARIES REG
+  artdaq-core-mu2e::Data
+  artdaq-core-mu2e::Overlays
   Offline::DAQ
   Offline::DataProducts
   Offline::RecoDataProducts
