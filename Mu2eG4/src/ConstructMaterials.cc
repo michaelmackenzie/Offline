@@ -1270,6 +1270,21 @@ namespace mu2e {
       G4Material* tgt = new G4Material(mat.name, met->GetDensity(), 1);
       tgt->AddMaterial(met, 1.);
     }
+    mat = uniqueMaterialOrThrow( "AST_Al");
+    {
+      G4Material* met = findMaterialOrThrow("G4_Al");
+      G4Material* tgt = new G4Material(mat.name, met->GetDensity(), 1);
+      tgt->AddMaterial(met, 1.);
+    }
+
+    // proton absorber for the downstream target
+    mat = uniqueMaterialOrThrow( "DIPAPolyethylene");
+    {
+      // Use the same info for the upstream IPA
+      G4Material* DIPAPolyethylene = new G4Material( mat.name, 0.954*CLHEP::g/CLHEP::cm3, 2);
+      DIPAPolyethylene->AddMaterial( findMaterialOrThrow("G4_H"), 0.11);
+      DIPAPolyethylene->AddMaterial( findMaterialOrThrow("G4_C"), 0.89); // Carbon doped Polytehylene, additional carbon 2-5% from MDS (DeWal DW 402B),  density measured by S. Krave 6/22/2021
+    }
 
     mat = uniqueMaterialOrThrow( "CarbonFiber_resin");
     {

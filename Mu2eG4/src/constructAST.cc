@@ -72,8 +72,8 @@ namespace mu2e {
     const int    nFoils          = (useFoils) ? config.getInt("advancedStoppingTarget.nFoils") : 0;
     const double foilThickness   = (useFoils) ? config.getDouble("advancedStoppingTarget.foilThickness") : 0.;
 
-    const CLHEP::Hep3Vector parentCenter(parent.centerInWorld);
-    // const CLHEP::Hep3Vector parentCenter(parent.centerInMu2e());
+    Mu2eG4Helper& helper = *(art::ServiceHandle<Mu2eG4Helper>());
+    const CLHEP::Hep3Vector parentCenter(parent.centerInMu2e());
     const CLHEP::Hep3Vector position(0., 0., originZ - parentCenter.z() + zOffGarage); //position in mother
     if(verbosity > 1) std::cout << "  Parent in Mu2e: " << parentCenter << std::endl;
     if(verbosity > 1) std::cout << "  Origin in Mu2e: " << position << std::endl;
@@ -100,7 +100,6 @@ namespace mu2e {
     targetMotherInfo.centerInParent = position;
     if(verbosity > 1) std::cout << "  Mother in parent " << targetMotherInfo.centerInParent << std::endl;
 
-    Mu2eG4Helper& helper = *(art::ServiceHandle<Mu2eG4Helper>());
     CLHEP::Hep3Vector posWorld(0,0,0);
     posWorld += helper.locateVolInfo(targetMotherName).centerInParent;
     const auto& posDS3InWorld        = parent.centerInWorld;
@@ -157,6 +156,94 @@ namespace mu2e {
                             placePV,
                             doSurfaceCheck
                             );
+    }
+
+    // Build a proton absorber if requested
+    if(config.getBool("downstreamIPA.build", false)) {
+      // Get the proton absorber parameters
+      const double PA_outerRadius   = config.getDouble("downstreamIPA.outerRadius");
+      const double PA_innerRadius   = config.getDouble("downstreamIPA.innerRadius");
+      const double PA_halfLength    = config.getDouble("downstreamIPA.halfLength" );
+      const double PA_originZ       = config.getDouble("downstreamIPA.originZ"    );
+      const std::string PA_material = config.getString("downstreamIPA.material"   );
+
+      const CLHEP::Hep3Vector PA_position(0., 0., PA_originZ - parentCenter.z() + zOffGarage); //position in mother
+      if(verbosity > 1) std::cout << "  Parent in Mu2e     : " << parentCenter << std::endl;
+      if(verbosity > 1) std::cout << "  DIPA Origin in Mu2e: " << PA_position << std::endl;
+
+      TubsParams PAParams(PA_innerRadius, PA_outerRadius, PA_halfLength);
+
+      VolumeInfo PAInfo;
+      std::string PAName = "DIPA";
+      PAInfo = nestTubs(PAName,
+                        PAParams,
+                        findMaterialOrThrow(PA_material),
+                        0,
+                        PA_position,
+                        parent,
+                        0,
+                        stoppingTargetIsVisible,
+                        G4Colour::Magenta(),
+                        stoppingTargetIsSolid,
+                        forceAuxEdgeVisible,
+                        placePV,
+                        doSurfaceCheck
+                        );
+      if(verbosity > 1) std::cout << "  PA Mother in parent " << PAInfo.centerInParent << std::endl;
+      PAInfo.centerInParent = PA_position;
+      if(verbosity > 1) std::cout << "  PA Mother in parent " << PAInfo.centerInParent << std::endl;
+
+      CLHEP::Hep3Vector posWorld(0,0,0);
+      posWorld += helper.locateVolInfo(PAName).centerInParent;
+      const auto& posDS3InWorld        = parent.centerInWorld;
+      PAInfo.centerInWorld = posWorld + posDS3InWorld;
+      if(verbosity > 1) std::cout << "  PA Mother in parent " << PAInfo.centerInParent << std::endl;
+      if(verbosity > 1) std::cout << "  PA Mother in world " << PAInfo.centerInWorld << std::endl;
+      if(verbosity > 1) std::cout << "  PA Mother in Mu2e " << PAInfo.centerInMu2e() << std::endl;
+    }
+
+    // Build a proton absorber if requested
+    if(config.getBool("caloDisk0Shield.build", false)) {
+      // Get the proton absorber parameters
+      const double Shield_outerRadius   = config.getDouble("caloDisk0Shield.outerRadius");
+      const double Shield_innerRadius   = config.getDouble("caloDisk0Shield.innerRadius");
+      const double Shield_halfLength    = config.getDouble("caloDisk0Shield.halfLength" );
+      const double Shield_originZ       = config.getDouble("caloDisk0Shield.originZ"    );
+      const std::string Shield_material = config.getString("caloDisk0Shield.material"   );
+
+      const CLHEP::Hep3Vector Shield_position(0., 0., Shield_originZ - parentCenter.z() + zOffGarage); //position in mother
+      if(verbosity > 1) std::cout << "  Parent in Mu2e     : " << parentCenter << std::endl;
+      if(verbosity > 1) std::cout << "  DIPA Origin in Mu2e: " << Shield_position << std::endl;
+
+      TubsParams ShieldParams(Shield_innerRadius, Shield_outerRadius, Shield_halfLength);
+
+      VolumeInfo ShieldInfo;
+      std::string ShieldName = "CaloDisk0Shield";
+      ShieldInfo = nestTubs(ShieldName,
+                            ShieldParams,
+                            findMaterialOrThrow(Shield_material),
+                            0,
+                            Shield_position,
+                            parent,
+                            0,
+                            stoppingTargetIsVisible,
+                            G4Colour::Magenta(),
+                            stoppingTargetIsSolid,
+                            forceAuxEdgeVisible,
+                            placePV,
+                            doSurfaceCheck
+                            );
+      if(verbosity > 1) std::cout << "  Shield Mother in parent " << ShieldInfo.centerInParent << std::endl;
+      ShieldInfo.centerInParent = Shield_position;
+      if(verbosity > 1) std::cout << "  Shield Mother in parent " << ShieldInfo.centerInParent << std::endl;
+
+      CLHEP::Hep3Vector posWorld(0,0,0);
+      posWorld += helper.locateVolInfo(ShieldName).centerInParent;
+      const auto& posDS3InWorld        = parent.centerInWorld;
+      ShieldInfo.centerInWorld = posWorld + posDS3InWorld;
+      if(verbosity > 1) std::cout << "  Shield Mother in parent " << ShieldInfo.centerInParent << std::endl;
+      if(verbosity > 1) std::cout << "  Shield Mother in world " << ShieldInfo.centerInWorld << std::endl;
+      if(verbosity > 1) std::cout << "  Shield Mother in Mu2e " << ShieldInfo.centerInMu2e() << std::endl;
     }
 
     return targetMotherInfo;

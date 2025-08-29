@@ -25,6 +25,23 @@ bool   advancedStoppingTarget.useFoils      = true;
 int    advancedStoppingTarget.nFoils        = 23;
 double advancedStoppingTarget.foilThickness = 0.1;
 
+// proton absorber
+bool   downstreamIPA.build                  = true;
+double downstreamIPA.outerRadius            = 301.0;
+double downstreamIPA.innerRadius            = 300.0;
+double downstreamIPA.halfLength             = 300.;
+double downstreamIPA.originZ                = 11980.;
+string downstreamIPA.material               = "DIPAPolyethylene";
+// string downstreamIPA.material               = "G4_Pb";
+
+// shield for the calo first disk
+bool   caloDisk0Shield.build                = true;
+double caloDisk0Shield.outerRadius          = 322.0;
+double caloDisk0Shield.innerRadius          = 302.0;
+double caloDisk0Shield.halfLength           = 150.;
+double caloDisk0Shield.originZ              = 11980.;
+string caloDisk0Shield.material             = "G4_Pb";
+
 // This tells emacs to view this file in c++ mode.
 // Local Variables:
 // mode:c++
