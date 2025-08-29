@@ -1,0 +1,31 @@
+// Original author Michael MacKenzie
+// Advanced stopping target
+
+int    advancedStoppingTarget.version     = 1;
+int    advancedStoppingTarget.verbosity   = 0;
+bool   advancedStoppingTarget.build       = true;
+double advancedStoppingTarget.originZ     = 11980.;
+string advancedStoppingTarget.material    = "Ti";
+
+// // Thin cylinder
+// double advancedStoppingTarget.outerRadius = 45.;
+// double advancedStoppingTarget.innerRadius = 44.5;
+// double advancedStoppingTarget.halfLength  = 100.;
+
+// // Disk
+// double advancedStoppingTarget.outerRadius = 75.;
+// double advancedStoppingTarget.innerRadius = 0.;
+// double advancedStoppingTarget.halfLength  = 1.5;
+
+// Foils
+double advancedStoppingTarget.outerRadius   = 75.;
+double advancedStoppingTarget.innerRadius   = 21.5;
+double advancedStoppingTarget.halfLength    = 100.;
+bool   advancedStoppingTarget.useFoils      = true;
+int    advancedStoppingTarget.nFoils        = 23;
+double advancedStoppingTarget.foilThickness = 0.1;
+
+// This tells emacs to view this file in c++ mode.
+// Local Variables:
+// mode:c++
+// End:

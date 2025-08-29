@@ -86,6 +86,7 @@ namespace mu2e {
     VolumeInfo constructTracker();
     VolumeInfo constructTarget();
     VolumeInfo constructCal();
+    VolumeInfo constructAdvancedTarget();
     void constructMagnetYoke();
     void constructBFieldAndManagers();
     void constructStepLimiters();

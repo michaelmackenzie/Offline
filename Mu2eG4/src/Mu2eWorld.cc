@@ -85,6 +85,7 @@
 #include "Offline/Mu2eG4/inc/constructTracker.hh"
 #include "Offline/Mu2eG4/inc/constructStoppingTarget.hh"
 #include "Offline/Mu2eG4/inc/constructDummyStoppingTarget.hh"
+#include "Offline/Mu2eG4/inc/constructAST.hh"
 #include "Offline/Mu2eG4/inc/constructDiskCalorimeter.hh"
 #include "Offline/Mu2eG4/inc/SensitiveDetectorHelper.hh"
 #include "Offline/TrackerGeom/inc/Tracker.hh"
@@ -225,6 +226,7 @@ namespace mu2e {
     VolumeInfo targetInfo  = constructTarget();
     constructProtonAbsorber(_config);
     VolumeInfo calorimeterInfo = constructCal();
+    constructAdvancedTarget();
 
     // This is just placeholder for now - and might be misnamed.
     constructMagnetYoke();
@@ -778,6 +780,26 @@ namespace mu2e {
     return calorimeterInfo;
 
   }//Mu2eWorld::constructCal
+
+
+  // Construct advanced stopping target if needed.
+  VolumeInfo Mu2eWorld::constructAdvancedTarget(){
+
+    // The target is built inside this volume.
+    std::string theDS3("DS3Vacuum");
+    if ( _config.getBool("inGaragePosition",false) ) theDS3 = "garageFakeDS3Vacuum";
+
+    VolumeInfo const & detSolDownstreamVacInfo = _helper->locateVolInfo(theDS3);
+
+    // Construct one of the calorimeters.
+    VolumeInfo targetInfo;
+    if ( _config.getBool("advancedStoppingTarget.build",false) ) {
+      targetInfo = constructAST(detSolDownstreamVacInfo, _config);
+    }
+
+    return targetInfo;
+
+  }//Mu2eWorld::constructAST
 
 
   // A place holder for now.

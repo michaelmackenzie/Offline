@@ -1263,6 +1263,14 @@ namespace mu2e {
       tgt->AddMaterial(met, 1.);
     }
 
+    // Aliases for allowed second stopping target materials
+    mat = uniqueMaterialOrThrow( "AST_Ti");
+    {
+      G4Material* met = findMaterialOrThrow("G4_Ti");
+      G4Material* tgt = new G4Material(mat.name, met->GetDensity(), 1);
+      tgt->AddMaterial(met, 1.);
+    }
+
     mat = uniqueMaterialOrThrow( "CarbonFiber_resin");
     {
       G4double density;
