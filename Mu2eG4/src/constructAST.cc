@@ -40,6 +40,16 @@ using namespace std;
 
 namespace mu2e {
 
+  // Helper function to handle the DS3 vacuum origin having issues
+  void fixOrigin(VolumeInfo& vol, const VolumeInfo& parent, Mu2eG4Helper& helper, const CLHEP::Hep3Vector& position) {
+    vol.centerInParent = position;
+    CLHEP::Hep3Vector posWorld(0,0,0);
+    posWorld += helper.locateVolInfo(vol.name).centerInParent;
+    const auto& posParentInWorld  = parent.centerInWorld;
+    vol.centerInWorld = posWorld + posParentInWorld;
+  }
+
+  // Main function
   VolumeInfo constructAST( VolumeInfo   const& parent,
                            SimpleConfig const& config ){
 
@@ -96,17 +106,7 @@ namespace mu2e {
                                 placePV,
                                 doSurfaceCheck
                                 );
-    if(verbosity > 1) std::cout << "  Mother in parent " << targetMotherInfo.centerInParent << std::endl;
-    targetMotherInfo.centerInParent = position;
-    if(verbosity > 1) std::cout << "  Mother in parent " << targetMotherInfo.centerInParent << std::endl;
-
-    CLHEP::Hep3Vector posWorld(0,0,0);
-    posWorld += helper.locateVolInfo(targetMotherName).centerInParent;
-    const auto& posDS3InWorld        = parent.centerInWorld;
-    targetMotherInfo.centerInWorld = posWorld + posDS3InWorld;
-    if(verbosity > 1) std::cout << "  Mother in parent " << targetMotherInfo.centerInParent << std::endl;
-    if(verbosity > 1) std::cout << "  Mother in world " << targetMotherInfo.centerInWorld << std::endl;
-    if(verbosity > 1) std::cout << "  Mother in Mu2e " << targetMotherInfo.centerInMu2e() << std::endl;
+    fixOrigin(targetMotherInfo, parent, helper, position);
 
     // now create the actual target within the bounding mother volume
 
@@ -189,17 +189,7 @@ namespace mu2e {
                         placePV,
                         doSurfaceCheck
                         );
-      if(verbosity > 1) std::cout << "  PA Mother in parent " << PAInfo.centerInParent << std::endl;
-      PAInfo.centerInParent = PA_position;
-      if(verbosity > 1) std::cout << "  PA Mother in parent " << PAInfo.centerInParent << std::endl;
-
-      CLHEP::Hep3Vector posWorld(0,0,0);
-      posWorld += helper.locateVolInfo(PAName).centerInParent;
-      const auto& posDS3InWorld        = parent.centerInWorld;
-      PAInfo.centerInWorld = posWorld + posDS3InWorld;
-      if(verbosity > 1) std::cout << "  PA Mother in parent " << PAInfo.centerInParent << std::endl;
-      if(verbosity > 1) std::cout << "  PA Mother in world " << PAInfo.centerInWorld << std::endl;
-      if(verbosity > 1) std::cout << "  PA Mother in Mu2e " << PAInfo.centerInMu2e() << std::endl;
+      fixOrigin(PAInfo, parent, helper, PA_position);
     }
 
     // Build a proton absorber if requested
@@ -233,17 +223,7 @@ namespace mu2e {
                             placePV,
                             doSurfaceCheck
                             );
-      if(verbosity > 1) std::cout << "  Shield Mother in parent " << ShieldInfo.centerInParent << std::endl;
-      ShieldInfo.centerInParent = Shield_position;
-      if(verbosity > 1) std::cout << "  Shield Mother in parent " << ShieldInfo.centerInParent << std::endl;
-
-      CLHEP::Hep3Vector posWorld(0,0,0);
-      posWorld += helper.locateVolInfo(ShieldName).centerInParent;
-      const auto& posDS3InWorld        = parent.centerInWorld;
-      ShieldInfo.centerInWorld = posWorld + posDS3InWorld;
-      if(verbosity > 1) std::cout << "  Shield Mother in parent " << ShieldInfo.centerInParent << std::endl;
-      if(verbosity > 1) std::cout << "  Shield Mother in world " << ShieldInfo.centerInWorld << std::endl;
-      if(verbosity > 1) std::cout << "  Shield Mother in Mu2e " << ShieldInfo.centerInMu2e() << std::endl;
+      fixOrigin(ShieldInfo, parent, helper, Shield_position);
     }
 
     return targetMotherInfo;
