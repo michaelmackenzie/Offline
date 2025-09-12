@@ -1,3 +1,4 @@
+
 cet_make_library(
     SOURCE
       src/CaloDAQUtilities.cc
@@ -76,7 +77,8 @@ cet_build_plugin(LumiStreamFilter art::module
   Offline::RecoDataProducts
   artdaq-core-mu2e::Data
   artdaq-core-mu2e::Data_dict
-  artdaq::DAQdata
+  TRACE::MF
+  ${ARTDAQ_DAQDATA_LIB}
 )
 
 cet_build_plugin(PrefetchDAQData art::module
