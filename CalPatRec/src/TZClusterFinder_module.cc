@@ -198,7 +198,7 @@ namespace mu2e {
       consumes<ComboHitCollection>(_chLabel);
       consumes<CaloClusterCollection>(_ccLabel);
       produces<TimeClusterCollection>();
-      produces<IntensityInfoTimeCluster>();
+      if(_countProtons) produces<IntensityInfoTimeCluster>();
 
 
       if (_runDisplay == 1) { _c1 = new TCanvas("_c1", "t vs. z", 900, 900); }
@@ -267,11 +267,11 @@ namespace mu2e {
 
     _data._event = &event;
 
-    std::unique_ptr<IntensityInfoTimeCluster> iiTC(new IntensityInfoTimeCluster);
+    std::unique_ptr<IntensityInfoTimeCluster> iiTC((_countProtons) ? new IntensityInfoTimeCluster : nullptr);
     std::unique_ptr<TimeClusterCollection>    tcColl(new TimeClusterCollection);
 
     _data._tcColl = tcColl.get();
-    _data._iiTC = iiTC.get();
+    _data._iiTC = (_countProtons) ? iiTC.get() : nullptr;
 
     bool ok = findData(event);
 
@@ -285,7 +285,7 @@ namespace mu2e {
     //-----------------------------------------------------------------------------
     if(_doTiming > 0) _watch->SetTime("output");
     event.put(std::move(tcColl));
-    event.put(std::move(iiTC));
+    if(_countProtons) event.put(std::move(iiTC));
     if(_doTiming > 0) _watch->StopTime("output");
 
     if(_doTiming > 0) _watch->StopTime(__func__);
@@ -313,6 +313,7 @@ namespace mu2e {
       const StrawHitFlag flag = _data._chColl->at(i).flag();
       if (!flag.hasAnyProperty(StrawHitFlag::radsel) && _radSelect == 1) {continue;}
       if (flag.hasAnyProperty(StrawHitFlag::energysel)) { if (bkgHit(flag)) {continue;} }
+      else if(!_countProtons) {continue;}
       hit = &_data._chColl->at(i);
       int plnID = hit->strawId().plane();
       cHit comboHit;
