@@ -1,0 +1,57 @@
+# Test a randomly slow trigger path
+# Contact person Michael MacKenzie
+
+#include "Offline/fcl/minimalMessageService.fcl"
+#include "Offline/fcl/standardServices.fcl"
+
+services : {
+  @table::Services.Reco
+  ArtdaqSharedMemoryServiceInterface: {
+    resume_after_timeout: true
+    service_provider: "ArtdaqSharedMemoryService"
+    waiting_time: 300
+  }
+}
+
+services.scheduler.wantSummary: true
+
+process_name : lumiStreamAna
+
+source : {
+  module_type : EmptyEvent
+}
+
+physics : {
+  producers : {
+    processCFOData : {
+      module_type : EventHeaderFromCFOFragment
+      cfoTag : "CFOBoardReader"
+      diagLevel : 0
+    }
+    TimeDelay : {
+      module_type : TimeDelay
+      delayMax    : 100. # in milliseconds
+      diagLevel   : 0
+    }
+  }
+
+  t1 : [ processCFOData, TimeDelay ]
+  e1 : [ Output ]
+
+  trigger_paths  : [t1]
+  end_paths      : [e1]
+}
+
+outputs : {
+  Output : {
+    module_type : Mu2eRootNetOutput
+    fileName : "sim.user.test_slow_trigger.version.sequencer.art"
+    require_event_time : true
+    event_timeout_seconds : 0.05
+    event_header_tag : processCFOData
+    SelectEvents : [ t1 ]
+    routing_table_config: {
+      use_routing_manager: false
+    }
+  }
+}

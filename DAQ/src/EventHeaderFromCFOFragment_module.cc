@@ -25,9 +25,10 @@
 #include <memory>
 #include <unordered_map>
 #include <vector>
+#include <chrono>
 
 #include "trace.h"
-#define TRACE_NAME "Mu2eSubEventReceiver"
+#define TRACE_NAME "EventHeaderFromCFOFragment"
 
 namespace art {
 class EventHeaderFromCFOFragment;
@@ -75,6 +76,8 @@ void art::EventHeaderFromCFOFragment::produce(Event& event) {
 
   // Collection of CaloHits for the event
   std::unique_ptr<mu2e::EventHeader> evtHdr(new mu2e::EventHeader);
+  evtHdr->start_time = std::chrono::steady_clock::now(); // record when processing began
+
   art::Handle<artdaq::Fragments>     cfoFragmentHandle;
 
   if(!event.getByLabel(cfoFragmentTag_, cfoFragmentHandle)) {

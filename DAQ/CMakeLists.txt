@@ -90,6 +90,12 @@ cet_build_plugin(PrefetchDAQData art::module
       Offline::RecoDataProducts
 )
 
+cet_build_plugin(TimeDelay art::module
+    REG_SOURCE src/TimeDelay_module.cc
+    LIBRARIES REG
+      Offline::DAQ
+)
+
 cet_build_plugin(STMWaveformDigisFromFragments art::module
   REG_SOURCE src/STMWaveformDigisFromFragments_module.cc
   LIBRARIES REG
