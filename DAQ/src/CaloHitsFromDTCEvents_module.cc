@@ -17,6 +17,7 @@
 #include "artdaq-core-mu2e/Overlays/FragmentType.hh"
 #include <artdaq-core/Data/Fragment.hh>
 
+#include "cetlib_except/exception.h"
 #include "Offline/CaloConditions/inc/CaloDAQMap.hh"
 #include "Offline/ProditionsService/inc/ProditionsHandle.hh"
 #include "Offline/RecoDataProducts/inc/IntensityInfoCalo.hh"
@@ -170,12 +171,19 @@ void art::CaloHitsFromDataDTCEvents::initializeChannelCache(mu2e::CaloDAQMap con
   }
 
   for (uint16_t raw = 0; raw < mu2e::CaloConst::_nRawChannel; ++raw) {
-    auto const offlineId = calodaqconds.offlineId(mu2e::CaloRawSiPMId(raw));
-    auto const crystal = offlineId.crystal();
-    rawToCrystalID_[raw] = crystal.id();
-    rawToSiPMID_[raw] = offlineId.id();
-    rawToDisk_[raw] = crystal.disk();
-    rawIsCaphri_[raw] = crystal.isCaphri() ? 1 : 0;
+    try {
+      auto const offlineId = calodaqconds.offlineId(mu2e::CaloRawSiPMId(raw));
+      auto const crystal = offlineId.crystal();
+      rawToCrystalID_[raw] = crystal.id();
+      rawToSiPMID_[raw] = offlineId.id();
+      rawToDisk_[raw] = crystal.disk();
+      rawIsCaphri_[raw] = crystal.isCaphri() ? 1 : 0;
+    } catch (cet::exception const&) {
+      rawToCrystalID_[raw] = mu2e::CaloConst::_invalid;
+      rawToSiPMID_[raw]    = mu2e::CaloConst::_invalid;
+      rawToDisk_[raw]      = 0xFF;
+      rawIsCaphri_[raw]    = 0;
+    }
   }
 
   channelCacheInitialized_ = true;
@@ -447,6 +455,7 @@ void art::CaloHitsFromDataDTCEvents::analyze_calorimeter_(
         // Fill the CaloHitCollection
         auto const rawID = static_cast<uint16_t>(thisHitPacket.BoardID * mu2e::CaloConst::_nChPerDIRAC +
                                                  thisHitPacket.ChannelID);
+        if (rawToCrystalID_[rawID] == mu2e::CaloConst::_invalid) continue;
         uint16_t crystalID = rawToCrystalID_[rawID];
         uint16_t SiPMID = rawToSiPMID_[rawID];
 
@@ -511,6 +520,7 @@ void art::CaloHitsFromDataDTCEvents::analyze_calorimeter_(
         // Fill the CaloHitCollection
         auto const rawID = static_cast<uint16_t>(thisHitPacket.BoardID * mu2e::CaloConst::_nChPerDIRAC +
                                                  thisHitPacket.ChannelID);
+        if (rawToCrystalID_[rawID] == mu2e::CaloConst::_invalid) continue;
         uint16_t crystalID = rawToCrystalID_[rawID];
         uint16_t SiPMID = rawToSiPMID_[rawID];
 
