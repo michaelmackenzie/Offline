@@ -39,6 +39,7 @@ cet_build_plugin(CaloHitsFromDTCEvents art::module
       Offline::ProditionsService
       Offline::RecoDataProducts
       Offline::DataProducts
+      Offline::Mu2eUtilities
 )
 
 cet_build_plugin(CaloDigisFromDTCEvents art::module
