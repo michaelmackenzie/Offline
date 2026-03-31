@@ -11,7 +11,7 @@
 
 #include "art/Framework/Principal/Handle.h"
 #include "artdaq-core-mu2e/Overlays/Decoders/CalorimeterDataDecoder.hh"
-#include "artdaq-core-mu2e/Overlays/DTCEventFragment.hh"
+#include "artdaq-core-mu2e/Overlays/DTC_Packets/DTC_Event.h"
 #include "artdaq-core-mu2e/Overlays/FragmentType.hh"
 #include <artdaq-core/Data/Fragment.hh>
 
@@ -274,15 +274,21 @@ void art::CaloHitsFromDataDTCEvents::produce(Event& event) {
 
   if (doTiming_) watch_->Increment("fragment loop");
   for (const auto& frag : fragments) {
-    if (doTiming_) watch_->Increment("fragment setup");
-    mu2e::DTCEventFragment eventFragment(frag);
-    auto caloSEvents =
-        eventFragment.getSubsystemData(DTCLib::DTC_Subsystem::DTC_Subsystem_Calorimeter);
-    if (doTiming_) watch_->StopTime("fragment setup");
-    for (auto& subevent : caloSEvents) {
-      if (doTiming_) watch_->Increment("subevent decode");
+    if (doTiming_) watch_->Increment("dtc event setup");
+    DTCLib::DTC_Event dtcEvent(frag.dataBeginBytes());
+    dtcEvent.SetupEvent();
+    if (doTiming_) watch_->StopTime("dtc event setup");
+
+    if (doTiming_) watch_->Increment("subevent scan");
+    for (auto const& subevent : dtcEvent.GetSubEvents()) {
+      if (!subevent.HasSubsystem(DTCLib::DTC_Subsystem::DTC_Subsystem_Calorimeter)) {
+        continue;
+      }
+
+      if (doTiming_) watch_->StopTime("subevent scan");
+      if (doTiming_) watch_->Increment("decoder setup");
       mu2e::CalorimeterDataDecoder decoder(subevent);
-      if (doTiming_) watch_->StopTime("subevent decode");
+      if (doTiming_) watch_->StopTime("decoder setup");
 
       if (doTiming_) watch_->Increment("analyze calorimeter");
       analyze_calorimeter_(calodaqconds, decoder, calo_hits, caphri_hits, int_info);
@@ -294,7 +300,10 @@ void art::CaloHitsFromDataDTCEvents::produce(Event& event) {
       }
       if (doTiming_) watch_->StopTime("block size accounting");
       numCalDecoders++;
+
+      if (doTiming_) watch_->Increment("subevent scan");
     }
+    if (doTiming_) watch_->StopTime("subevent scan");
   }
   if (doTiming_) watch_->StopTime("fragment loop");
 
@@ -349,9 +358,7 @@ void art::CaloHitsFromDataDTCEvents::analyze_calorimeter_(
 
     if (data_type_ == 0){
 
-      if (doTiming_) watch_->Increment("get trigger hits");
       auto hits = cc.GetCalorimeterHitsForTrigger(iROC);
-      if (doTiming_) watch_->StopTime("get trigger hits");
       if (hits == nullptr) {
         mf::LogError("CaloHitsFromDataDTCEvents") << "Error retrieving Calorimeter data from block "
                                                   << iROC << "! Aborting processing of this block!";
@@ -367,9 +374,7 @@ void art::CaloHitsFromDataDTCEvents::analyze_calorimeter_(
         uint16_t thisHitPeak = hit.second;
 
         // Check if hit was decoded correctly
-        if (doTiming_) watch_->Increment("hit validation");
         auto errorCode = caloDAQUtil_.isHitGood(hit);
-        if (doTiming_) watch_->StopTime("hit validation");
         if (errorCode) {
           failure_counter[errorCode]++;
           total_hits_bad++;
@@ -389,7 +394,6 @@ void art::CaloHitsFromDataDTCEvents::analyze_calorimeter_(
         }
 
         // Fill the CaloHitCollection
-        if (doTiming_) watch_->Increment("hit mapping");
         mu2e::CaloRawSiPMId rawId(thisHitPacket.BoardID, thisHitPacket.ChannelID);
         mu2e::CaloSiPMId offlineId = calodaqconds.offlineId(rawId);
         uint16_t crystalID = offlineId.crystal().id();
@@ -405,13 +409,10 @@ void art::CaloHitsFromDataDTCEvents::analyze_calorimeter_(
         // Energy threshold depends on the crystal type
         const float emin = (isCaphri) ? caphriEDepMin_ : hitEDepMin_;
         const float emax = (isCaphri) ? caphriEDepMax_ : hitEDepMax_;
-        if (doTiming_) watch_->StopTime("hit mapping");
 
         // FIX ME! WE NEED TO CHECK IF THE PULSE IS SATURATED HERE
         if (eDep >= emin && eDep < emax) {
-          if (doTiming_) watch_->Increment("pulse merge");
           addPulse(crystalID, time, eDep);
-          if (doTiming_) watch_->StopTime("pulse merge");
           evtEnergy += eDep;
           if(isCaphri) {
             int_info->addCaphriHit(eDep, crystalID);
@@ -421,9 +422,7 @@ void art::CaloHitsFromDataDTCEvents::analyze_calorimeter_(
 
     } else if (data_type_ == 1){
 
-      if (doTiming_) watch_->Increment("get trigger test hits");
       auto hits = cc.GetCalorimeterHitTestForTrigger(iROC);
-      if (doTiming_) watch_->StopTime("get trigger test hits");
       if (hits == nullptr) {
         mf::LogError("CaloHitsFromDataDTCEvents") << "Error retrieving Calorimeter data from block "
                                                   << iROC << "! Aborting processing of this block!";
@@ -439,9 +438,7 @@ void art::CaloHitsFromDataDTCEvents::analyze_calorimeter_(
         uint16_t thisHitPeak = hit.second;
 
         // Check if hit was decoded correctly
-        if (doTiming_) watch_->Increment("hit validation");
         auto errorCode = caloDAQUtil_.isHitGood(hit);
-        if (doTiming_) watch_->StopTime("hit validation");
         if (errorCode) {
           failure_counter[errorCode]++;
           total_hits_bad++;
@@ -461,7 +458,6 @@ void art::CaloHitsFromDataDTCEvents::analyze_calorimeter_(
         }
 
         // Fill the CaloHitCollection
-        if (doTiming_) watch_->Increment("hit mapping");
         mu2e::CaloRawSiPMId rawId(thisHitPacket.BoardID, thisHitPacket.ChannelID);
         mu2e::CaloSiPMId offlineId = calodaqconds.offlineId(rawId);
         uint16_t crystalID = offlineId.crystal().id();
@@ -477,13 +473,10 @@ void art::CaloHitsFromDataDTCEvents::analyze_calorimeter_(
         // Energy threshold depends on the crystal type
         const float emin = (isCaphri) ? caphriEDepMin_ : hitEDepMin_;
         const float emax = (isCaphri) ? caphriEDepMax_ : hitEDepMax_;
-        if (doTiming_) watch_->StopTime("hit mapping");
 
         // FIX ME! WE NEED TO CHECK IF THE PULSE IS SATURATED HERE
         if (eDep >= emin && eDep < emax) {
-          if (doTiming_) watch_->Increment("pulse merge");
           addPulse(crystalID, time, eDep);
-          if (doTiming_) watch_->StopTime("pulse merge");
           evtEnergy += eDep;
           if(isCaphri) {
             int_info->addCaphriHit(eDep, crystalID);
