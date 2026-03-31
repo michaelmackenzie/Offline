@@ -32,6 +32,7 @@
 #include <array>
 #include <cmath>
 #include <memory>
+#include <unordered_map>
 #include <vector>
 
 namespace art {
@@ -129,7 +130,15 @@ private:
   long int total_hits;
   long int total_hits_good;
   long int total_hits_bad;
-  std::map<mu2e::CaloDAQUtilities::CaloHitError, uint> failure_counter;
+  std::unordered_map<mu2e::CaloDAQUtilities::CaloHitError, uint, std::hash<int>> failure_counter;
+
+  // Per-crystal topology cached once at beginRun — never changes between events
+  std::array<uint8_t, mu2e::CaloConst::_nCrystal> crystalIsCaphri_;
+  std::array<uint8_t, mu2e::CaloConst::_nCrystal> crystalDisk_;
+
+  // Running counts of matched hits for the current event (avoids two-pass flush)
+  size_t nMatchedCalo_;
+  size_t nMatchedCaphri_;
 };
 
 // ======================================================================
@@ -142,6 +151,13 @@ void art::CaloHitsFromDataDTCEvents::beginRun(art::Run& Run) {
   for (size_t i = 0; i < peakADC2MeV_.size(); ++i) {
     peakADC2MeV_[i] = 0.0461333;
     timeCalib_[i] = 0.;
+  }
+
+  // Pre-compute per-crystal topology (isCaphri, disk) — stable for the run
+  for (uint16_t id = 0; id < mu2e::CaloConst::_nCrystal; ++id) {
+    mu2e::CrystalId cid(id);
+    crystalIsCaphri_[id] = cid.isCaphri() ? 1u : 0u;
+    crystalDisk_[id]     = static_cast<uint8_t>(cid.disk());
   }
 }
 
@@ -182,7 +198,11 @@ void art::CaloHitsFromDataDTCEvents::addPulse(uint16_t crystalID, float time, fl
       }
       // In the original, the matched pulse was always moved to the output
       // collection here. We mark it so flushPulseMap knows to include it.
-      pulse.matched = true;
+      if (!pulse.matched) {
+        pulse.matched = true;
+        if (crystalIsCaphri_[crystalID]) ++nMatchedCaphri_;
+        else                             ++nMatchedCalo_;
+      }
       break;
     }
   }
@@ -194,22 +214,12 @@ void art::CaloHitsFromDataDTCEvents::addPulse(uint16_t crystalID, float time, fl
 void art::CaloHitsFromDataDTCEvents::flushPulseMap(
     std::unique_ptr<mu2e::CaloHitCollection> const& calo_hits,
     std::unique_ptr<mu2e::CaloHitCollection> const& caphri_hits) const {
-  size_t totalCaloHits = 0;
-  size_t totalCaphriHits = 0;
-  for (auto const crystalID : activeCrystals_) {
-    auto const& pulses = pulseMap_[crystalID];
-    bool isCaphri = mu2e::CrystalId(static_cast<int>(crystalID)).isCaphri();
-    for (auto const& p : pulses) {
-      if (!p.matched) continue;
-      if (isCaphri) ++totalCaphriHits; else ++totalCaloHits;
-    }
-  }
-  calo_hits->reserve(totalCaloHits);
-  caphri_hits->reserve(totalCaphriHits);
+  calo_hits->reserve(nMatchedCalo_);
+  caphri_hits->reserve(nMatchedCaphri_);
 
   for (auto const crystalID : activeCrystals_) {
     auto const& pulses = pulseMap_[crystalID];
-    auto& out = mu2e::CrystalId(static_cast<int>(crystalID)).isCaphri() ? *caphri_hits : *calo_hits;
+    auto& out = crystalIsCaphri_[crystalID] ? *caphri_hits : *calo_hits;
     for (auto const& pulse : pulses) {
       if (!pulse.matched) continue; // unmatched single-SiPM hits are discarded
       out.emplace_back(static_cast<int>(crystalID),
@@ -231,7 +241,8 @@ art::CaloHitsFromDataDTCEvents::CaloHitsFromDataDTCEvents(
     noise2_(config().noiseLevelMeV() * config().noiseLevelMeV()),
     nSigmaNoise_(config().nSigmaNoise()), pulseMap_(mu2e::CaloConst::_nCrystal),
     activeCrystals_(), crystalIsActive_(mu2e::CaloConst::_nCrystal, 0),
-    caloDAQUtil_("CaloHitsFromDataDTCEvents") {
+    caloDAQUtil_("CaloHitsFromDataDTCEvents"),
+    nMatchedCalo_(0), nMatchedCaphri_(0) {
   if (doTiming_) watch_ = std::make_unique<mu2e::StopWatch>();
   activeCrystals_.reserve(256);
   produces<mu2e::CaloHitCollection>("calo");
@@ -254,6 +265,8 @@ void art::CaloHitsFromDataDTCEvents::produce(Event& event) {
     crystalIsActive_[crystalID] = 0;
   }
   activeCrystals_.clear();
+  nMatchedCalo_ = 0;
+  nMatchedCaphri_ = 0;
   if (doTiming_) watch_->StopTime("reset pulse cache");
 
   art::EventNumber_t eventNumber = event.event();
@@ -366,19 +379,19 @@ void art::CaloHitsFromDataDTCEvents::analyze_calorimeter_(
 
       // Loop through the hits of this ROC
       total_hits += hits->size();
-      for (size_t hitIdx = 0; hitIdx < hits->size(); hitIdx++) {
-
-        mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket& thisHitPacket = hits->at(hitIdx).first;
-        uint16_t thisHitPeak = hits->at(hitIdx).second;
+      size_t hitIdx = 0;
+      for (auto& hit : *hits) {
+        auto& thisHitPacket = hit.first;
+        uint16_t thisHitPeak = hit.second;
 
         // Check if hit was decoded correctly
-        auto errorCode = caloDAQUtil_.isHitGood(hits->at(hitIdx));
+        auto errorCode = caloDAQUtil_.isHitGood(hit);
         if (errorCode) {
           failure_counter[errorCode]++;
           total_hits_bad++;
           if (diagLevel_ > 1) {
             std::cout << "[CaloDigisFromDataDecoders] BAD calo hit! DTC: " << dtcID
-                      << ", ROC: " << iROC << ", hit number: " << hitIdx
+                      << ", ROC: " << iROC
                       << " [failure code: " << errorCode << "]" << std::endl;
             caloDAQUtil_.printCaloPulse(thisHitPacket);
           }
@@ -401,8 +414,8 @@ void art::CaloHitsFromDataDTCEvents::analyze_calorimeter_(
         float eDep = thisHitPeak * peakADC2MeV_[SiPMID];
         float time = thisHitPacket.Time + peakIndex * digiSampling_ + timeCalib_[SiPMID];
 
-        bool isCaphri = offlineId.crystal().isCaphri();
-        if(!isCaphri) ++nhits[offlineId.crystal().disk()];
+        bool isCaphri = crystalIsCaphri_[crystalID];
+        if (!isCaphri) ++nhits[crystalDisk_[crystalID]];
 
         // Energy threshold depends on the crystal type
         const float emin = (isCaphri) ? caphriEDepMin_ : hitEDepMin_;
@@ -416,6 +429,7 @@ void art::CaloHitsFromDataDTCEvents::analyze_calorimeter_(
             int_info->addCaphriHit(eDep, crystalID);
           }
         }
+        ++hitIdx;
       } // End loop over hits
 
     } else if (data_type_ == 1){
@@ -429,19 +443,19 @@ void art::CaloHitsFromDataDTCEvents::analyze_calorimeter_(
 
       // Loop through the hits of this ROC
       total_hits += hits->size();
-      for (size_t hitIdx = 0; hitIdx < hits->size(); hitIdx++) {
-
-        mu2e::CalorimeterDataDecoder::CalorimeterHitTestDataPacket& thisHitPacket = hits->at(hitIdx).first;
-        uint16_t thisHitPeak = hits->at(hitIdx).second;
+      size_t hitIdx = 0;
+      for (auto& hit : *hits) {
+        auto& thisHitPacket = hit.first;
+        uint16_t thisHitPeak = hit.second;
 
         // Check if hit was decoded correctly
-        auto errorCode = caloDAQUtil_.isHitGood(hits->at(hitIdx));
+        auto errorCode = caloDAQUtil_.isHitGood(hit);
         if (errorCode) {
           failure_counter[errorCode]++;
           total_hits_bad++;
           if (diagLevel_ > 1) {
             std::cout << "[CaloDigisFromDataDecoders] BAD calo hit! DTC: " << dtcID
-                      << ", ROC: " << iROC << ", hit number: " << hitIdx
+                      << ", ROC: " << iROC
                       << " [failure code: " << errorCode << "]" << std::endl;
             caloDAQUtil_.printCaloPulse(thisHitPacket);
           }
@@ -464,8 +478,8 @@ void art::CaloHitsFromDataDTCEvents::analyze_calorimeter_(
         float eDep = thisHitPeak * peakADC2MeV_[SiPMID];
         float time = thisHitPacket.Time + peakIndex * digiSampling_ + timeCalib_[SiPMID];
 
-        bool isCaphri = offlineId.crystal().isCaphri();
-        if(!isCaphri) ++nhits[offlineId.crystal().disk()];
+        bool isCaphri = crystalIsCaphri_[crystalID];
+        if (!isCaphri) ++nhits[crystalDisk_[crystalID]];
 
         // Energy threshold depends on the crystal type
         const float emin = (isCaphri) ? caphriEDepMin_ : hitEDepMin_;
@@ -479,6 +493,7 @@ void art::CaloHitsFromDataDTCEvents::analyze_calorimeter_(
             int_info->addCaphriHit(eDep, crystalID);
           }
         }
+        ++hitIdx;
       } // End loop over hits
     }
   }   // End loop over ROCs
