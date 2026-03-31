@@ -265,7 +265,7 @@ art::CaloHitsFromDataDTCEvents::CaloHitsFromDataDTCEvents(
     noise2_(config().noiseLevelMeV() * config().noiseLevelMeV()),
     nSigmaNoise_(config().nSigmaNoise()), pulseMap_(mu2e::CaloConst::_nCrystal),
     activeCrystals_(), crystalIsActive_(mu2e::CaloConst::_nCrystal, 0),
-    channelCacheInitialized_(false), caloDAQUtil_("CaloHitsFromDataDTCEvents") {
+    caloDAQUtil_("CaloHitsFromDataDTCEvents"), channelCacheInitialized_(false) {
   if (doTiming_) watch_ = std::make_unique<mu2e::StopWatch>();
   activeCrystals_.reserve(256);
   produces<mu2e::CaloHitCollection>("calo");
