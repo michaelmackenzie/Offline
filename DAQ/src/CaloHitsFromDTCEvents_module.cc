@@ -11,7 +11,9 @@
 
 #include "art/Framework/Principal/Handle.h"
 #include "artdaq-core-mu2e/Overlays/Decoders/CalorimeterDataDecoder.hh"
-#include "artdaq-core-mu2e/Overlays/DTC_Packets/DTC_Event.h"
+#include "artdaq-core-mu2e/Overlays/DTC_Packets/DTC_EventHeader.h"
+#include "artdaq-core-mu2e/Overlays/DTC_Packets/DTC_SubEvent.h"
+#include "artdaq-core-mu2e/Overlays/DTC_Packets/DTC_SubEventHeader.h"
 #include "artdaq-core-mu2e/Overlays/FragmentType.hh"
 #include <artdaq-core/Data/Fragment.hh>
 
@@ -35,6 +37,18 @@
 
 namespace art {
 class CaloHitsFromDataDTCEvents;
+}
+
+namespace {
+constexpr size_t kDtcEventHeaderBytes = sizeof(DTCLib::DTC_EventHeader);
+constexpr size_t kDtcSubEventHeaderBytes = sizeof(DTCLib::DTC_SubEventHeader);
+
+bool hasCaloSubsystem(DTCLib::DTC_SubEventHeader const& header) {
+  auto const calo = static_cast<uint8_t>(DTCLib::DTC_Subsystem::DTC_Subsystem_Calorimeter);
+  return header.link0_subsystem == calo || header.link1_subsystem == calo ||
+         header.link2_subsystem == calo || header.link3_subsystem == calo ||
+         header.link4_subsystem == calo || header.link5_subsystem == calo;
+}
 }
 
 // ======================================================================
@@ -275,18 +289,29 @@ void art::CaloHitsFromDataDTCEvents::produce(Event& event) {
   if (doTiming_) watch_->Increment("fragment loop");
   for (const auto& frag : fragments) {
     if (doTiming_) watch_->Increment("dtc event setup");
-    DTCLib::DTC_Event dtcEvent(frag.dataBeginBytes());
-    dtcEvent.SetupEvent();
+    auto const* eventBuffer = frag.dataBeginBytes();
+    auto const* eventHeader = reinterpret_cast<DTCLib::DTC_EventHeader const*>(eventBuffer);
+    auto const* cursor = eventBuffer + kDtcEventHeaderBytes;
+    auto const* eventEnd = eventBuffer + std::min<size_t>(frag.dataSizeBytes(), eventHeader->inclusive_event_byte_count);
     if (doTiming_) watch_->StopTime("dtc event setup");
 
     if (doTiming_) watch_->Increment("subevent scan");
-    for (auto const& subevent : dtcEvent.GetSubEvents()) {
-      if (!subevent.HasSubsystem(DTCLib::DTC_Subsystem::DTC_Subsystem_Calorimeter)) {
+    while (cursor + kDtcSubEventHeaderBytes <= eventEnd) {
+      auto const* subHeader = reinterpret_cast<DTCLib::DTC_SubEventHeader const*>(cursor);
+      auto const subeventBytes = static_cast<size_t>(subHeader->inclusive_subevent_byte_count);
+      if (subeventBytes < kDtcSubEventHeaderBytes || cursor + subeventBytes > eventEnd) {
+        break;
+      }
+
+      if (!hasCaloSubsystem(*subHeader)) {
+        cursor += subeventBytes;
         continue;
       }
 
       if (doTiming_) watch_->StopTime("subevent scan");
       if (doTiming_) watch_->Increment("decoder setup");
+      DTCLib::DTC_SubEvent subevent(cursor);
+      subevent.SetupSubEvent();
       mu2e::CalorimeterDataDecoder decoder(subevent);
       if (doTiming_) watch_->StopTime("decoder setup");
 
@@ -301,6 +326,7 @@ void art::CaloHitsFromDataDTCEvents::produce(Event& event) {
       if (doTiming_) watch_->StopTime("block size accounting");
       numCalDecoders++;
 
+      cursor += subeventBytes;
       if (doTiming_) watch_->Increment("subevent scan");
     }
     if (doTiming_) watch_->StopTime("subevent scan");
