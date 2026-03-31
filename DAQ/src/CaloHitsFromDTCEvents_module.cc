@@ -13,6 +13,7 @@
 #include "artdaq-core-mu2e/Overlays/Decoders/CalorimeterDataDecoder.hh"
 #include "artdaq-core-mu2e/Overlays/DTCEventFragment.hh"
 #include "artdaq-core-mu2e/Overlays/FragmentType.hh"
+#include <artdaq-core/Data/ContainerFragment.hh>
 #include <artdaq-core/Data/Fragment.hh>
 
 #include "Offline/CaloConditions/inc/CaloDAQMap.hh"
@@ -257,9 +258,13 @@ art::CaloHitsFromDataDTCEvents::CaloHitsFromDataDTCEvents(
 // ----------------------------------------------------------------------
 
 void art::CaloHitsFromDataDTCEvents::produce(Event& event) {
-  if (doTiming_) watch_->Increment(__func__);
+  const bool coarseTiming = (doTiming_ > 0);
+  const bool detailedTiming = (doTiming_ > 1);
+  const bool needTotalSize = (diagLevel_ > 1) || detailedTiming;
 
-  if (doTiming_) watch_->Increment("reset pulse cache");
+  if (coarseTiming) watch_->Increment(__func__);
+
+  if (coarseTiming) watch_->Increment("reset pulse cache");
   for (auto const crystalID : activeCrystals_) {
     pulseMap_[crystalID].clear();
     crystalIsActive_[crystalID] = 0;
@@ -267,13 +272,13 @@ void art::CaloHitsFromDataDTCEvents::produce(Event& event) {
   activeCrystals_.clear();
   nMatchedCalo_ = 0;
   nMatchedCaphri_ = 0;
-  if (doTiming_) watch_->StopTime("reset pulse cache");
+  if (coarseTiming) watch_->StopTime("reset pulse cache");
 
   art::EventNumber_t eventNumber = event.event();
 
-  if (doTiming_) watch_->Increment("conditions lookup");
+  if (coarseTiming) watch_->Increment("conditions lookup");
   mu2e::CaloDAQMap const& calodaqconds = _calodaqconds_h.get(event.id());
-  if (doTiming_) watch_->StopTime("conditions lookup");
+  if (coarseTiming) watch_->StopTime("conditions lookup");
 
   // Collection of CaloHits for the event
   std::unique_ptr<mu2e::CaloHitCollection> calo_hits(new mu2e::CaloHitCollection);
@@ -285,40 +290,61 @@ void art::CaloHitsFromDataDTCEvents::produce(Event& event) {
   size_t totalSize = 0;
   size_t numCalDecoders = 0;
 
-  if (doTiming_) watch_->Increment("get fragments");
-  artdaq::Fragments fragments = caloDAQUtil_.getFragments(event);
-  if (doTiming_) watch_->StopTime("get fragments");
+  if (coarseTiming) watch_->Increment("get fragments");
+  std::vector<art::Handle<artdaq::Fragments>> fragmentHandles;
+  fragmentHandles = event.getMany<std::vector<artdaq::Fragment>>();
+  if (coarseTiming) watch_->StopTime("get fragments");
 
-  if (doTiming_) watch_->Increment("fragment loop");
-  for (const auto& frag : fragments) {
-    if (doTiming_) watch_->Increment("dtc event setup");
+  if (coarseTiming) watch_->Increment("fragment loop");
+  auto processFragment = [&](artdaq::Fragment const& frag) {
+    if (detailedTiming) watch_->Increment("dtc event setup");
     mu2e::DTCEventFragment eventFragment(frag);
     auto caloSEvents =
-        eventFragment.getSubsystemData(DTCLib::DTC_Subsystem::DTC_Subsystem_Calorimeter);
-    if (doTiming_) watch_->StopTime("dtc event setup");
+      eventFragment.getSubsystemData(DTCLib::DTC_Subsystem::DTC_Subsystem_Calorimeter);
+    if (detailedTiming) watch_->StopTime("dtc event setup");
 
-    if (doTiming_) watch_->Increment("subevent scan");
     for (auto& subevent : caloSEvents) {
-      if (doTiming_) watch_->StopTime("subevent scan");
-      if (doTiming_) watch_->Increment("decoder setup");
+      if (detailedTiming) watch_->Increment("decoder setup");
       mu2e::CalorimeterDataDecoder decoder(subevent);
-      if (doTiming_) watch_->StopTime("decoder setup");
+      if (detailedTiming) watch_->StopTime("decoder setup");
 
-      if (doTiming_) watch_->Increment("analyze calorimeter");
+      if (detailedTiming) watch_->Increment("analyze calorimeter");
       analyze_calorimeter_(calodaqconds, decoder, calo_hits, caphri_hits, int_info);
-      if (doTiming_) watch_->StopTime("analyze calorimeter");
+      if (detailedTiming) watch_->StopTime("analyze calorimeter");
 
-      if (doTiming_) watch_->Increment("block size accounting");
-      for (size_t i = 0; i < decoder.block_count(); ++i) {
-        totalSize += decoder.blockSizeBytes(i);
+      if (needTotalSize) {
+        if (detailedTiming) watch_->Increment("block size accounting");
+        for (size_t i = 0; i < decoder.block_count(); ++i) {
+          totalSize += decoder.blockSizeBytes(i);
+        }
+        if (detailedTiming) watch_->StopTime("block size accounting");
       }
-      if (doTiming_) watch_->StopTime("block size accounting");
-      numCalDecoders++;
-      if (doTiming_) watch_->Increment("subevent scan");
+      ++numCalDecoders;
     }
-    if (doTiming_) watch_->StopTime("subevent scan");
+  };
+
+  for (const auto& handle : fragmentHandles) {
+    if (!handle.isValid() || handle->empty()) {
+      continue;
+    }
+
+    if (handle->front().type() == artdaq::Fragment::ContainerFragmentType) {
+      for (const auto& cont : *handle) {
+        artdaq::ContainerFragment contf(cont);
+        if (contf.fragment_type() != mu2e::FragmentType::DTCEVT) {
+          break;
+        }
+        for (size_t ii = 0; ii < contf.block_count(); ++ii) {
+          processFragment(*contf[ii]);
+        }
+      }
+    } else if (handle->front().type() == mu2e::FragmentType::DTCEVT) {
+      for (const auto& frag : *handle) {
+        processFragment(frag);
+      }
+    }
   }
-  if (doTiming_) watch_->StopTime("fragment loop");
+  if (coarseTiming) watch_->StopTime("fragment loop");
 
   if (numCalDecoders == 0) {
     if (diagLevel_ > 0) {
@@ -338,19 +364,19 @@ void art::CaloHitsFromDataDTCEvents::produce(Event& event) {
     std::cout << "Total Size: " << (int)totalSize << " bytes." << std::endl;
   }
 
-  if (doTiming_) watch_->Increment("flush pulse map");
+  if (coarseTiming) watch_->Increment("flush pulse map");
   flushPulseMap(calo_hits, caphri_hits);
-  if (doTiming_) watch_->StopTime("flush pulse map");
+  if (coarseTiming) watch_->StopTime("flush pulse map");
 
   // Store the summary intensity info
-  if (doTiming_) watch_->Increment("event put");
+  if (coarseTiming) watch_->Increment("event put");
   event.put(std::move(int_info));
 
   // Store the calo hits in the event
   event.put(std::move(calo_hits), "calo");
   event.put(std::move(caphri_hits), "caphri");
-  if (doTiming_) watch_->StopTime("event put");
-  if (doTiming_) watch_->StopTime(__func__);
+  if (coarseTiming) watch_->StopTime("event put");
+  if (coarseTiming) watch_->StopTime(__func__);
 
 } // produce()
 
@@ -366,9 +392,8 @@ void art::CaloHitsFromDataDTCEvents::analyze_calorimeter_(
   std::array<unsigned short, 2> nhits = {0, 0}; //N(hits) by disk
 
   // Loop through the ROCs of this caloDecoder
-  for (size_t iROC = 0; iROC < cc.block_count(); iROC++) {
-
-    if (data_type_ == 0){
+  if (data_type_ == 0) {
+    for (size_t iROC = 0; iROC < cc.block_count(); iROC++) {
 
       auto hits = cc.GetCalorimeterHitsForTrigger(iROC);
       if (hits == nullptr) {
@@ -380,6 +405,7 @@ void art::CaloHitsFromDataDTCEvents::analyze_calorimeter_(
       // Loop through the hits of this ROC
       total_hits += hits->size();
       size_t hitIdx = 0;
+      const bool printHitIdx = (diagLevel_ > 2);
       for (auto& hit : *hits) {
         auto& thisHitPacket = hit.first;
         uint16_t thisHitPeak = hit.second;
@@ -399,7 +425,7 @@ void art::CaloHitsFromDataDTCEvents::analyze_calorimeter_(
         }
         total_hits_good++;
 
-        if (diagLevel_ > 2) {
+        if (printHitIdx) {
           std::cout << "[CaloHitsFromDataDTCEvents] calo hit " << hitIdx << std::endl;
           caloDAQUtil_.printCaloPulse(thisHitPacket);
         }
@@ -429,10 +455,11 @@ void art::CaloHitsFromDataDTCEvents::analyze_calorimeter_(
             int_info->addCaphriHit(eDep, crystalID);
           }
         }
-        ++hitIdx;
+        if (printHitIdx) ++hitIdx;
       } // End loop over hits
-
-    } else if (data_type_ == 1){
+    }
+  } else if (data_type_ == 1) {
+    for (size_t iROC = 0; iROC < cc.block_count(); iROC++) {
 
       auto hits = cc.GetCalorimeterHitTestForTrigger(iROC);
       if (hits == nullptr) {
@@ -444,6 +471,7 @@ void art::CaloHitsFromDataDTCEvents::analyze_calorimeter_(
       // Loop through the hits of this ROC
       total_hits += hits->size();
       size_t hitIdx = 0;
+      const bool printHitIdx = (diagLevel_ > 2);
       for (auto& hit : *hits) {
         auto& thisHitPacket = hit.first;
         uint16_t thisHitPeak = hit.second;
@@ -463,7 +491,7 @@ void art::CaloHitsFromDataDTCEvents::analyze_calorimeter_(
         }
         total_hits_good++;
 
-        if (diagLevel_ > 2) {
+        if (printHitIdx) {
           std::cout << "[CaloHitsFromDataDTCEvents] calo hit " << hitIdx << std::endl;
           caloDAQUtil_.printCaloPulse(thisHitPacket);
         }
@@ -493,7 +521,7 @@ void art::CaloHitsFromDataDTCEvents::analyze_calorimeter_(
             int_info->addCaphriHit(eDep, crystalID);
           }
         }
-        ++hitIdx;
+        if (printHitIdx) ++hitIdx;
       } // End loop over hits
     }
   }   // End loop over ROCs
@@ -506,8 +534,6 @@ void art::CaloHitsFromDataDTCEvents::analyze_calorimeter_(
 void art::CaloHitsFromDataDTCEvents::endJob() {
 
   if (doTiming_) {
-    for (int itest = 0; itest < 100000; ++itest) watch_->Increment("AAA-TimeTest");
-    watch_->StopTime("AAA-TimeTest");
     std::cout << "[CaloHitsFromDataDTCEvents::" << __func__ << "::"
               << moduleDescription().moduleLabel() << "] Timing:\n" << *watch_;
   }
