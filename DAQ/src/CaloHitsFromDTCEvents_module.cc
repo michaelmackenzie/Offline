@@ -40,6 +40,14 @@ class CaloHitsFromDataDTCEvents;
 
 class art::CaloHitsFromDataDTCEvents : public EDProducer {
 
+  struct PulseInfo {
+    PulseInfo(size_t nSiPM, float time, float eDep) : nSiPM(nSiPM), time(time), eDep(eDep) {}
+
+    size_t nSiPM;
+    float time;
+    float eDep;
+  };
+
 public:
   struct Config {
     fhicl::Atom<int> data_type{fhicl::Name("dataType"),
@@ -101,7 +109,9 @@ private:
 
   const int hexShiftPrint = 7;
 
-  std::vector<std::vector<mu2e::CaloHit>> pulseMap_;
+  std::vector<std::vector<PulseInfo>> pulseMap_;
+  std::vector<uint16_t> activeCrystals_;
+  std::vector<uint8_t> crystalIsActive_;
   mu2e::CaloDAQUtilities caloDAQUtil_;
 
   std::array<float, mu2e::CaloConst::_nCrystalChannel> peakADC2MeV_;
@@ -129,24 +139,28 @@ void art::CaloHitsFromDataDTCEvents::beginRun(art::Run& Run) {
 
 void art::CaloHitsFromDataDTCEvents::addPulse(uint16_t crystalID, float time, float eDep) {
   auto& pulses = pulseMap_[crystalID];
+  if (!crystalIsActive_[crystalID]) {
+    crystalIsActive_[crystalID] = 1;
+    activeCrystals_.push_back(crystalID);
+  }
   bool addNewHit(true);
 
   for (auto& pulse : pulses) {
-    if (std::fabs(pulse.time() - time) < deltaTPulses_) {
+    if (std::fabs(pulse.time - time) < deltaTPulses_) {
 
-      float ratio = (eDep - pulse.energyDep()) / (eDep + pulse.energyDep());
-      float eMean = (eDep + pulse.energyDep()) / 2.0;
+      float ratio = (eDep - pulse.eDep) / (eDep + pulse.eDep);
+      float eMean = (eDep + pulse.eDep) / 2.0;
       float sigmaR = 0.707 * sqrt(1.0 / eMean / nPEperMeV_ + noise2_ / eMean / eMean);
 
-      if (abs(ratio) <= nSigmaNoise_ * sigmaR) {
+      if (std::fabs(ratio) <= nSigmaNoise_ * sigmaR) {
         // combine the pulses
-        pulse.setTime((pulse.time() + time) / 2.); // probably not necessary
-        pulse.setEDep((pulse.energyDep() + eDep) / 2.);
-        pulse.setNSiPMs(pulse.nSiPMs() + 1);
+        pulse.time = (pulse.time + time) / 2.f;
+        pulse.eDep = (pulse.eDep + eDep) / 2.f;
+        ++pulse.nSiPM;
         addNewHit = false;
-      } else if (eDep > pulse.energyDep()) {
-        pulse.setTime(time); // probably not necessary
-        pulse.setEDep(eDep);
+      } else if (eDep > pulse.eDep) {
+        pulse.time = time;
+        pulse.eDep = eDep;
         addNewHit = false;
       }
 
@@ -154,22 +168,35 @@ void art::CaloHitsFromDataDTCEvents::addPulse(uint16_t crystalID, float time, fl
     }
   }
   if (addNewHit) {
-    pulses.emplace_back(crystalID, 1, time, eDep);
+    pulses.emplace_back(1, time, eDep);
   }
 }
 
 void art::CaloHitsFromDataDTCEvents::flushPulseMap(
     std::unique_ptr<mu2e::CaloHitCollection> const& calo_hits,
     std::unique_ptr<mu2e::CaloHitCollection> const& caphri_hits) const {
-  for (size_t crystalID = 0; crystalID < pulseMap_.size(); ++crystalID) {
+  size_t totalCaloHits = 0;
+  size_t totalCaphriHits = 0;
+  for (auto const crystalID : activeCrystals_) {
     auto const& pulses = pulseMap_[crystalID];
-    if (pulses.empty()) {
-      continue;
+    if (mu2e::CrystalId(static_cast<int>(crystalID)).isCaphri()) {
+      totalCaphriHits += pulses.size();
+    } else {
+      totalCaloHits += pulses.size();
     }
+  }
+  calo_hits->reserve(totalCaloHits);
+  caphri_hits->reserve(totalCaphriHits);
 
+  for (auto const crystalID : activeCrystals_) {
+    auto const& pulses = pulseMap_[crystalID];
     auto& out = mu2e::CrystalId(static_cast<int>(crystalID)).isCaphri() ? *caphri_hits : *calo_hits;
-    out.reserve(out.size() + pulses.size());
-    out.insert(out.end(), pulses.begin(), pulses.end());
+    for (auto const& pulse : pulses) {
+      out.emplace_back(static_cast<int>(crystalID),
+                       static_cast<int>(pulse.nSiPM),
+                       pulse.time,
+                       pulse.eDep);
+    }
   }
 }
 
@@ -182,7 +209,9 @@ art::CaloHitsFromDataDTCEvents::CaloHitsFromDataDTCEvents(
     caphriEDepMin_(config().caphriEDepMin()), nPEperMeV_(config().nPEperMeV()),
     noise2_(config().noiseLevelMeV() * config().noiseLevelMeV()),
     nSigmaNoise_(config().nSigmaNoise()), pulseMap_(mu2e::CaloConst::_nCrystal),
+    activeCrystals_(), crystalIsActive_(mu2e::CaloConst::_nCrystal, 0),
     caloDAQUtil_("CaloHitsFromDataDTCEvents") {
+  activeCrystals_.reserve(256);
   produces<mu2e::CaloHitCollection>("calo");
   produces<mu2e::CaloHitCollection>("caphri");
   produces<mu2e::IntensityInfoCalo>();
@@ -195,9 +224,11 @@ art::CaloHitsFromDataDTCEvents::CaloHitsFromDataDTCEvents(
 // ----------------------------------------------------------------------
 
 void art::CaloHitsFromDataDTCEvents::produce(Event& event) {
-  for (auto& pulses : pulseMap_) {
-    pulses.clear();
+  for (auto const crystalID : activeCrystals_) {
+    pulseMap_[crystalID].clear();
+    crystalIsActive_[crystalID] = 0;
   }
+  activeCrystals_.clear();
 
   art::EventNumber_t eventNumber = event.event();
 
