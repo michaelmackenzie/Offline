@@ -19,7 +19,7 @@ physics :
   TrigPath : [MakeSS]
   analyzers : {
     printSSteps : {
-      module_type : PrintModule
+      module_type : PrintMCModule
       surfaceStepPrinter : {
         verbose : 1
       }

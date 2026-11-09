@@ -17,20 +17,6 @@ physics :{
 
     printModule : {
       module_type : PrintModule
-      genParticlePrinter : {
-        verbose : 1
-      }
-
-      simParticlePrinter : {
-        verbose : 1
-        pCut : 10.0
-      }
-
-      stepPointMCPrinter : {
-        verbose : 1
-        pCut : 10.0
-      }
-
       caloRecoDigiPrinter : {
         verbose: 1
       }
@@ -52,10 +38,6 @@ physics :{
 
       kalSeedPrinter : {
         verbose: 3
-      }
-
-      physicalVolumePrinter : {
-        verbose: 1
       }
 
       triggerResultsPrinter : {

@@ -31,39 +31,6 @@ physics :{
         verbose : 0
       }
 
-      statusG4Printer : {
-        verbose : 0
-      }
-      genParticlePrinter : {
-        verbose: 1  # only 1 necessary
-        #inputTags : [ "mothersFilter" ] # select instances
-      }
-
-      simParticlePrinter : {
-        verbose: 2   # 0, 1, 2
-        #inputTags : [ "mothersFilter" ] # select instances
-        #pCut : 10.0          # cut on all particles
-        #emPCut : -1.0       # cut on +/-11,22
-        #primaryOnly : true  # only first particles
-      }
-      simParticlePtrPrinter : {
-        verbose : 0   # 0, 1
-      }
-      stepPointMCPrinter : {
-        verbose: 2   # 0, 1, 2
-        #inputTags : [ "mothersFilter", "virtualdetector" ] # select instances
-        #pCut : 10.0          # cut on all particles
-      }
-      mcTrajectoryPrinter : {
-        verbose: 2   # 0, 1, 2
-        #inputTags : [ "g4run" ] # select instances
-      }
-
-      caloShowerStepPrinter : {
-        verbose: 1   # 0, 1
-        #eCut : 10.0          # cut on hits
-        #inputTags : [ "CaloShowerStepFromShowerStep" ] # select instances
-      }
       caloDigiPrinter : {
         verbose: 1   # 0, 1
         #inputTags : [ "CaloDigiMaker" ] # select instances
@@ -83,18 +50,9 @@ physics :{
         #inputTags : [ "CaloClusterMaker" ] # select instances
       }
 
-      crvStepPrinter : {
-        verbose: 1      # 0.1
-        eCut : -10.0          # cut on hits
-        #inputTags : [ "CrvStep" ]
-      }
       crvDigiPrinter : {
         verbose: 1
         #inputTags : [ "CrvDigi" ]
-      }
-      crvDigiMCPrinter : {
-        verbose: 1
-        #inputTags : [ "CrvWaveforms" ]
       }
       crvRecoPulsePrinter : {
         verbose: 1
@@ -105,16 +63,8 @@ physics :{
         #inputTags : [ "CrvCoincidenceClusterFinder" ]
       }
 
-      strawGasStepPrinter : {
-        verbose: 1   # 0, 1
-        #inputTags : [ "MakeSGS" ] # select instances
-      }
       strawDigiPrinter : {
         verbose: 1   # 0, 1
-        #inputTags : [ "MakeSD" ] # select instances
-      }
-      strawDigiMCPrinter : {
-        verbose: 1   # 0, 1, 2
         #inputTags : [ "MakeSD" ] # select instances
       }
       strawHitPrinter : {
@@ -150,11 +100,6 @@ physics :{
 
       stmWaveformDigiPrinter : {
         verbose: 1   # 0,1,2
-        #inputTags : [ "KFFDeM" ] # select instances
-      }
-
-      physicalVolumePrinter : {
-        verbose: 2   # 0,1,2
         #inputTags : [ "KFFDeM" ] # select instances
       }
 
