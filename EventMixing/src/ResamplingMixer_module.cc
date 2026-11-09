@@ -16,7 +16,7 @@
 
 #include "Offline/SeedService/inc/SeedService.hh"
 #include "Offline/EventMixing/inc/Mu2eProductMixer.hh"
-#include "Offline/Mu2eUtilities/inc/artURBG.hh"
+#include "Offline/MCUtilities/inc/artURBG.hh"
 #include <random>
 
 //================================================================

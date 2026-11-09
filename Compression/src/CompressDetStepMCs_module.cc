@@ -39,7 +39,7 @@
 #include "Offline/MCDataProducts/inc/SurfaceStep.hh"
 #include "Offline/MCDataProducts/inc/StepPointMC.hh"
 #include "Offline/MCDataProducts/inc/SimParticle.hh"
-#include "Offline/Mu2eUtilities/inc/compressSimParticleCollection.hh"
+#include "Offline/MCUtilities/inc/compressSimParticleCollection.hh"
 #include "Offline/MCDataProducts/inc/GenParticle.hh"
 #include "Offline/Compression/inc/CompressionLevel.hh"
 #include "Offline/MCDataProducts/inc/MCTrajectoryCollection.hh"

@@ -33,7 +33,7 @@
 #include "Offline/EventGenerator/inc/PositionSamplerTool.hh"
 #include "Offline/MCDataProducts/inc/StageParticle.hh"
 #include "Offline/Mu2eG4/inc/ElementSamplerTool.hh"
-#include "Offline/Mu2eUtilities/inc/simParticleList.hh"
+#include "Offline/MCUtilities/inc/simParticleList.hh"
 #include "Offline/SeedService/inc/SeedService.hh"
 
 namespace mu2e{

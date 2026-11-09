@@ -8,9 +8,9 @@
 
 #include "Offline/DataProducts/inc/PDGCode.hh"
 #include "Offline/MCDataProducts/inc/GenId.hh"
-#include "Offline/Mu2eUtilities/inc/RandomUnitSphere.hh"
-#include "Offline/Mu2eUtilities/inc/BinnedSpectrum.hh"
-#include "Offline/Mu2eUtilities/inc/SpectrumVar.hh"
+#include "Offline/MCUtilities/inc/RandomUnitSphere.hh"
+#include "Offline/MCUtilities/inc/BinnedSpectrum.hh"
+#include "Offline/MCUtilities/inc/SpectrumVar.hh"
 #include "Offline/GlobalConstantsService/inc/GlobalConstantsHandle.hh"
 #include "Offline/GlobalConstantsService/inc/ParticleDataList.hh"
 #include "Offline/GlobalConstantsService/inc/PhysicsParams.hh"

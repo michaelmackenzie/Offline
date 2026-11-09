@@ -159,6 +159,7 @@ cet_make_library(
       Offline::GlobalConstantsService
       Offline::MBSGeom
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::MECOStyleProtonAbsorberGeom
       Offline::Mu2eG4Helper
       Offline::Mu2eHallGeom
@@ -199,6 +200,7 @@ cet_build_plugin(BoundMuonDecayFractionSamplerTool art::tool
 cet_build_plugin(CompositeMaterialGenerator art::tool
     REG_SOURCE src/CompositeMaterialGenerator_module.cc
     LIBRARIES REG
+        Offline::MCUtilities
         Offline::Mu2eG4
 )
 
@@ -209,6 +211,7 @@ cet_build_plugin(CompositeMaterialGenerator art::module
       Offline::Mu2eG4
       
       Offline::MCDataProducts
+      Offline::MCUtilities
 )
 
 cet_build_plugin(ConstructEnvEmpty art::tool
@@ -234,6 +237,7 @@ cet_build_plugin(Mu2eG4 art::module
       Offline::ConfigTools
       Offline::GeometryService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eHallGeom
       Offline::SeedService
       Geant4::G4interfaces
@@ -247,6 +251,7 @@ cet_build_plugin(Mu2eG4MT art::module
       Offline::ConfigTools
       Offline::GeometryService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eHallGeom
 )
 
@@ -302,6 +307,7 @@ cet_build_plugin(GammaConvGenerator art::module
       
       Offline::DataProducts
       Offline::MCDataProducts
+      Offline::MCUtilities
 )
 
 install(DIRECTORY g4study DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/Offline/Mu2eG4)

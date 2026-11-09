@@ -18,7 +18,7 @@
 #include "Offline/MCDataProducts/inc/ExtMonFNALSimHit.hh"
 #include "Offline/Mu2eG4/inc/Mu2eG4Config.hh"
 #include "Offline/Mu2eG4/inc/Mu2eG4TrajectoryControl.hh"
-#include "Offline/Mu2eUtilities/inc/SimParticleCollectionPrinter.hh"
+#include "Offline/MCUtilities/inc/SimParticleCollectionPrinter.hh"
 #include "Offline/MCDataProducts/inc/StepInstanceName.hh"
 #include "Offline/Mu2eG4/inc/Mu2eG4PerThreadStorage.hh"
 

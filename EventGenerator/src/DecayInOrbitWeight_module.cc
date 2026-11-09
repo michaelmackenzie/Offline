@@ -31,9 +31,9 @@
 #include "Offline/SeedService/inc/SeedService.hh"
 #include "Offline/MCDataProducts/inc/GenParticle.hh"
 #include "Offline/MCDataProducts/inc/EventWeight.hh"
-#include "Offline/Mu2eUtilities/inc/CzarneckiSpectrum.hh"
-#include "Offline/Mu2eUtilities/inc/ShankerWatanabeSpectrum.hh"
-#include "Offline/Mu2eUtilities/inc/SimpleSpectrum.hh"
+#include "Offline/MCUtilities/inc/CzarneckiSpectrum.hh"
+#include "Offline/MCUtilities/inc/ShankerWatanabeSpectrum.hh"
+#include "Offline/MCUtilities/inc/SimpleSpectrum.hh"
 
 namespace mu2e {
 

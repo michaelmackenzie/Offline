@@ -39,6 +39,7 @@ cet_build_plugin(CompressPhysicalVolumes art::module
     REG_SOURCE src/CompressPhysicalVolumes_module.cc
     LIBRARIES REG
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
 )
 
@@ -46,6 +47,7 @@ cet_build_plugin(CompressStepPointMCs art::module
     REG_SOURCE src/CompressStepPointMCs_module.cc
     LIBRARIES REG
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
 )
 
@@ -75,6 +77,7 @@ cet_build_plugin(EMFBoxHitsFilter art::module
       Offline::ExtinctionMonitorFNAL_Geometry
       Offline::GeometryService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
       Offline::RecoDataProducts
 )
@@ -83,6 +86,7 @@ cet_build_plugin(EMFPixelHitsFilter art::module
     REG_SOURCE src/EMFPixelHitsFilter_module.cc
     LIBRARIES REG
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
       Offline::RecoDataProducts
 )
@@ -91,6 +95,7 @@ cet_build_plugin(EMFPixelSimFilter art::module
     REG_SOURCE src/EMFPixelSimFilter_module.cc
     LIBRARIES REG
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
 )
 
@@ -104,6 +109,7 @@ cet_build_plugin(FilterG4Out art::module
     REG_SOURCE src/FilterG4Out_module.cc
     LIBRARIES REG
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
 )
 

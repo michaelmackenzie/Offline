@@ -17,7 +17,7 @@
 #include "Offline/MCDataProducts/inc/SimParticle.hh"
 #include "Offline/GlobalConstantsService/inc/GlobalConstantsHandle.hh"
 #include "Offline/GlobalConstantsService/inc/ParticleDataList.hh"
-#include "Offline/Mu2eUtilities/inc/SimParticleCollectionPrinter.hh"
+#include "Offline/MCUtilities/inc/SimParticleCollectionPrinter.hh"
 
 #include "TH1.h"
 #include "TH2.h"

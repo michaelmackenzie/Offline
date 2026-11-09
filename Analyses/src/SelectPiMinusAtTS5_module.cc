@@ -9,7 +9,7 @@
 #include "Offline/MCDataProducts/inc/StepPointMC.hh"
 #include "Offline/DataProducts/inc/PDGCode.hh"
 
-#include "Offline/Mu2eUtilities/inc/compressSimParticleCollection.hh"
+#include "Offline/MCUtilities/inc/compressSimParticleCollection.hh"
 
 // art includes.
 #include "fhiclcpp/ParameterSet.h"

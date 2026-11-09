@@ -3,7 +3,7 @@
 
 #include "Offline/CalPatRec/inc/TZClusterFinder_types.hh"
 
-#include "Offline/Mu2eUtilities/inc/McUtilsToolBase.hh"
+#include "Offline/MCUtilities/inc/McUtilsToolBase.hh"
 #include "Offline/Mu2eUtilities/inc/ModuleHistToolBase.hh"
 #include "Offline/RecoDataProducts/inc/TimeCluster.hh"
 #include "Offline/RecoDataProducts/inc/IntensityInfoTimeCluster.hh"

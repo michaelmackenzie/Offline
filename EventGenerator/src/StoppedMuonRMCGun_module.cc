@@ -36,12 +36,12 @@
 #include "Offline/MCDataProducts/inc/GenParticle.hh"
 #include "Offline/MCDataProducts/inc/EventWeight.hh"
 #include "Offline/MCDataProducts/inc/SpectrumConfig.hh"
-#include "Offline/Mu2eUtilities/inc/RandomUnitSphere.hh"
-#include "Offline/Mu2eUtilities/inc/MuonCaptureSpectrum.hh"
-#include "Offline/Mu2eUtilities/inc/SimpleSpectrum.hh"
-#include "Offline/Mu2eUtilities/inc/BinnedSpectrum.hh"
+#include "Offline/MCUtilities/inc/RandomUnitSphere.hh"
+#include "Offline/MCUtilities/inc/MuonCaptureSpectrum.hh"
+#include "Offline/MCUtilities/inc/SimpleSpectrum.hh"
+#include "Offline/MCUtilities/inc/BinnedSpectrum.hh"
 #include "Offline/Mu2eUtilities/inc/Table.hh"
-#include "Offline/Mu2eUtilities/inc/RootTreeSampler.hh"
+#include "Offline/MCUtilities/inc/RootTreeSampler.hh"
 #include "Offline/GeneralUtilities/inc/RSNTIO.hh"
 
 // ROOT includes

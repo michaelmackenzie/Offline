@@ -27,8 +27,8 @@
 #include "Offline/MCDataProducts/inc/ProcessCode.hh"
 #include "Offline/MCDataProducts/inc/SpectrumConfig.hh"
 #include "Offline/MCDataProducts/inc/StageParticle.hh"
-#include "Offline/Mu2eUtilities/inc/simParticleList.hh"
-#include "Offline/Mu2eUtilities/inc/GammaPairConversionSpectrum.hh"
+#include "Offline/MCUtilities/inc/simParticleList.hh"
+#include "Offline/MCUtilities/inc/GammaPairConversionSpectrum.hh"
 
 // ROOT includes
 #include "TFile.h"

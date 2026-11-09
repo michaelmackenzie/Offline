@@ -15,6 +15,7 @@ cet_make_library(
       Offline::GeometryService
       Offline::GlobalConstantsService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
       Offline::RecoDataProducts
       Offline::StoppingTargetGeom

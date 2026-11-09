@@ -23,7 +23,7 @@
 
 #include "Offline/MCDataProducts/inc/SimParticle.hh"
 #include "Offline/MCDataProducts/inc/StepPointMC.hh"
-#include "Offline/Mu2eUtilities/inc/SimParticleGetTau.hh"
+#include "Offline/MCUtilities/inc/SimParticleGetTau.hh"
 
 #include "Offline/GlobalConstantsService/inc/GlobalConstantsHandle.hh"
 #include "Offline/GlobalConstantsService/inc/PhysicsParams.hh"

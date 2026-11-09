@@ -27,7 +27,7 @@
 
 #include "Offline/MCDataProducts/inc/StepPointMC.hh"
 
-#include "Offline/Mu2eUtilities/inc/SimParticleGetTau.hh"
+#include "Offline/MCUtilities/inc/SimParticleGetTau.hh"
 
 #include "art/Framework/Principal/Run.h"
 #include "art/Framework/Services/Registry/ServiceHandle.h"

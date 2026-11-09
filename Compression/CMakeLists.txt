@@ -12,6 +12,7 @@ cet_build_plugin(CompressDetStepMCs art::module
       Offline::Compression
       
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
 )
 
@@ -32,6 +33,7 @@ cet_build_plugin(CompressDigiMCs art::module
       
       Offline::DataProducts
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
 )
 

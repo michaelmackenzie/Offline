@@ -51,6 +51,7 @@ cet_build_plugin(DisplaceDigiTimes art::module
     REG_SOURCE src/DisplaceDigiTimes_module.cc
     LIBRARIES REG
       Offline::Blinding
+      Offline::MCUtilities
       Offline::SeedService
       Offline::Mu2eUtilities
 )

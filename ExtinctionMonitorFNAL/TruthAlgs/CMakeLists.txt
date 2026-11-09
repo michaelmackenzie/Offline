@@ -19,6 +19,7 @@ cet_build_plugin(SimParticleMARSAssnsMaker art::module
     LIBRARIES REG
       
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
 )
 

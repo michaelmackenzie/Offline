@@ -25,7 +25,7 @@
 #include "canvas/Utilities/InputTag.h"
 
 #include "Offline/EventMixing/inc/Mu2eProductMixer.hh"
-#include "Offline/Mu2eUtilities/inc/artURBG.hh"
+#include "Offline/MCUtilities/inc/artURBG.hh"
 #include "Offline/SeedService/inc/SeedService.hh"
 #include "Offline/MCDataProducts/inc/ProtonBunchIntensity.hh"
 #include "Offline/ProditionsService/inc/ProditionsHandle.hh"

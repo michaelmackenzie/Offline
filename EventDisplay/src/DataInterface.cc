@@ -31,7 +31,7 @@ using namespace std;
 #include "Offline/MCDataProducts/inc/MCTrajectoryCollection.hh"
 #include "Offline/MCDataProducts/inc/SimParticle.hh"
 #include "Offline/MCDataProducts/inc/StepPointMC.hh"
-#include "Offline/Mu2eUtilities/inc/PhysicalVolumeMultiHelper.hh"
+#include "Offline/MCUtilities/inc/PhysicalVolumeMultiHelper.hh"
 #include "Offline/ConfigTools/inc/SimpleConfig.hh"
 #include "Offline/RecoDataProducts/inc/KalSeed.hh"
 #include "Offline/RecoDataProducts/inc/CrvDigi.hh"

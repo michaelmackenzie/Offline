@@ -13,7 +13,7 @@
 #include "Offline/GlobalConstantsService/inc/GlobalConstantsHandle.hh"
 #include "Offline/GlobalConstantsService/inc/ParticleDataList.hh"
 #include "Offline/GeneralUtilities/inc/TwoBodyKinematics.hh"
-#include "Offline/Mu2eUtilities/inc/RandomUnitSphere.hh"
+#include "Offline/MCUtilities/inc/RandomUnitSphere.hh"
 #include "Offline/MCDataProducts/inc/GenParticle.hh"
 #include "Offline/MCDataProducts/inc/SpectrumConfig.hh"
 #include "Offline/SeedService/inc/SeedService.hh"

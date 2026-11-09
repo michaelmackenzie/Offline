@@ -25,7 +25,7 @@
 #include "Offline/GlobalConstantsService/inc/ParticleDataList.hh"
 #include "Offline/GlobalConstantsService/inc/PhysicsParams.hh"
 #include "Offline/MCDataProducts/inc/GenParticle.hh"
-#include "Offline/Mu2eUtilities/inc/rm48.hh"
+#include "Offline/MCUtilities/inc/rm48.hh"
 #include "Offline/StoppingTargetGeom/inc/StoppingTarget.hh"
 
 #include "CRYGenerator.h"

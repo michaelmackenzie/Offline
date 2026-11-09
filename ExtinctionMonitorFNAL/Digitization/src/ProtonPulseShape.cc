@@ -21,7 +21,7 @@
 #include "Offline/MCDataProducts/inc/SimParticle.hh"
 #include "Offline/MCDataProducts/inc/MARSInfo.hh"
 
-#include "Offline/Mu2eUtilities/inc/SimParticleParentGetter.hh"
+#include "Offline/MCUtilities/inc/SimParticleParentGetter.hh"
 
 //#define AGDEBUG(stuff) do { std::cerr<<"AG: "<<__FILE__<<", line "<<__LINE__<<", func "<<__func__<<": "<<stuff<<std::endl; } while(0)
 #define AGDEBUG(stuff)

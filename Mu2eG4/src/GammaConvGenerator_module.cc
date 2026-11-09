@@ -23,9 +23,9 @@
 #include "Offline/SeedService/inc/SeedService.hh"
 #include "Offline/DataProducts/inc/PDGCode.hh"
 #include "Offline/MCDataProducts/inc/StageParticle.hh"
-#include "Offline/Mu2eUtilities/inc/simParticleList.hh"
+#include "Offline/MCUtilities/inc/simParticleList.hh"
 #include "Offline/MCDataProducts/inc/GenParticle.hh"
-#include "Offline/Mu2eUtilities/inc/GammaPairConversionSpectrum.hh"
+#include "Offline/MCUtilities/inc/GammaPairConversionSpectrum.hh"
 #include "Offline/Mu2eG4/inc/findMaterialOrThrow.hh"
 
 // Geant4 includes

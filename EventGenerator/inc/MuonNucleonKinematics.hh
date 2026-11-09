@@ -35,7 +35,7 @@
 #include "fhiclcpp/types/Atom.h"
 #include "fhiclcpp/types/OptionalAtom.h"
 
-#include "Offline/Mu2eUtilities/inc/RandomUnitSphere.hh"
+#include "Offline/MCUtilities/inc/RandomUnitSphere.hh"
 
 namespace mu2e {
 

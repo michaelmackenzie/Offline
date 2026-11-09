@@ -35,6 +35,7 @@ cet_build_plugin(StopSelection art::module
     LIBRARIES REG      
       Offline::GlobalConstantsService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
       Offline::SeedService
 )

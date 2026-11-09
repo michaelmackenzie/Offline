@@ -18,6 +18,7 @@ helper.make_plugins( [
   'mu2e_SeedService',
   'mu2e_TrkReco',
   'mu2e_Mu2eUtilities',
+  'mu2e_MCUtilities',
   'mu2e_CaloCluster',
   'mu2e_MCDataProducts',
   'mu2e_RecoDataProducts',

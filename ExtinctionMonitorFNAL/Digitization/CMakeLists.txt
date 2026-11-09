@@ -9,6 +9,7 @@ cet_make_library(
       Offline::DataProducts
       Offline::GeometryService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
       Offline::RecoDataProducts
 )

@@ -26,7 +26,7 @@
 #include "Offline/DataProducts/inc/PDGCode.hh"
 #include "Offline/ConfigTools/inc/SimpleConfig.hh"
 #include "Offline/ConfigTools/inc/ConfigFileLookupPolicy.hh"
-#include "Offline/Mu2eUtilities/inc/rm48.hh"
+#include "Offline/MCUtilities/inc/rm48.hh"
 #include "Offline/GeneralUtilities/inc/safeSqrt.hh"
 #include "Offline/SeedService/inc/SeedService.hh"
 

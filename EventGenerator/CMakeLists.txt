@@ -22,6 +22,7 @@ cet_make_library(
       Offline::GeometryService
       Offline::GlobalConstantsService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
       Offline::ProductionTargetGeom
       Offline::SeedService
@@ -40,6 +41,7 @@ cet_build_plugin(AntiProtonGun art::module
       Offline::GeometryService
       Offline::GlobalConstantsService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
       Offline::ProductionTargetGeom
       Offline::SeedService
@@ -49,6 +51,7 @@ cet_build_plugin(AntiprotonResampling art::module
     REG_SOURCE src/AntiprotonResampling_module.cc
     LIBRARIES REG
       Offline::EventGenerator
+      Offline::MCUtilities
 )
 
 cet_build_plugin(CaloCalibGun art::module
@@ -60,6 +63,7 @@ cet_build_plugin(CaloCalibGun art::module
       Offline::DataProducts
       Offline::GeometryService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
       Offline::SeedService
 )
@@ -86,6 +90,7 @@ cet_build_plugin(CeEndpoint art::module
       Offline::DataProducts
       Offline::GlobalConstantsService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
       Offline::SeedService
 )
@@ -134,6 +139,7 @@ cet_build_plugin(DecayInOrbitWeight art::module
       
       Offline::ConfigTools
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
       Offline::SeedService
 )
@@ -152,6 +158,7 @@ cet_build_plugin(EplusFromStoppedPion art::module
       Offline::GeneralUtilities
       Offline::GlobalConstantsService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
       Offline::SeedService
 )
@@ -163,6 +170,7 @@ cet_build_plugin(EventGenerator art::module
       
       Offline::ConfigTools
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::SeedService
 )
 
@@ -186,6 +194,7 @@ cet_build_plugin(ExtMonFNALGun art::module
       Offline::EventGenerator
       
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::SeedService
 )
 
@@ -213,6 +222,7 @@ cet_build_plugin(FlatGeneratorFromStoppedMuon art::module
       Offline::DataProducts
       Offline::GlobalConstantsService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
       Offline::SeedService
 )
@@ -228,6 +238,7 @@ cet_build_plugin(FromAsciiMomentumAndPosition art::module
       Offline::GeometryService
       Offline::GlobalConstantsService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
       Offline::ProductionTargetGeom
       Offline::SeedService
@@ -243,6 +254,7 @@ cet_build_plugin(FromSimParticleCompact art::module
       Offline::GeometryService
       Offline::GlobalConstantsService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
       Offline::ProductionTargetGeom
       Offline::SeedService
@@ -283,12 +295,14 @@ cet_build_plugin(GammaConvFlat art::module
     REG_SOURCE src/GammaConvFlat_module.cc
     LIBRARIES REG
       Offline::EventGenerator
+      Offline::MCUtilities
 )
 
 cet_build_plugin(GammaConversion art::module
     REG_SOURCE src/GammaConversion_module.cc
     LIBRARIES REG
       Offline::EventGenerator
+      Offline::MCUtilities
 )
 
 cet_build_plugin(GeneratorPlots art::module
@@ -325,6 +339,7 @@ cet_build_plugin(InFlightParticleSampler art::module
       Offline::GeneralUtilities
       Offline::GlobalConstantsService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
       Offline::SeedService
 )
@@ -337,6 +352,7 @@ cet_build_plugin(LeadingLog art::module
       Offline::DataProducts
       Offline::GlobalConstantsService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
       Offline::SeedService
 )
@@ -351,6 +367,7 @@ cet_build_plugin(MuStopProductsGun art::module
       Offline::GeneralUtilities
       Offline::GlobalConstantsService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
       Offline::SeedService
 )
@@ -371,6 +388,7 @@ cet_build_plugin(Pileup art::module
       Offline::DataProducts
       Offline::GlobalConstantsService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
       Offline::SeedService
 )
@@ -379,6 +397,7 @@ cet_build_plugin(PionFilter art::module
     REG_SOURCE src/PionFilter_module.cc
     LIBRARIES REG
       Offline::EventGenerator
+      Offline::MCUtilities
 )
 
 cet_build_plugin(PrimaryAntiProtonGun art::module
@@ -392,6 +411,7 @@ cet_build_plugin(PrimaryAntiProtonGun art::module
       Offline::GeometryService
       Offline::GlobalConstantsService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
       Offline::ProductionTargetGeom
       Offline::SeedService
@@ -403,6 +423,7 @@ cet_build_plugin(PrimaryProtonGun art::module
       Offline::EventGenerator
       
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::SeedService
 )
 
@@ -425,6 +446,7 @@ cet_build_plugin(RMCGun art::module
       Offline::GeneralUtilities
       Offline::GlobalConstantsService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
       Offline::SeedService
 )
@@ -437,6 +459,7 @@ cet_build_plugin(RPCGun art::module
       Offline::DataProducts
       Offline::GlobalConstantsService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
       Offline::SeedService
 )
@@ -455,6 +478,7 @@ cet_build_plugin(SingleProcessGenerator art::module
       Offline::DataProducts
       Offline::GlobalConstantsService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
       Offline::SeedService
 )
@@ -469,6 +493,7 @@ cet_build_plugin(StoppedMuonRMCGun art::module
       Offline::GeneralUtilities
       Offline::GlobalConstantsService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
       Offline::SeedService
 )
@@ -483,6 +508,7 @@ cet_build_plugin(StoppedMuonXRayGammaRayGun art::module
       Offline::GeneralUtilities
       Offline::GeometryService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
       Offline::SeedService
       Offline::StoppingTargetGeom
@@ -497,6 +523,7 @@ cet_build_plugin(StoppedMuplusDecayGun art::module
       Offline::GeneralUtilities
       Offline::GlobalConstantsService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
       Offline::SeedService
 )
@@ -510,6 +537,7 @@ cet_build_plugin(StoppedParticleG4Gun art::module
       Offline::GeneralUtilities
       Offline::GlobalConstantsService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
       Offline::SeedService
 )
@@ -524,6 +552,7 @@ cet_build_plugin(StoppedParticleReactionGun art::module
       Offline::GeneralUtilities
       Offline::GlobalConstantsService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
       Offline::SeedService
 )
@@ -536,6 +565,7 @@ cet_build_plugin(DIOGenerator art::tool
       Offline::DataProducts
       Offline::GlobalConstantsService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
 )
 
@@ -547,6 +577,7 @@ cet_build_plugin(Mu2eXGenerator art::tool
       Offline::DataProducts
       Offline::GlobalConstantsService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
 )
 
@@ -558,6 +589,7 @@ cet_build_plugin(MuCapBNVGenerator art::tool
       Offline::DataProducts
       Offline::GlobalConstantsService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
 )
 
@@ -569,6 +601,7 @@ cet_build_plugin(MuCapDarkCascadeGenerator art::tool
       Offline::DataProducts
       Offline::GlobalConstantsService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
 )
 
@@ -580,6 +613,7 @@ cet_build_plugin(MuCap1809keVGammaGenerator art::tool
       Offline::DataProducts
       Offline::GlobalConstantsService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
 )
 
@@ -591,6 +625,7 @@ cet_build_plugin(MuCapDeuteronGenerator art::tool
       Offline::DataProducts
       Offline::GlobalConstantsService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
 )
 
@@ -602,6 +637,7 @@ cet_build_plugin(MuCapNeutronGenerator art::tool
       Offline::DataProducts
       Offline::GlobalConstantsService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
 )
 
@@ -613,6 +649,7 @@ cet_build_plugin(MuCapPhotonGenerator art::tool
       Offline::DataProducts
       Offline::GlobalConstantsService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
 )
 
@@ -624,6 +661,7 @@ cet_build_plugin(MuCapProtonGenerator art::tool
       Offline::DataProducts
       Offline::GlobalConstantsService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
 )
 
@@ -634,6 +672,7 @@ cet_build_plugin(MuStopDecayPositionSamplerTool art::tool
 
       Offline::GlobalConstantsService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
 )
 
@@ -645,6 +684,7 @@ cet_build_plugin(MuplusMichelGenerator art::tool
       Offline::DataProducts
       Offline::GlobalConstantsService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
 )
 
@@ -659,6 +699,7 @@ cet_build_plugin(RMCGenerator art::tool
     REG_SOURCE src/RMCGenerator_tool.cc
     LIBRARIES REG
       Offline::EventGenerator
+      Offline::MCUtilities
 )
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/fcl/prolog.fcl ${CURRENT_BINARY_DIR} fcl/prolog.fcl)

@@ -15,7 +15,7 @@
 #include "CLHEP/Random/RandPoissonQ.h"
 #include "CLHEP/Random/RandGeneral.h"
 #include "CLHEP/Random/RandFlat.h"
-#include "Offline/Mu2eUtilities/inc/RandomUnitSphere.hh"
+#include "Offline/MCUtilities/inc/RandomUnitSphere.hh"
 #include "CLHEP/Random/RandGaussQ.h"
 
 // Framework includes
@@ -38,8 +38,8 @@
 #include "Offline/DataProducts/inc/PDGCode.hh"
 #include "Offline/ConfigTools/inc/SimpleConfig.hh"
 #include "Offline/GeneralUtilities/inc/safeSqrt.hh"
-#include "Offline/Mu2eUtilities/inc/SimpleSpectrum.hh"
-#include "Offline/Mu2eUtilities/inc/BinnedSpectrum.hh"
+#include "Offline/MCUtilities/inc/SimpleSpectrum.hh"
+#include "Offline/MCUtilities/inc/BinnedSpectrum.hh"
 #include "art_root_io/TFileService.h"
 
 #include "Offline/GeometryService/inc/GeomHandle.hh"

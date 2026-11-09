@@ -34,7 +34,7 @@
 #include "Offline/DataProducts/inc/PDGCode.hh"
 #include "Offline/MCDataProducts/inc/SpectrumConfig.hh"
 #include "Offline/MCDataProducts/inc/StageParticle.hh"
-#include "Offline/Mu2eUtilities/inc/simParticleList.hh"
+#include "Offline/MCUtilities/inc/simParticleList.hh"
 
 namespace mu2e {
 

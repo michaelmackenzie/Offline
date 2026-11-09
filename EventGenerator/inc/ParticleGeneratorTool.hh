@@ -16,7 +16,7 @@
 #include "Offline/MCDataProducts/inc/ProcessCode.hh"
 #include "Offline/MCDataProducts/inc/GenParticle.hh"
 #include "Offline/MCDataProducts/inc/SpectrumConfig.hh"
-#include "Offline/Mu2eUtilities/inc/BinnedSpectrum.hh"
+#include "Offline/MCUtilities/inc/BinnedSpectrum.hh"
 
 #include "Offline/GeneralUtilities/inc/RSNTIO.hh"
 

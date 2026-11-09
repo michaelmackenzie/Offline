@@ -22,8 +22,8 @@
 #include "Offline/MCDataProducts/inc/SimParticle.hh"
 #include "Offline/MCDataProducts/inc/StepPointMC.hh"
 #include "Offline/MCDataProducts/inc/SumOfWeights.hh"
-#include "Offline/Mu2eUtilities/inc/SimParticleGetTau.hh"
-#include "Offline/Mu2eUtilities/inc/simParticleList.hh"
+#include "Offline/MCUtilities/inc/SimParticleGetTau.hh"
+#include "Offline/MCUtilities/inc/simParticleList.hh"
 #include "Offline/SeedService/inc/SeedService.hh"
 
 // std includes

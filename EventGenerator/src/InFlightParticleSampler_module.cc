@@ -31,7 +31,7 @@
 #include "Offline/GlobalConstantsService/inc/ParticleDataList.hh"
 #include "Offline/MCDataProducts/inc/GenParticle.hh"
 #include "Offline/MCDataProducts/inc/SpectrumConfig.hh"
-#include "Offline/Mu2eUtilities/inc/RootTreeSampler.hh"
+#include "Offline/MCUtilities/inc/RootTreeSampler.hh"
 #include "Offline/GeneralUtilities/inc/RSNTIO.hh"
 
 namespace mu2e {

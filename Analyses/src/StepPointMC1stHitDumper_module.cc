@@ -26,7 +26,7 @@
 
 #include "Offline/GlobalConstantsService/inc/GlobalConstantsHandle.hh"
 #include "Offline/GlobalConstantsService/inc/ParticleDataList.hh"
-#include "Offline/Mu2eUtilities/inc/SimParticleGetTau.hh"
+#include "Offline/MCUtilities/inc/SimParticleGetTau.hh"
 
 namespace mu2e {
 

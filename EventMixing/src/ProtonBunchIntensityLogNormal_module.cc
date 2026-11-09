@@ -23,7 +23,7 @@
 #include "art/Framework/Principal/SubRun.h"
 
 #include "Offline/SeedService/inc/SeedService.hh"
-#include "Offline/Mu2eUtilities/inc/artURBG.hh"
+#include "Offline/MCUtilities/inc/artURBG.hh"
 #include "Offline/MCDataProducts/inc/ProtonBunchIntensity.hh"
 #include "Offline/MCDataProducts/inc/PrimaryParticle.hh"
 #include <boost/math/special_functions/erf.hpp>

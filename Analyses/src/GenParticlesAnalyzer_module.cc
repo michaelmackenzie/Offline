@@ -12,7 +12,7 @@
 
 #include "Offline/MCDataProducts/inc/GenParticle.hh"
 
-#include "Offline/Mu2eUtilities/inc/GeneratorSummaryHistograms.hh"
+#include "Offline/MCUtilities/inc/GeneratorSummaryHistograms.hh"
 
 namespace mu2e {
 

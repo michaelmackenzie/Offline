@@ -41,7 +41,7 @@
 #include "Offline/MCDataProducts/inc/SimParticle.hh"
 #include "Offline/MCDataProducts/inc/StageParticle.hh"
 #include "Offline/MCDataProducts/inc/ProcessCode.hh"
-#include "Offline/Mu2eUtilities/inc/compressSimParticleCollection.hh"
+#include "Offline/MCUtilities/inc/compressSimParticleCollection.hh"
 
 // Framework includes
 #include "canvas/Persistency/Common/Ptr.h"

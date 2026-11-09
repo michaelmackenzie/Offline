@@ -14,7 +14,7 @@
 #include "Offline/RecoDataProducts/inc/CaloCluster.hh"
 #include "Offline/RecoDataProducts/inc/IntensityInfoTimeCluster.hh"
 #include "Offline/Mu2eUtilities/inc/LsqSums2.hh"
-#include "Offline/Mu2eUtilities/inc/McUtilsToolBase.hh"
+#include "Offline/MCUtilities/inc/McUtilsToolBase.hh"
 
 namespace art {
   class Event;

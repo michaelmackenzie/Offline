@@ -24,7 +24,7 @@ namespace fhicl {
 #include "Offline/TrackerGeom/inc/Tracker.hh"
 #include "Offline/CalorimeterGeom/inc/DiskCalorimeter.hh"
 
-#include "Offline/Mu2eUtilities/inc/McUtilsToolBase.hh"
+#include "Offline/MCUtilities/inc/McUtilsToolBase.hh"
 
 #include "Offline/Mu2eUtilities/inc/ManagedList.hh"
 #include "Offline/Mu2eUtilities/inc/StopWatch.hh"

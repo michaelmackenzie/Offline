@@ -221,6 +221,7 @@ cet_build_plugin(FilterVDHits art::module
 
 
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
 )
 
@@ -237,6 +238,7 @@ cet_build_plugin(GenParticlesAnalyzer art::module
 
 
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
 )
 
@@ -329,6 +331,7 @@ cet_build_plugin(PionMomentumAnalyzer art::module
 
       Offline::GlobalConstantsService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
 )
 
@@ -350,6 +353,7 @@ cet_build_plugin(PrimaryProtonEnergyDumper art::module
       Offline::GeometryService
       Offline::GlobalConstantsService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
       Offline::ProductionTargetGeom
 )
@@ -514,6 +518,7 @@ cet_build_plugin(SelectPiMinusAtTS5 art::module
 
       Offline::DataProducts
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
 )
 
@@ -527,6 +532,7 @@ cet_build_plugin(SensitiveTargetEnergyDumper art::module
       Offline::GeometryService
       Offline::GlobalConstantsService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
       Offline::ProductionTargetGeom
 )
@@ -559,6 +565,7 @@ cet_build_plugin(SimParticlesPrinter art::module
 
 
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
 )
 
@@ -576,6 +583,7 @@ cet_build_plugin(StepPointMC1stHitDumper art::module
 
       Offline::GlobalConstantsService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
 )
 
@@ -602,6 +610,7 @@ cet_build_plugin(StepPointMCDumper art::module
       Offline::GeometryService
       Offline::GlobalConstantsService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
 )
 
@@ -620,6 +629,7 @@ cet_build_plugin(StoppedParticlesDumper art::module
 
       Offline::GlobalConstantsService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
 )
 

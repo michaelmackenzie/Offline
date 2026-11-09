@@ -23,6 +23,7 @@ cet_make_library(
       Offline::TrackerGeom
       Offline::TrkReco
       Offline::BTrkLegacy
+      Offline::MCUtilities
       ROOT::Physics
 )
 
@@ -50,6 +51,7 @@ cet_build_plugin(CalHelixFinder art::module
       Offline::CalorimeterGeom
       Offline::ConfigTools
       Offline::GeometryService
+      Offline::MCUtilities
       Offline::Mu2eUtilities
       Offline::RecoDataProducts
       Offline::TrackerGeom
@@ -113,6 +115,7 @@ cet_build_plugin(DeltaFinder art::module
 
       Offline::CalorimeterGeom
       Offline::GeometryService
+      Offline::MCUtilities
       Offline::Mu2eUtilities
       Offline::RecoDataProducts
       Offline::TrackerGeom
@@ -147,6 +150,7 @@ cet_build_plugin(TZClusterFinder art::module
       Offline::CalPatRec
 
       Offline::ConfigTools
+      Offline::MCUtilities
       Offline::Mu2eUtilities
       Offline::RecoDataProducts
       Offline::TimeoutService
@@ -158,6 +162,7 @@ cet_build_plugin(CalHelixFinderDiag art::tool
       Offline::CalPatRec
 
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
 )
 
@@ -175,6 +180,7 @@ cet_build_plugin(CalTimePeakFinderDiag art::tool
     REG_SOURCE src/CalTimePeakFinderDiag_tool.cc
     LIBRARIES REG
       Offline::CalPatRec
+      Offline::MCUtilities
 
       Offline::Mu2eUtilities
       Offline::RecoDataProducts
@@ -188,6 +194,7 @@ cet_build_plugin(DeltaFinderDiag art::tool
 
       Offline::DataProducts
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
 )
 
@@ -195,6 +202,7 @@ cet_build_plugin(MergePatRecDiag art::tool
     REG_SOURCE src/MergePatRecDiag_tool.cc
     LIBRARIES REG
       Offline::CalPatRec
+      Offline::MCUtilities
 
       Offline::Mu2eUtilities
 )
@@ -205,6 +213,7 @@ cet_build_plugin(PhiClusterFinderDiag art::tool
       Offline::CalPatRec
 
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
       Offline::RecoDataProducts
 )
@@ -221,6 +230,7 @@ cet_build_plugin(TZClusterFinderDiag art::tool
       Offline::CalPatRec
 
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
       Offline::RecoDataProducts
 )

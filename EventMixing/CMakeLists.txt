@@ -14,6 +14,7 @@ cet_build_plugin(MixBackgroundFrames art::module
       Offline::EventMixing
       
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
       Offline::ProditionsService
       Offline::SeedService
@@ -40,6 +41,7 @@ cet_build_plugin(ProtonBunchIntensityFlat art::module
       Offline::EventMixing
       
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
       Offline::SeedService
 )
@@ -50,6 +52,7 @@ cet_build_plugin(ProtonBunchIntensityLogNormal art::module
       Offline::EventMixing
       
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
       Offline::SeedService
 )
@@ -60,6 +63,7 @@ cet_build_plugin(ResamplingMixer art::module
       art::Framework_IO_ProductMix
       art_root_io::art_root_io
       Offline::EventMixing
+      Offline::MCUtilities
       
       Offline::Mu2eUtilities
       Offline::SeedService

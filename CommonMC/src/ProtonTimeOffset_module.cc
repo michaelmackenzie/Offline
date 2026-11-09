@@ -18,7 +18,7 @@
 
 #include "Offline/MCDataProducts/inc/SimTimeOffset.hh"
 #include "Offline/SeedService/inc/SeedService.hh"
-#include "Offline/Mu2eUtilities/inc/ProtonPulseRandPDF.hh"
+#include "Offline/MCUtilities/inc/ProtonPulseRandPDF.hh"
 
 namespace mu2e {
 

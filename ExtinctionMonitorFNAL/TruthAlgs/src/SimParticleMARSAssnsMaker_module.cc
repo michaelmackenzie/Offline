@@ -25,7 +25,7 @@
 #include "Offline/MCDataProducts/inc/MARSInfo.hh"
 #include "Offline/MCDataProducts/inc/SimParticleMARSAssns.hh"
 
-#include "Offline/Mu2eUtilities/inc/SimParticleParentGetter.hh"
+#include "Offline/MCUtilities/inc/SimParticleParentGetter.hh"
 
 namespace mu2e {
   namespace ExtMonFNAL {

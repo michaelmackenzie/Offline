@@ -17,7 +17,7 @@
 #include "Offline/GlobalConstantsService/inc/PhysicsParams.hh"
 #include "Offline/GlobalConstantsService/inc/ParticleDataList.hh"
 #include "Offline/MCDataProducts/inc/SumOfWeights.hh"
-#include "Offline/Mu2eUtilities/inc/SimParticleGetTau.hh"
+#include "Offline/MCUtilities/inc/SimParticleGetTau.hh"
 #include "Offline/TrackerGeom/inc/Tracker.hh"
 #include <iostream>
 #include <string>

@@ -72,6 +72,7 @@ cet_build_plugin(ProtonTimeOffset art::module
     REG_SOURCE src/ProtonTimeOffset_module.cc
     LIBRARIES REG
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
       Offline::SeedService
 )
@@ -112,6 +113,7 @@ cet_build_plugin(StoppedParticlesFinder art::module
     LIBRARIES REG
       Offline::DataProducts
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
 )
 
