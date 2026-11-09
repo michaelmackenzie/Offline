@@ -34,12 +34,8 @@ helper.make_plugin( 'RecoNullProducer_module.cc',  # This build only applies to 
                   )
 
 # Build the remaining plugins with the standard link list
-helper.make_plugins( [ 'mu2e_MCDataProducts',
-                       'mu2e_DataProducts',
+helper.make_plugins( [
                        'MF_MessageLogger',
-                       'mu2e_GlobalConstantsService',
-                       'mu2e_Mu2eUtilities',
-                       'mu2e_MCUtilities',
                        'mu2e_SeedService',
                        'art_Framework_Core',
                        'art_Framework_IO_Sources',
