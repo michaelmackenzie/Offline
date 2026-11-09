@@ -90,7 +90,7 @@ namespace mu2e {
     fhicl::Atom<art::InputTag> comboHitCollection {Name("ComboHitCollection"), Comment("Reduced ComboHit collection") };
     fhicl::OptionalAtom<art::InputTag> caloClusterCollection {Name("CaloClusterCollection"),     Comment("CaloCluster collection ") };
     fhicl::Atom<art::InputTag> indexMap {Name("StrawDigiIndexMap"), Comment("Map between original and reduced ComboHits") };
-    fhicl::Atom<bool> produceParentAssns {Name("ProduceParentAssns"), Comment("If true, produce Assns<KalSeed,KalSeed> from each regrown KalSeed (first) to the original KalSeed it was regrown from (second)"), false };
+    fhicl::Atom<bool> produceParentPtrs {Name("ProduceParentPtrs"), Comment("If true, also produce a KalSeedPtrCollection (instance \"parents\"), index-matched to the output KalSeedCollection, pointing to the original KalSeed each seed was regrown from"), false };
     fhicl::OptionalAtom<int> fitParticle {  Name("FitParticle"), Comment("PDG code of particle type to refit: e-, e+, mu-, ...")};
     fhicl::Table<KKFitConfig> kkfitSettings { Name("KKFitSettings") };
     fhicl::Table<KKConfig> fitSettings { Name("RefitSettings") };
@@ -156,7 +156,7 @@ namespace mu2e {
       art::ProductToken<ComboHitCollection> chcol_T_;
       art::ProductToken<CaloClusterCollection> cccol_T_;
       art::ProductToken<IndexMap> indexmap_T_;
-      bool fillParentAssns_ = false;
+      bool fillParentPtrs_ = false;
       bool extend_;
       bool has_cccol_, has_kseedcol_, has_kseedptrcol_;
       std::unique_ptr<KKExtrap> extrap_;
@@ -170,7 +170,7 @@ namespace mu2e {
   kkfit_(settings().kkfitSettings()),
   chcol_T_(consumes<ComboHitCollection>(settings().comboHitCollection())),
   indexmap_T_(consumes<IndexMap>(settings().indexMap())),
-  fillParentAssns_(settings().produceParentAssns()),
+  fillParentPtrs_(settings().produceParentPtrs()),
   extend_(settings().extend()),
   has_cccol_(settings().caloClusterCollection()),
   has_kseedcol_(settings().kalSeedCollection()),
@@ -180,7 +180,7 @@ namespace mu2e {
     produces<KalSeedCollection>();
     if(settings().extrapSettings())extrap_ = make_unique<KKExtrap>(*settings().extrapSettings());
     if(extrap_) extrap_->checkConfig(config_);
-    if(fillParentAssns_) produces<KalSeedParentAssns>();
+    if(fillParentPtrs_) produces<KalSeedPtrCollection>("parents");
     if(!(has_kseedcol_ || has_kseedptrcol_) || (has_kseedcol_ && has_kseedptrcol_))
       throw cet::exception("RECO")<<"mu2e::RegrowLoopHelix: exactly 1 of KalSeedCollection or KalSeedPtrCollection must be specified" << endl;
     if(has_kseedcol_)kseedcol_T_ = art::ProductToken<KalSeedCollection>(consumes<KalSeedCollection>(settings().kalSeedCollection().value()));
@@ -221,13 +221,11 @@ namespace mu2e {
     auto cc_H = event.getHandle<CaloClusterCollection>(cccol_T_);
     auto indexmap_H = event.getValidHandle<IndexMap>(indexmap_T_);
     const auto& indexmap = *indexmap_H;
-    auto KalSeedCollectionPID = event.getProductID<KalSeedCollection>();
-    auto KalSeedCollectionGetter = event.productGetter(KalSeedCollectionPID);
     // create outputs
     unique_ptr<KKTRKCOL> ktrkcol(new KKTRKCOL );
     unique_ptr<KalSeedCollection> rgkseedcol(new KalSeedCollection );
-    std::unique_ptr<KalSeedParentAssns> rgparentassns;
-    if(fillParentAssns_) rgparentassns = std::make_unique<KalSeedParentAssns>();
+    std::unique_ptr<KalSeedPtrCollection> rgparentassns;
+    if(fillParentPtrs_) rgparentassns = std::make_unique<KalSeedPtrCollection>();
 
     KalSeedPtrCollection kseedptrs;
     if(has_kseedptrcol_){
@@ -286,8 +284,7 @@ namespace mu2e {
             fitflag.merge(TrkFitFlag::Regrown);
             auto rgks = kkfit_.createSeed(*ktrk,fitflag,*calo_h,*nominalTracker_h,*trackerstatus);
             rgkseedcol->push_back(rgks);
-            auto rgksp = art::Ptr<KalSeed>(KalSeedCollectionPID,rgkseedcol->size()-1,KalSeedCollectionGetter);
-            if(fillParentAssns_) rgparentassns->addSingle(rgksp,kseedptr);
+            if(fillParentPtrs_) rgparentassns->push_back(kseedptr);
             if(debug_ > 5)static_cast<const KinKal::PiecewiseTrajectory<KTRAJ>&>(ktrk->fitTraj()).print(std::cout,2);
             ktrkcol->push_back(ktrk.release());
           }
@@ -306,7 +303,7 @@ namespace mu2e {
     // store output
     event.put(move(ktrkcol));
     event.put(move(rgkseedcol));
-    if(fillParentAssns_)event.put(move(rgparentassns));
+    if(fillParentPtrs_)event.put(move(rgparentassns),"parents");
     return accept;
   }
 

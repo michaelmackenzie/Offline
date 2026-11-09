@@ -89,7 +89,7 @@ namespace mu2e {
     fhicl::Atom<art::InputTag> kalSeedCollection {Name("KalSeedCollection"), Comment("KalSeed collection to process") };
     fhicl::Atom<art::InputTag> comboHitCollection {Name("ComboHitCollection"), Comment("Reduced ComboHit collection") };
     fhicl::Atom<art::InputTag> indexMap {Name("StrawDigiIndexMap"), Comment("Map between original and reduced ComboHits") };
-    fhicl::Atom<bool> produceParentAssns {Name("ProduceParentAssns"), Comment("If true, produce Assns<KalSeed,KalSeed> from each regrown KalSeed (first) to the original KalSeed it was regrown from (second)"), false };
+    fhicl::Atom<bool> produceParentPtrs {Name("ProduceParentPtrs"), Comment("If true, also produce a KalSeedPtrCollection (instance \"parents\"), index-matched to the output KalSeedCollection, pointing to the original KalSeed each seed was regrown from"), false };
     fhicl::Table<KKFitConfig> kkfitSettings { Name("KKFitSettings") };
     fhicl::Table<KKConfig> fitSettings { Name("RefitSettings") };
     fhicl::OptionalTable<KKExtrapConfig> extrapSettings { Name("ExtrapolationSettings") };
@@ -147,7 +147,7 @@ namespace mu2e {
       art::ProductToken<KalSeedCollection> kseedcol_T_;
       art::ProductToken<ComboHitCollection> chcol_T_;
       art::ProductToken<IndexMap> indexmap_T_;
-      bool fillParentAssns_;
+      bool fillParentPtrs_;
       std::unique_ptr<KKExtrap> extrap_;
   };
 
@@ -158,13 +158,13 @@ namespace mu2e {
   kseedcol_T_(consumes<KalSeedCollection>(settings().kalSeedCollection())),
   chcol_T_(consumes<ComboHitCollection>(settings().comboHitCollection())),
   indexmap_T_(consumes<IndexMap>(settings().indexMap())),
-  fillParentAssns_(settings().produceParentAssns())
+  fillParentPtrs_(settings().produceParentPtrs())
   {
     produces<KKTRKCOL>();
     produces<KalSeedCollection>();
     if(settings().extrapSettings())extrap_ = make_unique<KKExtrap>(*settings().extrapSettings());
     if(extrap_) extrap_->checkConfig(config_);
-    if(fillParentAssns_) produces<KalSeedParentAssns>();
+    if(fillParentPtrs_) produces<KalSeedPtrCollection>("parents");
   }
 
   void RegrowKinematicLine::beginRun(art::Run& run)
@@ -190,13 +190,11 @@ namespace mu2e {
     const auto& chcol = *ch_H;
     auto indexmap_H = event.getValidHandle<IndexMap>(indexmap_T_);
     const auto& indexmap = *indexmap_H;
-    auto KalSeedCollectionPID = event.getProductID<KalSeedCollection>();
-    auto KalSeedCollectionGetter = event.productGetter(KalSeedCollectionPID);
     // create outputs
     unique_ptr<KKTRKCOL> ktrkcol(new KKTRKCOL );
     unique_ptr<KalSeedCollection> rgkseedcol(new KalSeedCollection );
-    std::unique_ptr<KalSeedParentAssns> parentassns;
-    if(fillParentAssns_) parentassns = std::make_unique<KalSeedParentAssns>();
+    std::unique_ptr<KalSeedPtrCollection> parentassns;
+    if(fillParentPtrs_) parentassns = std::make_unique<KalSeedPtrCollection>();
     size_t iseed(0);
     for (auto const& kseed : kseedcol) {
       if(!kseed.kinematicLineFit())throw cet::exception("RECO")<<"mu2e::RegrowKinematicLine: passed KalSeed from non-KinematicLine fit " << endl;
@@ -239,10 +237,8 @@ namespace mu2e {
           fitflag.merge(TrkFitFlag::Regrown);
           auto rgks = kkfit_.createSeed(*ktrk,fitflag,*calo_h,*nominalTracker_h,*trackerstatus);
           rgkseedcol->push_back(rgks);
-          if(fillParentAssns_){
-            auto origksp = art::Ptr<KalSeed>(kseed_H,iseed);
-            auto rgksp = art::Ptr<KalSeed>(KalSeedCollectionPID,rgkseedcol->size()-1,KalSeedCollectionGetter);
-            parentassns->addSingle(rgksp,origksp);
+          if(fillParentPtrs_){
+            parentassns->emplace_back(kseed_H,iseed);
           }
           if(debug_ > 5)static_cast<const KinKal::PiecewiseTrajectory<KTRAJ>&>(ktrk->fitTraj()).print(std::cout,2);
           ktrkcol->push_back(ktrk.release());
@@ -254,7 +250,7 @@ namespace mu2e {
     // store output
     event.put(move(ktrkcol));
     event.put(move(rgkseedcol));
-    if(fillParentAssns_)event.put(move(parentassns));
+    if(fillParentPtrs_)event.put(move(parentassns),"parents");
   }
 
   void RegrowKinematicLine::endJob()

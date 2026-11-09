@@ -1,8 +1,9 @@
 //
 // Companion of the RegrowLoopHelix / RegrowKinematicLine reco modules for MC.
-// The reco modules produce Assns<KalSeed,KalSeed> (regrown seed -> original seed) when
-// ProduceParentAssns is set. This module uses that to associate each regrown KalSeed with the
-// KalSeedMC of the seed it was regrown from.
+// With ProduceParentPtrs : true, a regrow module also writes a KalSeedPtrCollection (instance
+// "parents"), index-matched to its output KalSeedCollection, pointing to the original KalSeed each
+// seed was regrown from. This module uses it to associate each regrown KalSeed with the KalSeedMC
+// of its original seed, reproducing what the regrow modules did themselves before the Reco/MC split:
 //  - CopyKalSeedMCs = false: the regrown seed references the same KalSeedMC as the original
 //    (and the original is re-associated to it too)
 //  - CopyKalSeedMCs = true: the KalSeedMC is deep-copied into a new KalSeedMCCollection and the
@@ -11,7 +12,6 @@
 #include "art/Framework/Core/EDProducer.h"
 #include "art/Framework/Principal/Event.h"
 #include "art/Framework/Principal/Handle.h"
-#include "art/Framework/Core/ProducesCollector.h"
 #include "art/Framework/Core/ModuleMacros.h"
 #include "canvas/Utilities/InputTag.h"
 #include "canvas/Utilities/Exception.h"
@@ -21,7 +21,6 @@
 #include "fhiclcpp/types/Comment.h"
 #include "fhiclcpp/types/Name.h"
 #include "Offline/RecoDataProducts/inc/KalSeed.hh"
-#include "Offline/RecoDataProducts/inc/KalSeedAssns.hh"
 #include "Offline/MCDataProducts/inc/KalSeedMC.hh"
 #include <map>
 #include <memory>
@@ -32,7 +31,7 @@ namespace mu2e {
       struct Config {
         using Name = fhicl::Name;
         using Comment = fhicl::Comment;
-        fhicl::Atom<art::InputTag> parentAssns {Name("KalSeedParentAssns"), Comment("Regrow module label: Assns<KalSeed,KalSeed> from regrown KalSeed (first) to the original KalSeed (second)") };
+        fhicl::Atom<std::string> regrown {Name("RegrownKalSeeds"), Comment("Label of the regrow module (run with ProduceParentPtrs : true); its KalSeedCollection and KalSeedPtrCollection 'parents' are read") };
         fhicl::Atom<art::InputTag> mcAssns {Name("KalSeedMCAssns"), Comment("Input Assns from the original KalSeeds to their KalSeedMC") };
         fhicl::Atom<bool> copyKalSeedMCs {Name("CopyKalSeedMCs"), Comment("If true, create a deep copy of the referenced KalSeedMCs; otherwise reference the originals") };
       };
@@ -40,23 +39,29 @@ namespace mu2e {
       explicit RegrowKalSeedMCAssns(const Parameters& conf);
       void produce(art::Event& event) override;
     private:
-      art::InputTag parent_T_, ksmca_T_;
+      art::InputTag kseeds_T_, parents_T_, ksmca_T_;
       bool copyKalSeedMCs_;
   };
 
   RegrowKalSeedMCAssns::RegrowKalSeedMCAssns(const Parameters& conf) : art::EDProducer(conf),
-    parent_T_(conf().parentAssns()),
+    kseeds_T_(conf().regrown()),
+    parents_T_(conf().regrown(), "parents"),
     ksmca_T_(conf().mcAssns()),
     copyKalSeedMCs_(conf().copyKalSeedMCs())
   {
-    consumes<KalSeedParentAssns>(parent_T_);
+    consumes<KalSeedCollection>(kseeds_T_);
+    consumes<KalSeedPtrCollection>(parents_T_);
     consumes<KalSeedMCAssns>(ksmca_T_);
     produces<KalSeedMCAssns>();
     if(copyKalSeedMCs_) produces<KalSeedMCCollection>();
   }
 
   void RegrowKalSeedMCAssns::produce(art::Event& event) {
-    auto parent_H = event.getValidHandle<KalSeedParentAssns>(parent_T_);
+    auto kseeds_H = event.getValidHandle<KalSeedCollection>(kseeds_T_);
+    auto parents_H = event.getValidHandle<KalSeedPtrCollection>(parents_T_);
+    if(parents_H->size() != kseeds_H->size())
+      throw cet::exception("RECO")<<"mu2e::RegrowKalSeedMCAssns: parents (" << parents_H->size()
+        << ") not index-matched to regrown KalSeeds (" << kseeds_H->size() << ")" << std::endl;
     auto ksmca_H = event.getHandle<KalSeedMCAssns>(ksmca_T_);
     if(!ksmca_H)throw cet::exception("RECO")<<"mu2e::RegrowKalSeedMCAssns: No KalSeedMCAssns found" << std::endl;
     // KalSeedMCAssns is a single flat product spanning every KalSeedCollection, so build the
@@ -71,9 +76,9 @@ namespace mu2e {
       rgksmcc = std::make_unique<KalSeedMCCollection>();
       KalSeedMCCollectionPID = event.getProductID<KalSeedMCCollection>();
     }
-    for(auto const& assn : *parent_H){
-      auto const& rgksp = assn.first;
-      auto const& kseedptr = assn.second;
+    for(size_t iks = 0; iks < kseeds_H->size(); ++iks){
+      art::Ptr<KalSeed> rgksp(kseeds_H,iks);
+      auto const& kseedptr = parents_H->at(iks);
       auto imc = mcmap.find(kseedptr);
       if(imc == mcmap.end())throw cet::exception("Reco")<<"mu2e::RegrowKalSeedMCAssns: can't find MC associated with KalSeed" << std::endl;
       if(copyKalSeedMCs_){
