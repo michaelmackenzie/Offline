@@ -18,7 +18,6 @@ mainlib = helper.make_mainlib ( [
   'mu2e_TrackerGeom',
   'mu2e_DAQConditions',
 
-  'mu2e_MCDataProducts',
   'mu2e_RecoDataProducts',
   'mu2e_DataProducts',
 
