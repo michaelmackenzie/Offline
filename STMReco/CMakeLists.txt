@@ -13,9 +13,9 @@ cet_build_plugin(PlotSTMEnergySpectrum art::module
     LIBRARIES REG
       art_root_io::TFileService_service
       Offline::GlobalConstantsService
-      Offline::MCDataProducts
       Offline::RecoDataProducts
       Offline::Mu2eUtilities
+      CLHEP::CLHEP
 )
 
 cet_build_plugin(PlotSTMPHSpectrum art::module
@@ -23,9 +23,9 @@ cet_build_plugin(PlotSTMPHSpectrum art::module
     LIBRARIES REG
       art_root_io::TFileService_service
       Offline::GlobalConstantsService
-      Offline::MCDataProducts
       Offline::RecoDataProducts
       Offline::Mu2eUtilities
+      CLHEP::CLHEP
 )
 
 cet_build_plugin(PlotSTMWaveformDigis art::module

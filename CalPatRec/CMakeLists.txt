@@ -15,13 +15,11 @@ cet_make_library(
       Offline::CalorimeterGeom
       Offline::DataProducts
       Offline::GeometryService
-      Offline::MCDataProducts
       Offline::Mu2eUtilities
       Offline::RecoDataProducts
       Offline::TrackerGeom
       Offline::TrkReco
       Offline::BTrkLegacy
-      Offline::MCUtilities
       ROOT::Physics
 )
 
@@ -49,7 +47,6 @@ cet_build_plugin(CalHelixFinder art::module
       Offline::CalorimeterGeom
       Offline::ConfigTools
       Offline::GeometryService
-      Offline::MCUtilities
       Offline::Mu2eUtilities
       Offline::RecoDataProducts
       Offline::TrackerGeom
@@ -89,7 +86,6 @@ cet_build_plugin(DeltaFinder art::module
 
       Offline::CalorimeterGeom
       Offline::GeometryService
-      Offline::MCUtilities
       Offline::Mu2eUtilities
       Offline::RecoDataProducts
       Offline::TrackerGeom
@@ -112,7 +108,6 @@ cet_build_plugin(PrefetchData art::module
     LIBRARIES REG
       Offline::CalPatRec
       Offline::GeometryService
-      Offline::MCDataProducts
       Offline::Mu2eUtilities
       Offline::RecoDataProducts
       Offline::TrackerGeom
@@ -124,7 +119,6 @@ cet_build_plugin(TZClusterFinder art::module
       Offline::CalPatRec
 
       Offline::ConfigTools
-      Offline::MCUtilities
       Offline::Mu2eUtilities
       Offline::RecoDataProducts
       Offline::TimeoutService

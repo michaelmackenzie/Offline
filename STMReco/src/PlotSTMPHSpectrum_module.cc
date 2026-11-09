@@ -15,7 +15,7 @@
 #include "Offline/GlobalConstantsService/inc/GlobalConstantsHandle.hh"
 #include "Offline/GlobalConstantsService/inc/ParticleDataList.hh"
 #include "Offline/Mu2eUtilities/inc/STMUtils.hh"
-#include "Offline/MCDataProducts/inc/StepPointMC.hh"
+#include "CLHEP/Vector/ThreeVector.h"
 #include "Offline/RecoDataProducts/inc/STMPHDigi.hh"
 
 #include <utility>

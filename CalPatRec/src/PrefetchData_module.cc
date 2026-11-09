@@ -23,12 +23,10 @@
 #include "Offline/RecoDataProducts/inc/StrawHitPosition.hh"
 #include "Offline/RecoDataProducts/inc/ComboHit.hh"
 #include "Offline/RecoDataProducts/inc/StrawHitFlag.hh"
-#include "Offline/MCDataProducts/inc/StrawDigiMC.hh"
 // diagnostics
 #include <algorithm>
 #include <cmath>
 #include "CLHEP/Vector/ThreeVector.h"
-#include "Offline/MCDataProducts/inc/StepPointMC.hh"
 #include "Offline/Mu2eUtilities/inc/TwoLinePCA.hh"
 using namespace std;
 using CLHEP::Hep3Vector;
@@ -52,14 +50,12 @@ namespace mu2e {
     void   fake_access(const ComboHit&    Hit);
     // void   fake_access(const StereoHit&   Hit);
     void   fake_access(const StrawDigi&   Digi);
-    void   fake_access(const StepPointMC* Step);
 
   private:
 
     bool findData(const art::Event& e);
                                         // control flags
     int           _debugLevel;
-    bool          _mcDiag;
     int           _fetchCaloDigis;
     int           _fetchCaloHits;
     int           _fetchStrawHits;
@@ -95,7 +91,6 @@ namespace mu2e {
   PrefetchData::PrefetchData(fhicl::ParameterSet const& pset):
     art::EDProducer(pset),
     _debugLevel     (pset.get<int>          ("debugLevel"              )),
-    _mcDiag         (pset.get<bool>         ("mcDiag"                  )),
 
     _fetchCaloDigis (pset.get<int>         ("fetchCaloDigis" )),
     _fetchCaloHits  (pset.get<int>         ("fetchCaloHits" )),
@@ -143,10 +138,6 @@ namespace mu2e {
 //-----------------------------------------------------------------------------
   // void PrefetchData::fake_access(const StereoHit& Hit) {
   // }
-
-//-----------------------------------------------------------------------------
-  void PrefetchData::fake_access(const StepPointMC* Step) {
-  }
 
 //-----------------------------------------------------------------------------
   void PrefetchData::fake_access(const StrawDigi& X) {
@@ -254,18 +245,6 @@ namespace mu2e {
     //   for(int i=0;i<nsth;++i){
     //         const StereoHit& sth = _sthcol->at (i);
     //         fake_access(sth);
-    //   }
-    // }
-
-    // if(_mcDiag){
-    //   auto mcdH = evt.getValidHandle<StrawDigiMCCollection>(_sdTag);
-    //   _mcdigis = mcdH.product();
-    //   if (_mcdigis) {
-    //         int nd = _mcdigis->size();
-    //         for(int i=0;i<nd;++i){
-    //           const StrawDigiMC& mcdigi = _mcdigis->at(i);
-    //           fake_access(mcdigi);
-    //         }
     //   }
     // }
 

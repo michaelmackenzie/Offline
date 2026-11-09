@@ -358,7 +358,6 @@ CalPatRec : { @table::CalPatRec
 
         PrefetchData : { module_type:PrefetchData
             debugLevel                    : 0
-            mcDiag                        : true
 
             fetchCaloDigis                : 1
             fetchStrawDigis               : 1
