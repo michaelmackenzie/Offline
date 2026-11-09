@@ -4,13 +4,16 @@ cet_make_library(
       src/ShowerStepUtil.cc
       src/CaloDigiWrapper.cc
       src/CaloDigiWrapperCollection.cc
+      src/CaloNoiseUtil.cc
     LIBRARIES PUBLIC
       
       Offline::ConfigTools
       Offline::CalorimeterGeom
+      Offline::DataProducts
       Offline::GeometryService
       Offline::Mu2eUtilities
       Offline::SeedService
+      ROOT::Hist
 )
 
 cet_build_plugin(CaloClusterTruthMatch art::module

@@ -2,7 +2,7 @@
 #include "art/Framework/Services/Optional/RandomNumberGenerator.h"
 #include "Offline/DataProducts/inc/CaloConst.hh"
 #include "Offline/SeedService/inc/SeedService.hh"
-#include "Offline/Mu2eUtilities/inc/CaloNoiseUtil.hh"
+#include "Offline/CaloMC/inc/CaloNoiseUtil.hh"
 #include "Offline/ConfigTools/inc/ConfigFileLookupPolicy.hh"
 
 #include "TFile.h"

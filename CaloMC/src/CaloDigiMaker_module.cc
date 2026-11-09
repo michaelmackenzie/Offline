@@ -21,7 +21,7 @@
 #include "Offline/MCDataProducts/inc/CaloShowerRO.hh"
 #include "Offline/MCDataProducts/inc/ProtonBunchTimeMC.hh"
 #include "Offline/Mu2eUtilities/inc/CaloPulseUtil.hh"
-#include "Offline/Mu2eUtilities/inc/CaloNoiseUtil.hh"
+#include "Offline/CaloMC/inc/CaloNoiseUtil.hh"
 #include "Offline/ProditionsService/inc/ProditionsHandle.hh"
 #include "Offline/RecoDataProducts/inc/CaloDigi.hh"
 #include "Offline/SeedService/inc/SeedService.hh"

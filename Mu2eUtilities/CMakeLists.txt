@@ -1,7 +1,6 @@
 cet_make_library(
     SOURCE
       src/BuildLinearFitMatrixSums.cc
-      src/CaloNoiseUtil.cc
       src/CaloPulseUtil.cc
       src/compressPdgId.cc
       src/CoordinateString.cc
@@ -37,7 +36,6 @@ cet_make_library(
       Offline::GeomPrimitives
       Offline::GlobalConstantsService
       Offline::RecoDataProducts
-      Offline::SeedService
       Offline::STMConditions
       Offline::StoppingTargetGeom
       Offline::TrackerGeom
