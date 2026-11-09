@@ -33,6 +33,7 @@ cet_build_plugin(PrintMCModule art::module
 
 )
 
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/fcl/printMetadataSim.fcl   ${CURRENT_BINARY_DIR} fcl/printMetadataSim.fcl   COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/fcl/printCosmicLivetime.fcl   ${CURRENT_BINARY_DIR} fcl/printCosmicLivetime.fcl   COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/fcl/printGenParticle.fcl   ${CURRENT_BINARY_DIR} fcl/printGenParticle.fcl   COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/fcl/printMCTrajectory.fcl   ${CURRENT_BINARY_DIR} fcl/printMCTrajectory.fcl   COPYONLY)

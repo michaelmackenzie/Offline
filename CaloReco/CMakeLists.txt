@@ -51,6 +51,18 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/fcl/common.fcl ${CURRENT_BINARY_DIR} 
 
 install(DIRECTORY data DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/Offline/CaloReco)
 
+cet_build_plugin(CaloDigiAna art::module
+    REG_SOURCE src/CaloDigiAna_module.cc
+    LIBRARIES REG
+      art_root_io::TFileService_service
+
+      Offline::CalorimeterGeom
+      Offline::DataProducts
+      Offline::GeometryService
+      Offline::GlobalConstantsService
+      Offline::RecoDataProducts
+)
+
 install_source(SUBDIRS src)
 install_headers(USE_PROJECT_NAME SUBDIRS inc)
 install_fhicl(SUBDIRS fcl SUBDIRNAME Offline/CaloReco/fcl)

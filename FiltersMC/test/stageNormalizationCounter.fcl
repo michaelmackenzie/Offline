@@ -5,7 +5,7 @@
 # from the job's own GenEventCount, so the input must carry one. Run it over
 # any art file with subrun bookkeeping, e.g.
 #
-#   mu2e -c Offline/UtilityModules/test/stageNormalizationCounter.fcl \
+#   mu2e -c Offline/FiltersMC/test/stageNormalizationCounter.fcl \
 #        -s sim.mu2e.TargetStops.<...>.art
 #
 # For a resampling stage, set upstreamTag to the StageNormalization the

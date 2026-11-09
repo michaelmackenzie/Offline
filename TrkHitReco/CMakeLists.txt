@@ -95,6 +95,13 @@ cet_make_exec(NAME StereoLineTest
 
 install(DIRECTORY data DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/Offline/TrkHitReco)
 
+cet_build_plugin(ReadStrawDigiReco art::module
+    REG_SOURCE src/ReadStrawDigiReco_module.cc
+    LIBRARIES REG
+      art_root_io::TFileService_service
+      Offline::RecoDataProducts
+)
+
 install_source(SUBDIRS src inc)
 install_headers(USE_PROJECT_NAME SUBDIRS inc)
 install_fhicl(SUBDIRS fcl SUBDIRNAME Offline/TrkHitReco/fcl)

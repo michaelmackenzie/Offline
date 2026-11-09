@@ -56,17 +56,6 @@ cet_build_plugin(CaloClusterCompare art::module
       Offline::RecoDataProducts
 )
 
-cet_build_plugin(CaloDigiAna art::module
-    REG_SOURCE src/CaloDigiAna_module.cc
-    LIBRARIES REG
-      art_root_io::TFileService_service
-
-      Offline::CalorimeterGeom
-      Offline::DataProducts
-      Offline::GeometryService
-      Offline::GlobalConstantsService
-      Offline::RecoDataProducts
-)
 
 cet_build_plugin(CaloHitFinderInspect art::module
     REG_SOURCE src/CaloHitFinderInspect_module.cc
@@ -467,12 +456,6 @@ cet_build_plugin(ReadPTM art::module
       Offline::MCDataProducts
 )
 
-cet_build_plugin(ReadStrawDigiReco art::module
-    REG_SOURCE src/ReadStrawDigiReco_module.cc
-    LIBRARIES REG
-      art_root_io::TFileService_service
-      Offline::RecoDataProducts
-)
 
 cet_build_plugin(ReadStrawHitReco art::module
     REG_SOURCE src/ReadStrawHitReco_module.cc

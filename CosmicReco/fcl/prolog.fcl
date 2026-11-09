@@ -131,33 +131,9 @@ CosmicReco : { @table::CosmicReco
 
 
 
-   CosmicTrackDetails : {
-      module_type : CosmicTrackDetails
-      ComboHitCollection : "makePH"
-      TimeClusterCollection : SimpleTimeCluster
-      #TimeClusterCollection : TimeClusterFinderCosmics
-      CosmicTrackSeedCollection : CosmicTrackFinder
-      StrawDigiMCCollection : "compressDigiMCs"
-   }
-
-   CosmicMCRecoDiff  : {
-      module_type : CosmicMCRecoDiff
-      ComboHitCollection : "makePH"
-      TimeClusterCollection : SimpleTimeCluster
-      #TimeClusterCollection : TimeClusterFinderCosmics
-      CosmicTrackSeedCollection : "CosmicTrackFinderTimeFit"
-      StrawDigiMCCollection : "compressDigiMCs"
-   }
 
 
-   CosmicAnalysis : {
-      module_type : CosmicAnalyzer
-      ComboHitCollection : "makePH"
-      TimeClusterCollection : SimpleTimeCluster
-      #TimeClusterCollection : TimeClusterFinderCosmics
-      CosmicTrackSeedCollection : CosmicTrackFinder
-      StrawDigiMCCollection : "compressDigiMCs"
-   }
+
 
 
    CosmicShowerFilter : {
@@ -182,9 +158,6 @@ CosmicReco : { @table::CosmicReco
       CosmicDriftFit           : { @table::CosmicReco.CosmicDriftFit}
    }
    analyzers : {
-      CosmicAnalysis     : { @table::CosmicReco.CosmicAnalysis }
-      CosmicTrackDetails : { @table::CosmicReco.CosmicTrackDetails }
-      CosmicMCRecoDiff   : { @table::CosmicReco.CosmicMCRecoDiff }
    }
    filters : {
    }

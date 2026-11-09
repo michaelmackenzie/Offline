@@ -95,7 +95,6 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/fcl/printEventWindowMarker.fcl   ${CU
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/fcl/print.fcl   ${CURRENT_BINARY_DIR} fcl/print.fcl   COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/fcl/printLong.fcl   ${CURRENT_BINARY_DIR} fcl/printLong.fcl   COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/fcl/printMetadata.fcl   ${CURRENT_BINARY_DIR} fcl/printMetadata.fcl   COPYONLY)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/fcl/printMetadataSim.fcl   ${CURRENT_BINARY_DIR} fcl/printMetadataSim.fcl   COPYONLY)
 
 install_source(SUBDIRS src)
 install_headers(USE_PROJECT_NAME SUBDIRS inc)
