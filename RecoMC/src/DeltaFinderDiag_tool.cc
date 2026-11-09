@@ -19,7 +19,7 @@
 #include "fhiclcpp/ParameterSet.h"
 #include "messagefacility/MessageLogger/MessageLogger.h"
 
-#include "Offline/CalPatRec/inc/HlPrint.hh"
+#include "Offline/RecoMC/inc/HlPrint.hh"
 #include "Offline/CalPatRec/inc/DeltaFinderAlg.hh"
 #include "Offline/RecoMC/inc/McPart_t.hh"
 

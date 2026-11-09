@@ -1,6 +1,6 @@
 //
-#ifndef CalPatRec_HlPrint_hh
-#define CalPatRec_HlPrint_hh
+#ifndef RecoMC_HlPrint_hh
+#define RecoMC_HlPrint_hh
 
 #include "TObject.h"
 #include "TObjArray.h"

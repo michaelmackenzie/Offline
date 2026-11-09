@@ -29,7 +29,7 @@
 
 #include "Offline/MCDataProducts/inc/StrawDigiMC.hh"
 
-#include "Offline/CalPatRec/inc/HlPrint.hh"
+#include "Offline/RecoMC/inc/HlPrint.hh"
 
 // diagnostics
 

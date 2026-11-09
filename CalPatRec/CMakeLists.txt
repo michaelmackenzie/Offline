@@ -8,7 +8,6 @@ cet_make_library(
       src/DeltaFinderAlg_findProtons.cc
       src/DeltaFinder_types.cc
       src/DeltaSeed.cc
-      src/HlPrint_ComboHit.cc
       src/ProtonCandidate.cc
     LIBRARIES PUBLIC
 
@@ -81,19 +80,6 @@ cet_build_plugin(CalLineTimePeakFinder art::module
       Offline::RecoDataProducts
       Offline::TrackerGeom
       Offline::StoppingTargetGeom
-)
-
-cet_build_plugin(ComboHitFilter art::module
-    REG_SOURCE src/ComboHitFilter_module.cc
-    LIBRARIES REG
-      Offline::CalPatRec
-
-      Offline::CalorimeterGeom
-      Offline::GeometryService
-      Offline::MCDataProducts
-      Offline::Mu2eUtilities
-      Offline::RecoDataProducts
-      Offline::TrackerGeom
 )
 
 cet_build_plugin(DeltaFinder art::module

@@ -40,7 +40,7 @@
 #include "CLHEP/Vector/ThreeVector.h"
 #include "Offline/MCDataProducts/inc/StrawGasStep.hh"
 
-#include "Offline/CalPatRec/inc/HlPrint.hh"
+#include "Offline/RecoMC/inc/HlPrint.hh"
 // #include "Offline/RecoMC/inc/McPart_t.hh"  .. so far, duplicating...
 
 using namespace std;

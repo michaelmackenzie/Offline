@@ -3,7 +3,7 @@
 #include "art/Framework/Principal/Run.h"
 #include "art/Framework/Principal/Selector.h"
 
-#include "Offline/CalPatRec/inc/HlPrint.hh"
+#include "Offline/RecoMC/inc/HlPrint.hh"
 
 #include "Offline/RecoDataProducts/inc/StrawHit.hh"
 #include "Offline/RecoDataProducts/inc/ComboHit.hh"

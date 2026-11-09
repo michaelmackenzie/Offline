@@ -5,6 +5,7 @@ cet_make_library(
     SOURCE
       src/AgnosticHelixFinderDiagDisplay.cc
       src/CosmicTrackMCInfo.cc
+      src/HlPrint_ComboHit.cc
     LIBRARIES PUBLIC
       Offline::CalPatRec
       Offline::BFieldGeom
@@ -22,6 +23,19 @@ cet_make_library(
 )
 
 # ---- from CalPatRec ----
+
+cet_build_plugin(ComboHitFilter art::module
+    REG_SOURCE src/ComboHitFilter_module.cc
+    LIBRARIES REG
+      Offline::RecoMC
+
+      Offline::CalorimeterGeom
+      Offline::GeometryService
+      Offline::MCDataProducts
+      Offline::Mu2eUtilities
+      Offline::RecoDataProducts
+      Offline::TrackerGeom
+)
 
 cet_build_plugin(DeltaFinderAna art::module
     REG_SOURCE src/DeltaFinderAna_module.cc
