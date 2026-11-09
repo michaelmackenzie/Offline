@@ -4,6 +4,7 @@
 cet_make_library(
     SOURCE
       src/AgnosticHelixFinderDiagDisplay.cc
+      src/CosmicTrackMCInfo.cc
     LIBRARIES PUBLIC
       Offline::CalPatRec
       Offline::BFieldGeom
@@ -138,6 +139,95 @@ cet_build_plugin(TimeAndPhiClusterFinderDiag art::tool
       Offline::MCDataProducts
       Offline::Mu2eUtilities
       Offline::RecoDataProducts
+)
+
+# ---- from CosmicReco, CRVReco, Mu2eKinKal, Lumi ----
+
+cet_build_plugin(CosmicFitDisplay art::module
+    REG_SOURCE src/CosmicFitDisplay_module.cc
+    LIBRARIES REG
+      Offline::RecoMC
+      Offline::CosmicReco
+
+      Offline::GeneralUtilities
+      Offline::GeometryService
+      Offline::MCDataProducts
+      Offline::Mu2eUtilities
+      Offline::RecoDataProducts
+      Offline::TrackerGeom
+      ROOT::Geom
+)
+
+cet_build_plugin(CosmicMuonInfo art::module
+    REG_SOURCE src/CosmicMuonInfo_module.cc
+    LIBRARIES REG
+      Offline::RecoMC
+      Offline::CosmicReco
+
+      Offline::DataProducts
+      Offline::MCDataProducts
+      Offline::RecoDataProducts
+)
+
+cet_build_plugin(CosmicTrackDiag art::module
+    REG_SOURCE src/CosmicTrackDiag_module.cc
+    LIBRARIES REG
+      Offline::RecoMC
+      Offline::CosmicReco
+
+      Offline::DataProducts
+      Offline::GeneralUtilities
+      Offline::GeometryService
+      Offline::MCDataProducts
+      Offline::Mu2eUtilities
+      Offline::ProditionsService
+      Offline::RecoDataProducts
+)
+
+cet_build_plugin(CrvTimeOffsets art::module
+    REG_SOURCE src/CrvTimeOffsets_module.cc
+    LIBRARIES REG
+      Offline::RecoMC
+      art_root_io::TFileService_service
+      Offline::CRVReco
+
+      Offline::CosmicRayShieldGeom
+      Offline::DataProducts
+      Offline::GeometryService
+      Offline::RecoDataProducts      Offline::CRVConditions
+      Offline::MCDataProducts
+      Offline::ProditionsService
+)
+
+cet_build_plugin(KKTruthSeed art::module
+    REG_SOURCE src/KKTruthSeed_module.cc
+    LIBRARIES REG
+      Offline::RecoMC
+      Offline::Mu2eKinKal
+
+      Offline::BFieldGeom
+      Offline::CalorimeterGeom
+      Offline::DataProducts
+      Offline::GeneralUtilities
+      Offline::GeometryService
+      Offline::GlobalConstantsService
+      Offline::MCDataProducts
+      Offline::RecoDataProducts
+      Offline::TrackerGeom
+      Offline::TrkReco      Offline::ProditionsService
+      Offline::TrackerConditions
+)
+
+cet_build_plugin(NPOTAnalysis art::module
+    REG_SOURCE src/NPOTAnalysis_module.cc
+    LIBRARIES REG
+      Offline::RecoMC
+      art_root_io::TFileService_service
+      
+      Offline::RecoDataProducts
+      Offline::MCDataProducts
+      Offline::Mu2eUtilities
+      ROOT::Hist
 )
 
 install_source(SUBDIRS src)

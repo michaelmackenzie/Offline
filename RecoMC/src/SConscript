@@ -9,7 +9,7 @@ Import('env')
 Import('mu2e_helper')
 
 rootlibs      = env['ROOTLIBS']
-extrarootlibs = ['TMVA' , 'Minuit' , 'XMLIO' ]
+extrarootlibs = ['TMVA' , 'Minuit' , 'XMLIO', 'Minuit2', 'Geom', 'GeomPainter', 'Ged']
 
 helper=mu2e_helper(env);
 
@@ -46,6 +46,8 @@ mainlib = helper.make_mainlib( [ 'mu2e_CalPatRec',
                                  rootlibs,
                                  extrarootlibs,
                                  'mu2e_BTrkLegacy',
+                                 'mu2e_GeomPrimitives',
+                                 'mu2e_GeneralUtilities',
                                  'CLHEP',
                                  'xerces-c',
                                  ] )
@@ -88,6 +90,24 @@ helper.make_plugins( [ mainlib,
                        'cetlib',
                        'cetlib_except',
                        'mu2e_BTrkLegacy',
+                       'mu2e_CosmicReco',
+                       'mu2e_CRVReco',
+                       'mu2e_Mu2eKinKal',
+                       'mu2e_KinKalGeom',
+                       'mu2e_CosmicRayShieldGeom',
+                       'mu2e_Mu2eHallGeom',
+                       'mu2e_ProditionsService',
+                       'mu2e_CRVConditions',
+                       'mu2e_DAQConditions',
+                       'mu2e_SeedService',
+                       'KinKal_Fit',
+                       'KinKal_Detector',
+                       'KinKal_MatEnv',
+                       'openblas',
+                       'ROOTTMVASofie',
+                       'libSpectrum',
+                       'boost_system',
+                       'artdaq-core-mu2e_Overlays',
                        'KinKal_Trajectory',
                        'KinKal_Geometry',
                        'KinKal_General',

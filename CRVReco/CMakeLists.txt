@@ -108,18 +108,6 @@ cet_build_plugin(CrvWidebandTriggerFilter art::module
       Offline::RecoDataProducts
 )
 
-cet_build_plugin(CrvTimeOffsets art::module
-    REG_SOURCE src/CrvTimeOffsets_module.cc
-    LIBRARIES REG
-      art_root_io::TFileService_service
-      Offline::CRVReco
-
-      Offline::CosmicRayShieldGeom
-      Offline::DataProducts
-      Offline::GeometryService
-      Offline::RecoDataProducts
-)
-
 cet_build_plugin(PrintCrvChannelMap art::module
     REG_SOURCE src/PrintCrvChannelMap_module.cc
     LIBRARIES REG

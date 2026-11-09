@@ -85,23 +85,6 @@ cet_build_plugin(RegrowKinematicLine art::module
       Offline::TrkReco
 )
 
-cet_build_plugin(KKTruthSeed art::module
-    REG_SOURCE src/KKTruthSeed_module.cc
-    LIBRARIES REG
-      Offline::Mu2eKinKal
-
-      Offline::BFieldGeom
-      Offline::CalorimeterGeom
-      Offline::DataProducts
-      Offline::GeneralUtilities
-      Offline::GeometryService
-      Offline::GlobalConstantsService
-      Offline::MCDataProducts
-      Offline::RecoDataProducts
-      Offline::TrackerGeom
-      Offline::TrkReco
-)
-
 cet_make_exec(NAME ExtrapolateSweepTest
     SOURCE src/ExtrapolateSweepTest_main.cc
     LIBRARIES

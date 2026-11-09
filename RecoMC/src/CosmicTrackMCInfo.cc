@@ -1,4 +1,4 @@
-#include "Offline/CosmicReco/inc/CosmicTrackMCInfo.hh"
+#include "Offline/RecoMC/inc/CosmicTrackMCInfo.hh"
 
 namespace mu2e {
 
