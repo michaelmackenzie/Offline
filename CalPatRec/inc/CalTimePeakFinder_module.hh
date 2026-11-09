@@ -17,6 +17,7 @@ namespace art {
 
 // data
 #include "Offline/RecoDataProducts/inc/CaloHit.hh"
+#include "fhiclcpp/types/OptionalDelegatedParameter.h"
 #include "Offline/RecoDataProducts/inc/CaloCluster.hh"
 #include "Offline/RecoDataProducts/inc/HelixVal.hh"
 
@@ -127,7 +128,7 @@ namespace mu2e {
       fhicl::Atom<double>             PitchAngle              { Name("PitchAngle"             ),    Comment("pitchAngle"             )};
       fhicl::Atom<double>             Beta                    { Name("Beta"                   ),    Comment("beta"                   )};
       fhicl::Atom<double>             DtOffset                { Name("DtOffset"               ),    Comment("dtOffset"               )};
-      fhicl::Table<CalTimePeakFinderTypes::Config>DiagPlugin  { Name("DiagPlugin"),                 Comment("Diag plugin"            )};
+      fhicl::OptionalDelegatedParameter DiagPlugin{Name("DiagPlugin"), Comment("Diag plugin; configured and validated by the diag tool (tool_type)")};
     };
 
     using Parameters = art::EDProducer::Table<Config>;

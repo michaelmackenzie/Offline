@@ -13,6 +13,8 @@
 #include "art/Utilities/make_tool.h"
 #include "art_root_io/TFileService.h"
 #include "fhiclcpp/ParameterSet.h"
+#include "fhiclcpp/types/OptionalDelegatedParameter.h"
+#include "cetlib_except/exception.h"
 #include "fhiclcpp/types/OptionalAtom.h"
 #include "fhiclcpp/types/Sequence.h"
 
@@ -110,7 +112,7 @@ namespace mu2e {
       fhicl::OptionalAtom<double>  timeoutMs              {Name("timeoutMs"            ), Comment("Optional timeout budget in ms; <= 0 disables timeout checks")};
       fhicl::Sequence<std::string> validHelixDirections   {Name("validHelixDirections" ), Comment("only save desired directions")  };
 
-      fhicl::Table<AgnosticHelixFinderTypes::Config> diagPlugin  {Name("diagPlugin"), Comment("diag plugin"                   )  };
+      fhicl::OptionalDelegatedParameter diagPlugin{Name("diagPlugin"), Comment("diag plugin; configured and validated by the diag tool (tool_type)")};
     };
 
   private:
@@ -390,7 +392,12 @@ namespace mu2e {
     consumes<CaloClusterCollection>  (_ccLabel);
     produces<HelixSeedCollection>    ();
 
-    if (_diagLevel > 0) _hmanager = art::make_tool<ModuleHistToolBase>(config().diagPlugin, "diagPlugin");
+    if (_diagLevel > 0) {
+      fhicl::ParameterSet diagPS;
+      if (!config().diagPlugin.get_if_present(diagPS))
+        throw cet::exception("CONFIG") << "AgnosticHelixFinder: diagLevel != 0 requires diagPlugin";
+      _hmanager = art::make_tool<ModuleHistToolBase>(diagPS);
+    }
     else _hmanager = std::make_unique<ModuleHistToolBase>();
 
     // For timing analysis

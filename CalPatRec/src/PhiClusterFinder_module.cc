@@ -8,6 +8,9 @@
 #include "art/Utilities/make_tool.h"
 
 #include "fhiclcpp/types/Atom.h"
+#include "fhiclcpp/types/OptionalDelegatedParameter.h"
+#include "cetlib_except/exception.h"
+#include "fhiclcpp/ParameterSet.h"
 #include "fhiclcpp/types/Sequence.h"
 #include "CLHEP/Units/PhysicalConstants.h"
 
@@ -65,7 +68,7 @@ namespace mu2e {
         fhicl::Atom<art::InputTag>                          ComboHitCollection{      Name("ComboHitCollection"),   Comment("ComboHit collection name") };
         fhicl::Atom<art::InputTag>                          TimeClusterCollection{   Name("TimeClusterCollection"),Comment("TimeCluster collection name") };
         fhicl::Atom<bool>                                   useCC{                   Name("useCC"),                Comment("Use calo cluster") };
-        fhicl::Table<PhiClusterFinderTypes::Config>         DiagPlugin{              Name("DiagPlugin"),           Comment("Diag plugin") };
+        fhicl::OptionalDelegatedParameter DiagPlugin{Name("DiagPlugin"), Comment("Diag plugin; configured and validated by the diag tool (tool_type)")};
       };
 
       explicit PhiClusterFinder(const art::EDProducer::Table<Config>& config);
@@ -134,7 +137,12 @@ namespace mu2e {
       produces<TimeClusterCollection>();
       produces<IntensityInfoTimeCluster>();
 
-      if (_diag != 0) _hmanager = art::make_tool<ModuleHistToolBase>(config().DiagPlugin," ");
+      if (_diag != 0) {
+        fhicl::ParameterSet diagPS;
+        if (!config().DiagPlugin.get_if_present(diagPS))
+          throw cet::exception("CONFIG") << "PhiClusterFinder: diagLevel != 0 requires diagPlugin";
+        _hmanager = art::make_tool<ModuleHistToolBase>(diagPS);
+      }
       else            _hmanager = std::make_unique<ModuleHistToolBase>();
     }
 

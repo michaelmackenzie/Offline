@@ -10,6 +10,9 @@
 #include "art/Framework/Core/EDProducer.h"
 #include "canvas/Utilities/InputTag.h"
 #include "fhiclcpp/types/Atom.h"
+#include "fhiclcpp/types/OptionalDelegatedParameter.h"
+#include "cetlib_except/exception.h"
+#include "fhiclcpp/ParameterSet.h"
 #include "fhiclcpp/types/Sequence.h"
 #include "fhiclcpp/types/Table.h"
 
@@ -53,7 +56,6 @@ namespace mu2e {
   {
     public:
 
-      using Config_types = TimeAndPhiClusterFinderTypes::Config ;
       using Data_types   = TimeAndPhiClusterFinderTypes::Data_t ;
       struct Config
       {
@@ -81,7 +83,7 @@ namespace mu2e {
           fhicl::Atom<float>                      maxDeltaPhi            {Name("MaxDeltaPhi"),            Comment("Max delta phi between consecutive hits in cluster") };
           fhicl::Atom<int>                        maxNdiff               {Name("MaxNdiff"),               Comment("Max difference of number of hits between duplicated clusters") };
           fhicl::Atom<int>                        diag                   {Name("Diag"),                   Comment("Diag level"), 0 };
-          fhicl::Table<Config_types>              diagPlugin             {Name("DiagPlugin"),             Comment("Diag Plugin config")};
+          fhicl::OptionalDelegatedParameter diagPlugin{Name("DiagPlugin"), Comment("Diag Plugin config; configured and validated by the diag tool (tool_type)")};
       };
 
 
@@ -180,7 +182,12 @@ namespace mu2e {
        if (algoAssignHits_ !=1 && algoAssignHits_ !=2)
            throw cet::exception("CATEGORY")<< "Unrecognized time Algorthm in TimeAndPhiClusterFinder module";
 
-       if (diag_) diagTool_ = art::make_tool<ModuleHistToolBase>(config().diagPlugin," ");
+       if (diag_) {
+         fhicl::ParameterSet diagPS;
+         if (!config().diagPlugin.get_if_present(diagPS))
+           throw cet::exception("CONFIG") << "TimeAndPhiClusterFinder: diagLevel != 0 requires diagPlugin";
+         diagTool_ = art::make_tool<ModuleHistToolBase>(diagPS);
+       }
     }
 
 

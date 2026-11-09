@@ -2,6 +2,7 @@
 #include "fhiclcpp/ParameterSet.h"
 
 #include "Offline/CalPatRec/inc/TZClusterFinder_types.hh"
+#include "Offline/RecoMC/inc/TZClusterFinderDiag_types.hh"
 
 #include "Offline/MCUtilities/inc/McUtilsToolBase.hh"
 #include "Offline/Mu2eUtilities/inc/ModuleHistToolBase.hh"

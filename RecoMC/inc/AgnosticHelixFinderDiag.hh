@@ -9,6 +9,7 @@
 
 // Offline
 #include "Offline/CalPatRec/inc/AgnosticHelixFinder_types.hh"
+#include "Offline/RecoMC/inc/AgnosticHelixFinderDiag_types.hh"
 #include "Offline/MCDataProducts/inc/SimParticle.hh"
 #include "Offline/MCDataProducts/inc/StrawDigiMC.hh"
 #include "Offline/Mu2eUtilities/inc/ModuleHistToolBase.hh"

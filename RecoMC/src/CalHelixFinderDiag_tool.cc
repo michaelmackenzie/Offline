@@ -10,6 +10,7 @@
 #include "fhiclcpp/ParameterSet.h"
 
 #include "Offline/CalPatRec/inc/CalHelixFinder_types.hh"
+#include "Offline/RecoMC/inc/CalHelixFinderDiag_types.hh"
 #include "Offline/Mu2eUtilities/inc/ModuleHistToolBase.hh"
 
 #include "Offline/MCDataProducts/inc/StepPointMC.hh"

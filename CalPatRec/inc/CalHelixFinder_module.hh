@@ -5,6 +5,8 @@
 #define CalPatRec_CalHelixFinder_module
 
 #include "art/Framework/Core/EDProducer.h"
+#include "fhiclcpp/types/OptionalDelegatedParameter.h"
+#include "fhiclcpp/ParameterSet.h"
 #include "art/Framework/Principal/Event.h"
 #include "art_root_io/TFileService.h"
 
@@ -129,7 +131,7 @@ namespace mu2e {
       fhicl::Atom<bool>                          doSingleOutput{       Name("doSingleOutput"),             Comment("Do Single Output") };
       fhicl::Atom<float>                         maxEDepAvg{           Name("maxEDepAvg"),                 Comment("Max Avg EDep") };
       fhicl::Table<CalHelixFinderAlg::Config>    hfinder{              Name("HelixFinderAlg"),                    Comment("CalHelixFinderAlg Config") };
-      fhicl::Table<CalHelixFinderTypes::Config>  diagPlugin{           Name("diagPlugin"),                 Comment("Diag Plugin") };
+      fhicl::OptionalDelegatedParameter diagPlugin{Name("diagPlugin"), Comment("Diag Plugin; configured and validated by the diag tool (tool_type)")};
       fhicl::Sequence<int>                       Helicities{           Name("Helicities"),                 Comment("Helicity values") };
     };
 

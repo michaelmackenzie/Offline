@@ -7,6 +7,7 @@
 // *FIXME* : need to use the assumed particle velocity instead of the speed of light
 ///////////////////////////////////////////////////////////////////////////////
 #include "fhiclcpp/types/Atom.h"
+#include "cetlib_except/exception.h"
 #include "fhiclcpp/types/Sequence.h"
 #include "fhiclcpp/ParameterSet.h"
 
@@ -65,7 +66,12 @@ namespace mu2e {
 
     if (_debugLevel != 0) _printfreq = 1;
 
-    if (_diagLevel  != 0) _hmanager = art::make_tool<ModuleHistToolBase>(Conf().DiagPlugin,"diagPlugin");
+    if (_diagLevel  != 0) {
+      fhicl::ParameterSet diagPS;
+      if (!Conf().DiagPlugin.get_if_present(diagPS))
+        throw cet::exception("CONFIG") << "CalTimePeakFinder: diagLevel != 0 requires diagPlugin";
+      _hmanager = art::make_tool<ModuleHistToolBase>(diagPS);
+    }
     else                  _hmanager = std::make_unique<ModuleHistToolBase>();
 
     _sinPitch              = sin(_pitchAngle);

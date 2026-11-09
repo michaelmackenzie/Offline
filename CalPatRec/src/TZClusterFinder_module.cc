@@ -6,6 +6,8 @@
 #include "Offline/CalPatRec/inc/TZClusterFinder_types.hh"
 
 #include "fhiclcpp/ParameterSet.h"
+#include "fhiclcpp/types/OptionalDelegatedParameter.h"
+#include "cetlib_except/exception.h"
 #include "fhiclcpp/types/OptionalAtom.h"
 
 #include "art/Framework/Core/EDProducer.h"
@@ -72,7 +74,7 @@ namespace mu2e {
       fhicl::Atom<int>               doRefine         {Name("doRefine"         ), Comment("filter out bad TCs at end"   ) };
       fhicl::OptionalAtom<double>    timeoutMs        {Name("timeoutMs"        ), Comment("Optional timeout budget in ms; <= 0 disables timeout checks")};
 
-      fhicl::Table<TZClusterFinderTypes::Config> diagPlugin{Name("diagPlugin"      ), Comment("Diag plugin") };
+      fhicl::OptionalDelegatedParameter diagPlugin{Name("diagPlugin"), Comment("Diag plugin; configured and validated by the diag tool (tool_type)")};
     };
 
   private:
@@ -221,7 +223,12 @@ namespace mu2e {
 
       if (_debugLevel != 0) _printfreq = 1;
 
-      if (_diagLevel  != 0) _hmanager = art::make_tool<ModuleHistToolBase>(config().diagPlugin, "diagPlugin");
+      if (_diagLevel  != 0) {
+        fhicl::ParameterSet diagPS;
+        if (!config().diagPlugin.get_if_present(diagPS))
+          throw cet::exception("CONFIG") << "TZClusterFinder: diagLevel != 0 requires diagPlugin";
+        _hmanager = art::make_tool<ModuleHistToolBase>(diagPS);
+      }
       else                  _hmanager = std::make_unique<ModuleHistToolBase>();
 
     }

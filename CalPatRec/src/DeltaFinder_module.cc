@@ -14,6 +14,8 @@
 // parameter defaults: CalPatRec/fcl/prolog.fcl
 //////////////////////////////////////////////////////////////////////////////
 #include "fhiclcpp/types/Atom.h"
+#include "fhiclcpp/types/OptionalDelegatedParameter.h"
+#include "cetlib_except/exception.h"
 #include "fhiclcpp/types/Sequence.h"
 #include "fhiclcpp/ParameterSet.h"
 #include "art/Framework/Principal/Event.h"
@@ -75,7 +77,7 @@ namespace mu2e {
       fhicl::Sequence<std::string> goodHitMask            {Name("goodHitMask"       )    , Comment("good hit mask"              ) };
       fhicl::Sequence<std::string> bkgHitMask             {Name("bkgHitMask"        )    , Comment("background hit mask"        ) };
 
-      fhicl::Table<DeltaFinderTypes::Config> diagPlugin      {Name("diagPlugin"      ), Comment("Diag plugin"           ) };
+      fhicl::OptionalDelegatedParameter diagPlugin{Name("diagPlugin"), Comment("Diag plugin; configured and validated by the diag tool (tool_type)")};
       fhicl::Table<DeltaFinderAlg::Config>   finderParameters{Name("finderParameters"), Comment("finder alg parameters" ) };
     };
 
@@ -172,7 +174,12 @@ namespace mu2e {
 
     _testOrderPrinted = 0;
 
-    if (_diagLevel != 0) _hmanager = art::make_tool  <ModuleHistToolBase>(config().diagPlugin,"diagPlugin");
+    if (_diagLevel != 0) {
+      fhicl::ParameterSet diagPS;
+      if (!config().diagPlugin.get_if_present(diagPS))
+        throw cet::exception("CONFIG") << "DeltaFinder: diagLevel != 0 requires diagPlugin";
+      _hmanager = art::make_tool<ModuleHistToolBase>(diagPS);
+    }
     else                 _hmanager = std::make_unique<ModuleHistToolBase>();
 
     _data.chCollTag      = _chCollTag;

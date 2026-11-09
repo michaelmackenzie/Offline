@@ -9,6 +9,7 @@
 #include "Offline/MCDataProducts/inc/SimParticle.hh"
 #include "Offline/Mu2eUtilities/inc/ModuleHistToolBase.hh"
 #include "Offline/TrkPatRec/inc/TimeAndPhiClusterFinder_types.hh"
+#include "Offline/RecoMC/inc/TimeAndPhiClusterFinderDiag_types.hh"
 #include "Offline/RecoDataProducts/inc/ComboHit.hh"
 
 #include "TTree.h"

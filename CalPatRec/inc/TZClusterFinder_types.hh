@@ -16,7 +16,6 @@
 #include "Offline/RecoDataProducts/inc/CaloCluster.hh"
 #include "Offline/RecoDataProducts/inc/IntensityInfoTimeCluster.hh"
 #include "Offline/Mu2eUtilities/inc/LsqSums2.hh"
-#include "Offline/MCUtilities/inc/McUtilsToolBase.hh"
 
 namespace mu2e {
 
@@ -25,13 +24,6 @@ namespace mu2e {
 //-----------------------------------------------------------------------------
 // data structure shared by TZClusterFinder with its plugins
 //-----------------------------------------------------------------------------
-
-    struct Config {
-      fhicl::Atom<std::string>              tool_type   {fhicl::Name("tool_type"  ), fhicl::Comment("tool type: TZClusterFinderDiag") };
-      fhicl::Atom<int>                      mcTruth     {fhicl::Name("mcTruth"    ), fhicl::Comment("MC truth")                       };
-      fhicl::Atom<int>                      simIDThresh {fhicl::Name("simIDThresh"), fhicl::Comment("number of straw hits")           };
-      fhicl::Table<McUtilsToolBase::Config> mcUtils     {fhicl::Name("mcUtils"    ), fhicl::Comment("MC Diag plugin")                 };
-    };
 
 
     struct cHit {

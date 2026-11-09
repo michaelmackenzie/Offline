@@ -1,4 +1,5 @@
 #include "Offline/TrkPatRec/inc/RobustHelixFinder_types.hh"
+#include "Offline/RecoMC/inc/RobustHelixFinderDiag_types.hh"
 #include "Offline/Mu2eUtilities/inc/ModuleHistToolBase.hh"
 #include "Offline/TrkReco/inc/RobustHelixFit.hh"
 

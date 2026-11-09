@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include "Offline/CalPatRec/inc/DeltaFinder_types.hh"
+#include "Offline/RecoMC/inc/DeltaFinderDiag_types.hh"
 
 #include "fhiclcpp/types/Atom.h"
 #include "fhiclcpp/types/Sequence.h"

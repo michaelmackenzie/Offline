@@ -9,6 +9,7 @@
 #include "CLHEP/Vector/ThreeVector.h"
 
 #include "Offline/CalPatRec/inc/PhiClusterFinder_types.hh"
+#include "Offline/RecoMC/inc/PhiClusterFinderDiag_types.hh"
 #include "Offline/MCUtilities/inc/McUtilsToolBase.hh"
 #include "Offline/Mu2eUtilities/inc/ModuleHistToolBase.hh"
 #include "Offline/MCDataProducts/inc/SimParticle.hh"

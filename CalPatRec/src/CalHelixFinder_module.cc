@@ -5,6 +5,7 @@
 // try to order routines alphabetically
 ///////////////////////////////////////////////////////////////////////////////
 #include "fhiclcpp/ParameterSet.h"
+#include "cetlib_except/exception.h"
 
 #include "Offline/CalPatRec/inc/CalHelixFinder_module.hh"
 
@@ -89,7 +90,12 @@ namespace mu2e {
 
       if (_debugLevel != 0) _printfreq = 1;
 
-      if (_diagLevel != 0) _hmanager = art::make_tool<ModuleHistToolBase>(config().diagPlugin,"diagPlugin");
+      if (_diagLevel != 0) {
+        fhicl::ParameterSet diagPS;
+        if (!config().diagPlugin.get_if_present(diagPS))
+          throw cet::exception("CONFIG") << "CalHelixFinder: diagLevel != 0 requires diagPlugin";
+        _hmanager = art::make_tool<ModuleHistToolBase>(diagPS);
+      }
       else                 _hmanager = std::make_unique<ModuleHistToolBase>();
     }
 

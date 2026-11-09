@@ -10,6 +10,7 @@
 #include "Offline/MCDataProducts/inc/SimParticle.hh"
 #include "Offline/Mu2eUtilities/inc/ModuleHistToolBase.hh"
 #include "Offline/TrkPatRec/inc/RobustMultiHelixFinder_types.hh"
+#include "Offline/RecoMC/inc/RobustMultiHelixFinderDiag_types.hh"
 #include "Offline/RecoDataProducts/inc/ComboHit.hh"
 
 #include "TTree.h"

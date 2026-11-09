@@ -8,6 +8,9 @@
 #include "art/Framework/Principal/Event.h"
 #include "Offline/GeometryService/inc/GeomHandle.hh"
 #include "fhiclcpp/types/Atom.h"
+#include "fhiclcpp/types/OptionalDelegatedParameter.h"
+#include "cetlib_except/exception.h"
+#include "fhiclcpp/ParameterSet.h"
 #include "fhiclcpp/types/Sequence.h"
 #include "art/Framework/Principal/Handle.h"
 #include "art/Framework/Core/EDProducer.h"
@@ -146,7 +149,7 @@ namespace mu2e {
         fhicl::Table<MVATools::Config>        HelixStereoHitMVA{    Name("HelixStereoHitMVA"),    Comment("Helix Stereo Hit MVA Configuration") };
         fhicl::Table<MVATools::Config>        HelixNonStereoHitMVA{ Name("HelixNonStereoHitMVA"), Comment("Helix Non Stereo Hit MVA Configuration") };
         fhicl::Table<RobustHelixFit::Config>  HelixFitter{          Name("HelixFitter"),          Comment("Robust Helix Fit config") };
-        fhicl::Table<RobustHelixFinderTypes::Config>DiagPlugin{     Name("DiagPlugin"),           Comment("Diag plugin") };
+        fhicl::OptionalDelegatedParameter DiagPlugin{Name("DiagPlugin"), Comment("Diag plugin; configured and validated by the diag tool (tool_type)")};
         fhicl::Table<TrkTimeCalculator::Config>T0Calculator{        Name("T0Calculator"),         Comment("Track Time Calculator config") };
         fhicl::Atom<bool>                     UpdateStereo{         Name("UpdateStereo"),         Comment("Update Stereo") };
         fhicl::Atom<float>                    maxEDepAvg{           Name("maxEDepAvg"),           Comment("Max eDepAvg") };
@@ -293,7 +296,12 @@ namespace mu2e {
         }
       }
 
-      if (_diag != 0) _hmanager = art::make_tool<ModuleHistToolBase>(config().DiagPlugin," ");
+      if (_diag != 0) {
+        fhicl::ParameterSet diagPS;
+        if (!config().DiagPlugin.get_if_present(diagPS))
+          throw cet::exception("CONFIG") << "RobustHelixFinder: diagLevel != 0 requires diagPlugin";
+        _hmanager = art::make_tool<ModuleHistToolBase>(diagPS);
+      }
       else            _hmanager = std::make_unique<ModuleHistToolBase>();
     }
 

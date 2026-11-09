@@ -4,6 +4,9 @@
 #include "art/Framework/Core/EDProducer.h"
 #include "canvas/Utilities/InputTag.h"
 #include "fhiclcpp/types/Atom.h"
+#include "fhiclcpp/types/OptionalDelegatedParameter.h"
+#include "cetlib_except/exception.h"
+#include "fhiclcpp/ParameterSet.h"
 #include "fhiclcpp/types/Sequence.h"
 #include "fhiclcpp/types/Table.h"
 
@@ -67,7 +70,6 @@ namespace mu2e {
     public:
       using mapHelix        = std::map<Helicity,std::unique_ptr<HelixSeedCollection>>;
       using strawHitIndices = std::vector<StrawHitIndex>;
-      using Config_types    = RobustMultiHelixFinderTypes::Config ;
       using Data_types      = RobustMultiHelixFinderTypes::Data_t;
 
       enum circleFitter {NoChoice, HyperFit, ChiSquared};
@@ -102,7 +104,7 @@ namespace mu2e {
         fhicl::Atom<unsigned>      minStrawHits          {Name("MinStrawHits"),           Comment("Minimum number of Straw hits for a helix candidate") };
         fhicl::Atom<unsigned>      nMaxTrkIter           {Name("NMaxTrkIter"),            Comment("Number of track finding iterations ") };
         fhicl::Atom<int>           diagLevel             {Name("DiagLevel"),              Comment("Diag level"), 0 };
-        fhicl::Table<Config_types> diagPlugin            {Name("DiagPlugin"),             Comment("Diag Plugin config")};
+        fhicl::OptionalDelegatedParameter diagPlugin{Name("DiagPlugin"), Comment("Diag Plugin config; configured and validated by the diag tool (tool_type)")};
         fhicl::Atom<float>         maxEDepAvg            {Name("maxEDepAvg"),             Comment("Maximum EDep average")};
       };
       explicit RobustMultiHelixFinder(const art::EDProducer::Table<Config>& config);
@@ -206,7 +208,12 @@ namespace mu2e {
       hels_.emplace_back(hel);
       produces<HelixSeedCollection>(Helicity::name(hel));
     }
-    if (diag_) diagTool_ = art::make_tool<ModuleHistToolBase>(config().diagPlugin," ");
+    if (diag_) {
+      fhicl::ParameterSet diagPS;
+      if (!config().diagPlugin.get_if_present(diagPS))
+        throw cet::exception("CONFIG") << "RobustMultiHelixFinder: diagLevel != 0 requires diagPlugin";
+      diagTool_ = art::make_tool<ModuleHistToolBase>(diagPS);
+    }
 
     if      (config().fitCircleStr()=="HyperFit")   fitCircleStrategy_ = circleFitter::HyperFit;
     else if (config().fitCircleStr()=="ChiSquared") fitCircleStrategy_ = circleFitter::ChiSquared;

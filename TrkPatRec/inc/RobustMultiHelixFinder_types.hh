@@ -12,12 +12,6 @@ namespace mu2e {
   class ComboHitCollection;
   namespace RobustMultiHelixFinderTypes {
 
-    struct Config{
-        fhicl::Atom<std::string>   tool_type{             fhicl::Name("tool_type"),             fhicl::Comment("Needed for backward compatibility"), "" };
-        fhicl::Atom<bool>          mcDiag{                fhicl::Name("MCDiag"),                fhicl::Comment("Switch to perform MC diag"), true };
-        fhicl::Atom<art::InputTag> strawDigiMCCollection{ fhicl::Name("StrawDigiMCCollection"), fhicl::Comment("StrawDigiMC collection name"), "makeSD" };
-    };
-
 
     struct Data_t {
 
