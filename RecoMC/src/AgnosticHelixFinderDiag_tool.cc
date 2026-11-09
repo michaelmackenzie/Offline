@@ -1,7 +1,7 @@
 // Tool to analzye/debug Agnostic Helix Finder processing
 // Original author: Matthew Stortini
 
-#include "Offline/CalPatRec/inc/AgnosticHelixFinderDiag.hh"
+#include "Offline/RecoMC/inc/AgnosticHelixFinderDiag.hh"
 
 using namespace mu2e;
 

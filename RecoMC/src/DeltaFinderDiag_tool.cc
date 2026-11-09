@@ -20,7 +20,7 @@
 
 #include "Offline/CalPatRec/inc/HlPrint.hh"
 #include "Offline/CalPatRec/inc/DeltaFinderAlg.hh"
-#include "Offline/CalPatRec/inc/McPart_t.hh"
+#include "Offline/RecoMC/inc/McPart_t.hh"
 
 #include "Offline/Mu2eUtilities/inc/ModuleHistToolBase.hh"
 #include "Offline/MCUtilities/inc/McUtilsToolBase.hh"

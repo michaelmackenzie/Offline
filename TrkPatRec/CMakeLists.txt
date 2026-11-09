@@ -60,32 +60,6 @@ cet_build_plugin(TimeClusterFinder art::module
       Offline::TrkReco
 )
 
-cet_build_plugin(RobustHelixFinderDiag art::tool
-    REG_SOURCE src/RobustHelixFinderDiag_tool.cc
-    LIBRARIES REG
-      Offline::TrkPatRec
-      Offline::Mu2eUtilities
-      Offline::TrkReco
-)
-
-cet_build_plugin(RobustMultiHelixFinderDiag art::tool
-    REG_SOURCE src/RobustMultiHelixFinderDiag_tool.cc
-    LIBRARIES REG
-      Offline::TrkPatRec
-      Offline::Mu2eUtilities
-      Offline::TrkReco
-)
-
-cet_build_plugin(TimeAndPhiClusterFinderDiag art::tool
-    REG_SOURCE src/TimeAndPhiClusterFinderDiag_tool.cc
-    LIBRARIES REG
-      Offline::TrkPatRec
-      Offline::GeometryService
-      Offline::MCDataProducts
-      Offline::Mu2eUtilities
-      Offline::RecoDataProducts
-)
-
 install(DIRECTORY data DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/Offline/TrkPatRec)
 
 install_source(SUBDIRS src)

@@ -41,7 +41,7 @@
 #include "Offline/MCDataProducts/inc/StrawGasStep.hh"
 
 #include "Offline/CalPatRec/inc/HlPrint.hh"
-// #include "Offline/CalPatRec/inc/McPart_t.hh"  .. so far, duplicating...
+// #include "Offline/RecoMC/inc/McPart_t.hh"  .. so far, duplicating...
 
 using namespace std;
 using CLHEP::Hep3Vector;

@@ -1,7 +1,7 @@
 // Display functions for the AgnosticHelixFinder diagnostics
 // Original authors: Michael MacKenzie, Matthew Stortini
 
-#include "Offline/CalPatRec/inc/AgnosticHelixFinderDiag.hh"
+#include "Offline/RecoMC/inc/AgnosticHelixFinderDiag.hh"
 
 using namespace mu2e;
 

@@ -1,6 +1,5 @@
 cet_make_library(
     SOURCE
-      src/AgnosticHelixFinderDiagDisplay.cc
       src/CalHelixFinderAlg.cc
       src/CalHelixFinderData.cc
       src/ChannelID.cc
@@ -97,17 +96,6 @@ cet_build_plugin(ComboHitFilter art::module
       Offline::TrackerGeom
 )
 
-cet_build_plugin(DeltaFinderAna art::module
-    REG_SOURCE src/DeltaFinderAna_module.cc
-    LIBRARIES REG
-      Offline::CalPatRec
-      Offline::DataProducts
-      Offline::GeometryService
-      Offline::MCDataProducts
-      Offline::RecoDataProducts
-      Offline::TrackerGeom
-)
-
 cet_build_plugin(DeltaFinder art::module
     REG_SOURCE src/DeltaFinder_module.cc
     LIBRARIES REG
@@ -156,83 +144,11 @@ cet_build_plugin(TZClusterFinder art::module
       Offline::TimeoutService
 )
 
-cet_build_plugin(CalHelixFinderDiag art::tool
-    REG_SOURCE src/CalHelixFinderDiag_tool.cc
-    LIBRARIES REG
-      Offline::CalPatRec
-
-      Offline::MCDataProducts
-      Offline::MCUtilities
-      Offline::Mu2eUtilities
-)
-
-cet_build_plugin(AgnosticHelixFinderDiag art::tool
-    REG_SOURCE src/AgnosticHelixFinderDiag_tool.cc
-    LIBRARIES REG
-      Offline::CalPatRec
-
-      Offline::MCDataProducts
-      Offline::Mu2eUtilities
-)
-
-
-cet_build_plugin(CalTimePeakFinderDiag art::tool
-    REG_SOURCE src/CalTimePeakFinderDiag_tool.cc
-    LIBRARIES REG
-      Offline::CalPatRec
-      Offline::MCUtilities
-
-      Offline::Mu2eUtilities
-      Offline::RecoDataProducts
-      Offline::TrackerGeom
-)
-
-cet_build_plugin(DeltaFinderDiag art::tool
-    REG_SOURCE src/DeltaFinderDiag_tool.cc
-    LIBRARIES REG
-      Offline::CalPatRec
-
-      Offline::DataProducts
-      Offline::MCDataProducts
-      Offline::MCUtilities
-      Offline::Mu2eUtilities
-)
-
-cet_build_plugin(MergePatRecDiag art::tool
-    REG_SOURCE src/MergePatRecDiag_tool.cc
-    LIBRARIES REG
-      Offline::CalPatRec
-      Offline::MCUtilities
-
-      Offline::Mu2eUtilities
-)
-
-cet_build_plugin(PhiClusterFinderDiag art::tool
-    REG_SOURCE src/PhiClusterFinderDiag_tool.cc
-    LIBRARIES REG
-      Offline::CalPatRec
-
-      Offline::MCDataProducts
-      Offline::MCUtilities
-      Offline::Mu2eUtilities
-      Offline::RecoDataProducts
-)
 
 cet_build_plugin(TZClusterFilter art::module
     REG_SOURCE src/TZClusterFilter_module.cc
     LIBRARIES REG
         Offline::CalPatRec
-)
-
-cet_build_plugin(TZClusterFinderDiag art::tool
-    REG_SOURCE src/TZClusterFinderDiag_tool.cc
-    LIBRARIES REG
-      Offline::CalPatRec
-
-      Offline::MCDataProducts
-      Offline::MCUtilities
-      Offline::Mu2eUtilities
-      Offline::RecoDataProducts
 )
 
 art_dictionary( NO_CHECK_CLASS_VERSION # For some reason this segfaults
