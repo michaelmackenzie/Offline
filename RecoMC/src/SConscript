@@ -54,7 +54,6 @@ mainlib = helper.make_mainlib( [ 'mu2e_CalPatRec',
 
 helper.make_plugins( [ mainlib,
                        'mu2e_CalPatRec',
-                       'mu2e_TrkPatRec',
                        'mu2e_TrkReco',
                        'mu2e_Mu2eUtilities',
                        'mu2e_MCUtilities',
