@@ -20,7 +20,7 @@
 #include "Offline/Mu2eG4/geom/PSShield_v03.txt"
 int PSShield.verbosityLevel = 1;
 
-#include "Offline/Mu2eG4/geom/psEnclosure_v03.txt"
+#include "Offline/GeometryService/geom/psEnclosure_v03.txt"
 int PSEnclosure.verbosityLevel = 1;
 
 

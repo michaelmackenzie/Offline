@@ -6,7 +6,7 @@
 process_name : EDep
 
 services : @local::Services.Reco
-services.GeometryService.inputFile: "Offline/Mu2eG4/geom/geom_common.txt"
+services.GeometryService.inputFile: "Offline/GeometryService/geom/geom_common.txt"
 
 source: {
   module_type: RootInput

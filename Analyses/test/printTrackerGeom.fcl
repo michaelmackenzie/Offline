@@ -17,7 +17,7 @@ source : {
 services : {
   message : @local::default_message
 
-# GeometryService        : { inputFile      : "Offline/Mu2eG4/geom/geom_common.txt"            }
+# GeometryService        : { inputFile      : "Offline/GeometryService/geom/geom_common.txt"            }
   GeometryService        : { inputFile      : "gtest1.txt"                         }
   GlobalConstantsService : { inputFile      : "Offline/GlobalConstantsService/data/globalConstants_01.txt" }
 

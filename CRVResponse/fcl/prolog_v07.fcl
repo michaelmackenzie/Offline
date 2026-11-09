@@ -1,4 +1,4 @@
-//use with Mu2eG4/geom/crv_counters_v07.txt (e.g. CRVResponse/test/CRVResponse_v07.fcl)
+//use with GeometryService/geom/crv_counters_v07.txt (e.g. CRVResponse/test/CRVResponse_v07.fcl)
 #include "Offline/CommonMC/fcl/prolog.fcl"
 
 BEGIN_PROLOG

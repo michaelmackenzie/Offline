@@ -21,7 +21,7 @@ services : {
     TFileService           : { fileName : "g4hists_DNBTest.root" }
     RandomNumberGenerator  : {defaultEngineKind: "MixMaxRng"}
 
-    GeometryService        : { inputFile : "Offline/Mu2eG4/geom/geom_common_current.txt" }
+    GeometryService        : { inputFile : "Offline/GeometryService/geom/geom_common_current.txt" }
     GlobalConstantsService : { inputFile : "Offline/GlobalConstantsService/data/globalConstants_01.txt" }
     SeedService            : @local::automaticSeeds
     Mu2eG4Helper           : { }

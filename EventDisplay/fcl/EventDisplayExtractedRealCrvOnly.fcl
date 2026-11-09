@@ -1,7 +1,7 @@
 #include "Offline/EventDisplay/fcl/EventDisplayBase.fcl"
 
 physics.analyzers.eventdisplay.extractedCrvOnly      : true
-services.GeometryService.inputFile                   : "Offline/Mu2eG4/geom/geom_common_extracted.txt"
+services.GeometryService.inputFile                   : "Offline/GeometryService/geom/geom_common_extracted.txt"
 services.ProditionsService.crvCalib.useDb            : true
 services.ProditionsService.crvStatus.useDb           : true
 #Real data

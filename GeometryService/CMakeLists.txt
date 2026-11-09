@@ -102,3 +102,4 @@ cet_build_plugin(GeometryService art::service
 
 install_source(SUBDIRS src)
 install_headers(USE_PROJECT_NAME SUBDIRS inc)
+install(DIRECTORY geom DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/Offline/GeometryService)

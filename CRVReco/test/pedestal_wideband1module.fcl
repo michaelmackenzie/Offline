@@ -33,7 +33,7 @@ physics: {
 
 physics.analyzers.CrvPedestalFinder.tmpDBfileName  : "pedestalsWideband.txt"
 services.TFileService.fileName : "pedestalsWideband.root"
-services.GeometryService.inputFile: "Offline/Mu2eG4/geom/geom_Wideband1module.txt"
+services.GeometryService.inputFile: "Offline/GeometryService/geom/geom_Wideband1module.txt"
 services.ProditionsService.crvStatus.useDb: false
 services.ProditionsService.crvStatus.verbose: 2
 services.ProditionsService.crvCalib.useDb: false

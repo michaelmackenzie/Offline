@@ -36,7 +36,7 @@ physics.producers.CrvRecoPulses.NZSdata : true
 physics.producers.CrvRecoPulses.minADCdifference   : 5    //minimum ADC difference above pedestal to be considered for reconstruction
 physics.analyzers.CrvCalibration.tmpDBfileName  : "calibrationWideband.txt"
 services.TFileService.fileName : "calibrationWideband.root"
-services.GeometryService.inputFile: "Offline/Mu2eG4/geom/geom_Wideband1module.txt"
+services.GeometryService.inputFile: "Offline/GeometryService/geom/geom_Wideband1module.txt"
 services.ProditionsService.crvStatus.useDb: false
 services.ProditionsService.crvStatus.verbose: 2
 services.ProditionsService.crvCalib.useDb: true

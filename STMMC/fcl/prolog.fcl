@@ -5,7 +5,7 @@
 #include "Offline/STMReco/fcl/prolog.fcl"
 BEGIN_PROLOG
 
-# Geometry, all in mm, Mu2e coordinates, for Offline/Mu2eG4/geom/STM_v11.txt.
+# Geometry, all in mm, Mu2e coordinates, for Offline/GeometryService/geom/STM_v11.txt.
 # Positions along z are derived from the cradle front (STMShieldingRef in
 # constructSTM.cc) at z = 40325.3; the SSC bores sit at x = beam -/+ 40.64
 # (stm.STM_SSC.offset_Spot), HPGe on -x and LaBr on +x.

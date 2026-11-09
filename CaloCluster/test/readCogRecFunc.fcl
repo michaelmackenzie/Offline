@@ -100,7 +100,7 @@ services :
 
   GeometryService :
   {
-    inputFile : "Offline/Mu2eG4/geom/geom_common.txt"
+    inputFile : "Offline/GeometryService/geom/geom_common.txt"
   }
 
   GlobalConstantsService : { inputFile : "Offline/GlobalConstantsService/data/globalConstants_01.txt" }

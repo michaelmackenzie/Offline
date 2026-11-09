@@ -38,8 +38,8 @@ outputs : {
 #include "Production/JobConfig/reco/epilog.fcl"
 #include "Production/JobConfig/reco/offspill_epilog.fcl"
 
-services.GeometryService.inputFile: "Offline/Mu2eG4/geom/geom_common_extracted.txt"
-services.GeometryService.bFieldFile: "Offline/Mu2eG4/geom/bfgeom_no_field.txt"
+services.GeometryService.inputFile: "Offline/GeometryService/geom/geom_common_extracted.txt"
+services.GeometryService.bFieldFile: "Offline/GeometryService/geom/bfgeom_no_field.txt"
 
 #
 outputs.Output.SelectEvents : [ "RecoPath" ]

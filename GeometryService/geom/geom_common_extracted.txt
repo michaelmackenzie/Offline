@@ -1,0 +1,2 @@
+//Extracted position for the detector KPP
+#include "Offline/GeometryService/geom/geom_common_extracted_v06.txt"

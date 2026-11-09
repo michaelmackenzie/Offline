@@ -52,5 +52,5 @@ services.GeometryService.simulatedDetector.tool_type : "Mu2e"
 services.SeedService.baseSeed         :  773651
 services.SeedService.maxUniqueEngines :  20
 
-services.GeometryService.inputFile                   : "Offline/Mu2eG4/geom/geom_common_extracted.txt"
+services.GeometryService.inputFile                   : "Offline/GeometryService/geom/geom_common_extracted.txt"
 #include "Offline/CRVResponse/fcl/epilog_extracted_v03.fcl"

@@ -16,7 +16,7 @@ services :
 {
   RandomNumberGenerator: {defaultEngineKind: "MixMaxRng" }
   TFileService           : { fileName: "test.root" }
-  GeometryService        : { inputFile : "Offline/Mu2eG4/geom/studies/geom_cosmic_v05.txt" }
+  GeometryService        : { inputFile : "Offline/GeometryService/geom/studies/geom_cosmic_v05.txt" }
   GlobalConstantsService : { inputFile : "Offline/GlobalConstantsService/data/globalConstants_01.txt" }
   SeedService            : @local::automaticSeeds
 }

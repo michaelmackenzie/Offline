@@ -31,7 +31,7 @@ services :
 
   GeometryService :
   {
-    inputFile : "Offline/Mu2eG4/geom/geom_common.txt"
+    inputFile : "Offline/GeometryService/geom/geom_common.txt"
   }
 
   GlobalConstantsService : {
@@ -132,7 +132,7 @@ outputs:
 physics.producers.generate.inputfile  : "Offline/Mu2eG4/test/genconfig_example.txt"
 #CaloCluster/test/genconfig_giani.txt"
 #services.GeometryService.inputFile : "Scripts/geom_nohp.txt"
-services.GeometryService.inputFile : "Offline/Mu2eG4/geom/geom_common.txt"
+services.GeometryService.inputFile : "Offline/GeometryService/geom/geom_common.txt"
 physics.producers.makeSH.diagLevel    : 0
 physics.producers.makeSH.maxFullPrint : 2
 source.firstRun                            :  1

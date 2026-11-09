@@ -10,7 +10,7 @@ source : {
 }
 
 services : @local::Services.Reco
-services.GeometryService.bFieldFile     : "Offline/Mu2eG4/geom/bfgeom_reco_v01.txt"
+services.GeometryService.bFieldFile     : "Offline/GeometryService/geom/bfgeom_reco_v01.txt"
 
 physics : {
 

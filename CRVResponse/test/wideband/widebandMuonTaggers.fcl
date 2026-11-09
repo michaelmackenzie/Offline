@@ -194,8 +194,8 @@ physics.producers.CrvCoincidenceClusterFinder.sectorConfig:
         }
       ]
 
-services.GeometryService.inputFile: "Offline/Mu2eG4/geom/geom_WidebandMuonTaggers_v01.txt"
-services.GeometryService.bFieldFile: "Offline/Mu2eG4/geom/bfgeom_no_field.txt"
+services.GeometryService.inputFile: "Offline/GeometryService/geom/geom_WidebandMuonTaggers_v01.txt"
+services.GeometryService.bFieldFile: "Offline/GeometryService/geom/bfgeom_no_field.txt"
 services.DbService.textFile : ["Offline/CRVConditions/data/status_widebandMuonTaggers.txt","Offline/CRVConditions/data/photonyield_widebandMuonTaggers.txt", "Offline/CRVConditions/data/calib_widebandMuonTaggers.txt"]
 #services.ProditionsService.crvPhotonYield.useDb : false
 #services.ProditionsService.crvStatus.useDb: false

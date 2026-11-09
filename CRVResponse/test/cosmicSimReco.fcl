@@ -96,7 +96,7 @@ physics.producers.FindMCPrimary.PrimaryGenIds: ["CosmicCRY"]
 physics.producers.EWMProducer.SpillType : 0
 # override the Untriggered filter to just prescale
 # nofield geometry
-services.GeometryService.bFieldFile : "Offline/Mu2eG4/geom/bfgeom_no_field.txt"
+services.GeometryService.bFieldFile : "Offline/GeometryService/geom/bfgeom_no_field.txt"
 # print summaries
 services.scheduler.wantSummary: true
 services.TimeTracker.printSummary: true
@@ -136,5 +136,5 @@ services.SeedService.baseSeed         :  8
 #include "Production/Validation/database.fcl"
 #
 #
-services.GeometryService.inputFile: "Offline/Mu2eG4/geom/geom_common_crv_v10.txt"
+services.GeometryService.inputFile: "Offline/GeometryService/geom/geom_common_crv_v10.txt"
 services.DbService.textFile : ["Offline/CRVConditions/data/status_nominal_v10.txt","Offline/CRVConditions/data/photonyield_nominal_v10.txt", "Offline/CRVConditions/data/calib_nominal_v10.txt"]

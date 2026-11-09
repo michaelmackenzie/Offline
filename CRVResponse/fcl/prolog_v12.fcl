@@ -1,6 +1,6 @@
-//Use with Mu2eG4/geom/crv_counters_v10.txt
+//Use with GeometryService/geom/crv_counters_v10.txt
 
-//The geometry in Mu2eG4/geom/crv_counters_v10.txt uses a CRV counter cross section of 51.34mm x 19.78mm (same as v6_0 lookup tables)
+//The geometry in GeometryService/geom/crv_counters_v10.txt uses a CRV counter cross section of 51.34mm x 19.78mm (same as v6_0 lookup tables)
 
 //The v6_0 lookup tables use counter lengths of 2100mm and 1550mm for modules C1 and C2 while the geometry uses 1700mm and 1145mm.
 //The results in using only the central portion of the simulated counter response (omitting the reduced response at the counter ends).
