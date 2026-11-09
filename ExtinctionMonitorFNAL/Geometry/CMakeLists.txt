@@ -12,6 +12,7 @@ cet_make_library(
       src/ExtMonFNALPlaneStack.cc
       src/PixelNeighbors.cc
     LIBRARIES PUBLIC
+      Offline::ProtonBeamDumpGeom
       
       Offline::DataProducts
       Offline::Mu2eInterfaces

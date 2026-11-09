@@ -6,6 +6,7 @@ cet_make_library(
       src/PixelRecoUtils.cc
       src/TrackExtrapolator.cc
     LIBRARIES PUBLIC
+      Offline::ExtinctionMonitorFNAL_Geometry
       Offline::RecoDataProducts
 )
 

@@ -206,7 +206,7 @@ cet_build_plugin(ExtMonFNALRoomGenerator art::module
       Offline::ConfigTools
       Offline::DataProducts
       Offline::ExtinctionMonitorFNAL_Geometry
-      Offline::ExtinctionMonitorFNAL_Utilities
+      Offline::ExtinctionMonitorFNALMC_Utilities
       Offline::GeometryService
       Offline::GlobalConstantsService
       Offline::MCDataProducts

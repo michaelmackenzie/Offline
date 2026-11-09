@@ -10,6 +10,7 @@
 #include "Offline/TrackerMC/fcl/prolog.fcl"
 #include "Offline/CaloCluster/fcl/prolog.fcl"
 #include "Offline/ExtinctionMonitorFNAL/fcl/prolog.fcl"
+#include "Offline/ExtinctionMonitorFNALMC/fcl/prolog.fcl"
 #include "Offline/TrkHitReco/fcl/prolog.fcl"
 #include "Offline/TrkReco/fcl/prolog.fcl"
 #include "Offline/TrkPatRec/fcl/prolog.fcl"

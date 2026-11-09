@@ -1,7 +1,7 @@
 #include "Offline/fcl/minimalMessageService.fcl"
 #include "Offline/fcl/standardProducers.fcl"
 #include "Offline/fcl/standardServices.fcl"
-#include "Offline/ExtinctionMonitorFNAL/test/marsInputs_monfnal3w1All.fcl"
+#include "Offline/ExtinctionMonitorFNALMC/test/marsInputs_monfnal3w1All.fcl"
 
 process_name: FromEMFMARSFileWeighted
 
@@ -24,7 +24,7 @@ services: {
     TFileService : { fileName : "ntEMFRoomWeightedAll.root" }
 
     GlobalConstantsService : { inputFile : "Offline/Mu2eG4/test/globalConstants_01.txt" }
-    GeometryService : { inputFile : "Offline/ExtinctionMonitorFNAL/test/geom_emfMARS.txt" }
+    GeometryService : { inputFile : "Offline/ExtinctionMonitorFNALMC/test/geom_emfMARS.txt" }
 
 }
 

@@ -43,7 +43,7 @@
 #include "Offline/MCDataProducts/inc/MARSInfo.hh"
 #include "Offline/MCDataProducts/inc/GenParticleMARSAssns.hh"
 
-#include "Offline/ExtinctionMonitorFNAL/Utilities/inc/EMFBoxIO.hh"
+#include "Offline/ExtinctionMonitorFNALMC/Utilities/inc/EMFBoxIO.hh"
 
 #include "TH1.h"
 #include "TH2.h"

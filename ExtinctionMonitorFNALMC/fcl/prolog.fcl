@@ -1,0 +1,57 @@
+# -*- mode: tcl -*-
+#------------------------------------------------------------------------------
+# this file is included by fcl/standardProducers.fcl inside the PROLOG section
+#------------------------------------------------------------------------------
+BEGIN_PROLOG
+# Form ExtMonFNAL pixel hits
+pixelDigitization : {
+    module_type : ExtMonFNALHitMaker
+    inputModuleLabel : "g4run"
+    inputInstanceName : ""
+
+    geomModuleLabel : ""
+
+    // global time corresponding to the starting edge of time bin 0
+    t0 : 0
+
+    // Hardware feature of FE-I4
+    maxToT : 13
+
+    // threshold in units of electron charge
+    discriminatorThreshold : 3000
+
+    // ToT calibration injected charge
+    qCalib : 19000
+
+    // ToT calibration target
+    totCalib : 1
+
+    temperature : 273.0  // Kelvin
+    biasVoltage : -150.0  // Volts
+
+    pixelNoisePerBC : 6.e-10 // 1e-10 electronics + 5e-10 radioactivity
+
+    // Arbitrary, but must be sane
+    numClustersPerHit : 128
+
+    applyProtonPulseShape : false
+}
+
+pixelRecoClusterTruthMaking : {
+    module_type : RecoClusterTruthMaker
+    recoClusterModuleLabel : "pixelRecoClusterization"
+    hitTruthModuleLabel : "pixelDigitization"
+}
+
+EMFPatRecFromTrackletsTruthMaking : {
+    module_type : PatRecTruthMaker
+    patRecModuleLabel : "EMFPatRecFromTracklets"
+    clusterTruthModuleLabel : "pixelRecoClusterTruthMaking"
+}
+
+EMFTrackClusterArbiterTruthMaking: {
+    module_type : PatRecTruthMaker
+    patRecModuleLabel : "EMFTrackClusterArbiter"
+    clusterTruthModuleLabel : "pixelRecoClusterTruthMaking"
+}
+END_PROLOG
