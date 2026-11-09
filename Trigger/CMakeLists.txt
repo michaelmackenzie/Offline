@@ -4,13 +4,6 @@ cet_build_plugin(DigiFilter art::module
       Offline::RecoDataProducts
 )
 
-cet_build_plugin(EvalWeightedEventCounts art::module
-    REG_SOURCE src/EvalWeightedEventCounts_module.cc
-    LIBRARIES REG
-      art_root_io::TFileService_service
-      Offline::MCDataProducts
-)
-
 cet_build_plugin(MergeTriggerInfo art::module
     REG_SOURCE src/MergeTriggerInfo_module.cc
     LIBRARIES REG
@@ -21,30 +14,6 @@ cet_build_plugin(PrescaleEvent art::module
     REG_SOURCE src/PrescaleEvent_module.cc
     LIBRARIES REG
       Offline::DataProducts
-)
-
-cet_build_plugin(ReadTriggerInfo art::module
-    REG_SOURCE src/ReadTriggerInfo_module.cc
-    LIBRARIES REG
-      Offline::BFieldGeom
-      Offline::DataProducts
-      Offline::GeometryService
-      Offline::GlobalConstantsService
-      Offline::MCDataProducts
-      Offline::Mu2eUtilities
-      Offline::ProditionsService
-      Offline::RecoDataProducts
-      Offline::TrackerConditions
-      Offline::TrackerGeom
-      KinKal::Trajectory
-)
-
-cet_build_plugin(ReadTriggerPath art::module
-    REG_SOURCE src/ReadTriggerPath_module.cc
-    LIBRARIES REG
-      Offline::MCDataProducts
-      Offline::RecoDataProducts
-      Offline::Mu2eUtilities
 )
 
 cet_build_plugin(TriggerInfoToCollections art::module
