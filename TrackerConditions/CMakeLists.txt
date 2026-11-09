@@ -40,7 +40,6 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/data/TrackerStatusTest.txt   ${CURREN
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/fcl/MDCThresholds.fcl   ${CURRENT_BINARY_DIR} fcl/MDCThresholds.fcl   COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/fcl/prolog.fcl   ${CURRENT_BINARY_DIR} fcl/prolog.fcl   COPYONLY)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/fcl/testProditions.fcl   ${CURRENT_BINARY_DIR} fcl/testProditions.fcl   COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/fcl/testTrackerAlignment.fcl   ${CURRENT_BINARY_DIR} fcl/testTrackerAlignment.fcl   COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/fcl/testTrackerStatus.fcl   ${CURRENT_BINARY_DIR} fcl/testTrackerStatus.fcl   COPYONLY)
 

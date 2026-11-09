@@ -3,7 +3,7 @@
 #
 #include "Offline/fcl/standardProducers.fcl"
 #include "Offline/fcl/standardServices.fcl"
-#include "Offline/CRVResponse/fcl/prolog.fcl"
+#include "Offline/CRVReco/fcl/prolog.fcl"
 
 process_name : pedestalFinderWideband
 
