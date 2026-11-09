@@ -6,7 +6,7 @@
 # Original author Zhengyun You
 
 #include "Offline/fcl/minimalMessageService.fcl"
-#include "Offline/fcl/standardProducers.fcl"
+#include "Offline/CommonMC/fcl/standardProducersMC.fcl"
 
 # Give this job a name.
 process_name : VDReadBack01

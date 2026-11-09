@@ -4,7 +4,7 @@
 # for more info DocDB 20844
 #------------------------------------------------------------------------------
 #include "Offline/fcl/minimalMessageService.fcl"
-#include "Offline/fcl/standardProducers.fcl"
+#include "Offline/CommonMC/fcl/standardProducersMC.fcl"
 #include "Offline/fcl/standardServices.fcl"
 #include "Production/JobConfig/primary/CeMLeadingLog.fcl"
 

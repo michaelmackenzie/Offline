@@ -1,7 +1,7 @@
 # A quick way to dump the default geometry into a GDML file.
 
 #include "Offline/fcl/minimalMessageService.fcl"
-#include "Offline/fcl/standardProducers.fcl"
+#include "Offline/CommonMC/fcl/standardProducersMC.fcl"
 #include "Offline/fcl/standardServices.fcl"
 
 process_name : gdmldump

@@ -4,7 +4,7 @@
 #
 
 #include "Offline/fcl/minimalMessageService.fcl"
-#include "Offline/fcl/standardProducers.fcl"
+#include "Offline/CommonMC/fcl/standardProducersMC.fcl"
 #include "Offline/Analyses/fcl/prolog.fcl"
 
 process_name : Print

@@ -4,7 +4,7 @@
 # assume the file contains the digitized hits
 #------------------------------------------------------------------------------
 #include "Offline/fcl/minimalMessageService.fcl"
-#include "Offline/fcl/standardProducers.fcl"
+#include "Offline/CommonMC/fcl/standardProducersMC.fcl"
 #include "Offline/fcl/standardServices.fcl"
 #include "Offline/CaloCluster/fcl/prolog.fcl"
 #include "Offline/TrackCaloMatching/fcl/prolog.fcl"

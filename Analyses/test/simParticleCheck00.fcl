@@ -2,7 +2,7 @@
 #
 
 #include "Offline/fcl/minimalMessageService.fcl"
-#include "Offline/fcl/standardProducers.fcl"
+#include "Offline/CommonMC/fcl/standardProducersMC.fcl"
 
 # this file can be used to test
 # e.g., if a geant4 version has a "particle timing problem"

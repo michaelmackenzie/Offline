@@ -10,7 +10,7 @@
 # Original author Gianni Onorato.
 
 #include "Offline/fcl/minimalMessageService.fcl"
-#include "Offline/fcl/standardProducers.fcl"
+#include "Offline/CommonMC/fcl/standardProducersMC.fcl"
 
 # Give this process a name.
 process_name : NeutronRatesCounter

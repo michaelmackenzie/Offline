@@ -2,7 +2,7 @@
 // Most of the configuration was copied from g4test_03.fcl
 
 #include "Offline/fcl/minimalMessageService.fcl"
-#include "Offline/fcl/standardProducers.fcl"
+#include "Offline/CommonMC/fcl/standardProducersMC.fcl"
 #include "Offline/fcl/standardServices.fcl"
 
 process_name: g4FromStepPointMCs

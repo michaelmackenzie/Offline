@@ -6,7 +6,7 @@
 // Use it with iontest_g4s2.fcl
 
 #include "Offline/fcl/minimalMessageService.fcl"
-#include "Offline/fcl/standardProducers.fcl"
+#include "Offline/CommonMC/fcl/standardProducersMC.fcl"
 #include "Offline/fcl/standardServices.fcl"
 
 BEGIN_PROLOG

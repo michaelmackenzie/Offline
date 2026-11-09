@@ -8,7 +8,7 @@
 # Original author Rob Kutschke
 
 #include "Offline/fcl/minimalMessageService.fcl"
-#include "Offline/fcl/standardProducers.fcl"
+#include "Offline/CommonMC/fcl/standardProducersMC.fcl"
 #include "Offline/fcl/standardServices.fcl"
 #include "HitMakers/fcl/prolog.fcl"
 #include "Offline/TrackCaloMatching/fcl/prolog.fcl"

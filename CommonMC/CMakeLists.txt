@@ -125,6 +125,7 @@ cet_build_plugin(SurfaceStepDiag art::module
 )
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/fcl/prolog.fcl ${CURRENT_BINARY_DIR} fcl/prolog.fcl)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/fcl/standardProducersMC.fcl ${CURRENT_BINARY_DIR} fcl/standardProducersMC.fcl)
 
 install_source(SUBDIRS src)
 install_fhicl(SUBDIRS fcl SUBDIRNAME Offline/CommonMC/fcl)
