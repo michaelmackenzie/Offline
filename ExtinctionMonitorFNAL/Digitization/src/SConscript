@@ -10,6 +10,7 @@ Import('mu2e_helper')
 helper=mu2e_helper(env);
 
 mainlib = helper.make_mainlib ( [
+        'mu2e_MCUtilities',
         'mu2e_Mu2eUtilities',
         'mu2e_GeometryService',
         'mu2e_ExtinctionMonitorFNAL_Geometry',
