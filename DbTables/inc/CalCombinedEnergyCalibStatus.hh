@@ -1,5 +1,5 @@
-#ifndef CaloConditions_CalCombinedEnergyCalibStatus_hh
-#define CaloConditions_CalCombinedEnergyCalibStatus_hh
+#ifndef DbTables_CalCombinedEnergyCalibStatus_hh
+#define DbTables_CalCombinedEnergyCalibStatus_hh
 
 //
 // Status codes for combined calorimeter energy calibrations.

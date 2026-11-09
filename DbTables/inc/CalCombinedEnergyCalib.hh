@@ -7,7 +7,7 @@
   from the cosmic + source calibration combination algorithm.
 
   Status-code values and descriptions are defined in:
-    Offline/CaloConditions/inc/CalCombinedEnergyCalibStatus.hh
+    Offline/DbTables/inc/CalCombinedEnergyCalibStatus.hh
 
   Author: W. Zhou 2025
 */
@@ -17,7 +17,7 @@
 #include <string>
 #include <vector>
 #include "cetlib_except/exception.h"
-#include "Offline/CaloConditions/inc/CalCombinedEnergyCalibStatus.hh"
+#include "Offline/DbTables/inc/CalCombinedEnergyCalibStatus.hh"
 #include "Offline/DbTables/inc/DbTable.hh"
 #include "Offline/DataProducts/inc/CaloSiPMId.hh"
 #include "Offline/DataProducts/inc/CaloConst.hh"
