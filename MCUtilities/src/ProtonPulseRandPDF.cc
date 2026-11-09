@@ -22,7 +22,7 @@
 #include "fhiclcpp/types/Atom.h"
 #include "fhiclcpp/types/OptionalAtom.h"
 
-#include "Offline/Mu2eUtilities/inc/ProtonPulseRandPDF.hh"
+#include "Offline/MCUtilities/inc/ProtonPulseRandPDF.hh"
 #include "Offline/Mu2eUtilities/inc/Table.hh"
 
 // The following defines the proton pulse shape parameters (pdf width,

@@ -1,4 +1,4 @@
-#include "Offline/Mu2eUtilities/inc/GammaPairConversionSpectrum.hh"
+#include "Offline/MCUtilities/inc/GammaPairConversionSpectrum.hh"
 // Mu2e includes
 #include "Offline/GlobalConstantsService/inc/GlobalConstantsHandle.hh"
 #include "Offline/GlobalConstantsService/inc/PhysicsParams.hh"

@@ -17,7 +17,7 @@
 // Framework includes
 #include "cetlib/pow.h"
 
-#include "Offline/Mu2eUtilities/inc/CzarneckiSpectrum.hh"
+#include "Offline/MCUtilities/inc/CzarneckiSpectrum.hh"
 #include "Offline/Mu2eUtilities/inc/Table.hh"
 
 namespace mu2e {

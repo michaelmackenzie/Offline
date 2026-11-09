@@ -1,5 +1,5 @@
 // Code factored out form EjectedProtonGun.
-#include "Offline/Mu2eUtilities/inc/EjectedProtonSpectrum.hh"
+#include "Offline/MCUtilities/inc/EjectedProtonSpectrum.hh"
 
 #include <cmath>
 

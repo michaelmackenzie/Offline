@@ -13,7 +13,7 @@
 #include "fhiclcpp/coding.h"
 #include "fhiclcpp/exception.h"
 
-#include "Offline/Mu2eUtilities/inc/EventWeightHelper.hh"
+#include "Offline/MCUtilities/inc/EventWeightHelper.hh"
 
 namespace mu2e {
 

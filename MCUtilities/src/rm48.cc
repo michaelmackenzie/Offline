@@ -9,7 +9,7 @@
 #include "CLHEP/Random/RandFlat.h"
 
 
-#include "Offline/Mu2eUtilities/inc/rm48.hh"
+#include "Offline/MCUtilities/inc/rm48.hh"
 
 // Scope is local to this file so namespace is irrelevant.
 static CLHEP::RandFlat* distribution(0);

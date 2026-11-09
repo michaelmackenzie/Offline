@@ -7,7 +7,7 @@
 // cetlib includes
 #include "cetlib_except/exception.h"
 
-#include "Offline/Mu2eUtilities/inc/SimParticleGetTau.hh"
+#include "Offline/MCUtilities/inc/SimParticleGetTau.hh"
 
 namespace mu2e {
 

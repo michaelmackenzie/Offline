@@ -32,7 +32,7 @@
 #include "Offline/SeedService/inc/SeedService.hh"
 #include "Offline/MCDataProducts/inc/GenParticle.hh"
 #include "Offline/MCDataProducts/inc/EventWeight.hh"
-#include "Offline/Mu2eUtilities/inc/BinnedSpectrum.hh"
+#include "Offline/MCUtilities/inc/BinnedSpectrum.hh"
 
 namespace mu2e {
 

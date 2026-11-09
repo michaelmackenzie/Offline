@@ -5,7 +5,7 @@
 #include "cetlib/map_vector.h"
 #include "cetlib_except/exception.h"
 
-#include "Offline/Mu2eUtilities/inc/PhysicalVolumeMultiHelper.hh"
+#include "Offline/MCUtilities/inc/PhysicalVolumeMultiHelper.hh"
 
 namespace mu2e {
 struct PhysicalVolumeInfo;

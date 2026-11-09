@@ -12,7 +12,7 @@
 
 
 // Framework includes
-#include "Offline/Mu2eUtilities/inc/RandomLimitedExpo.hh"
+#include "Offline/MCUtilities/inc/RandomLimitedExpo.hh"
 
 namespace mu2e{
 

@@ -1,4 +1,4 @@
-#include "Offline/Mu2eUtilities/inc/simParticleList.hh"
+#include "Offline/MCUtilities/inc/simParticleList.hh"
 
 namespace mu2e {
 

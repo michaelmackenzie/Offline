@@ -4,7 +4,7 @@
 
 #include <stddef.h>
 
-#include "Offline/Mu2eUtilities/inc/McUtilsToolBase.hh"
+#include "Offline/MCUtilities/inc/McUtilsToolBase.hh"
 
 namespace art { class Event; }
 

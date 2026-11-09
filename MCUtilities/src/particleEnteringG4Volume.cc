@@ -2,7 +2,7 @@
 #include "Offline/MCDataProducts/inc/StepPointMC.hh"
 #include "Offline/MCDataProducts/inc/StrawGasStep.hh"
 
-#include "Offline/Mu2eUtilities/inc/particleEnteringG4Volume.hh"
+#include "Offline/MCUtilities/inc/particleEnteringG4Volume.hh"
 
 art::Ptr<mu2e::SimParticle> mu2e::particleEnteringG4Volume(const StepPointMC& step) {
     art::Ptr<SimParticle> p = step.simParticle();

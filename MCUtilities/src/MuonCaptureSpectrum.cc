@@ -22,8 +22,8 @@
 
 #include "cetlib/pow.h"
 
-#include "Offline/Mu2eUtilities/inc/MuonCaptureSpectrum.hh"
-#include "Offline/Mu2eUtilities/inc/RandomUnitSphere.hh"
+#include "Offline/MCUtilities/inc/MuonCaptureSpectrum.hh"
+#include "Offline/MCUtilities/inc/RandomUnitSphere.hh"
 
 using namespace std;
 

@@ -10,13 +10,13 @@
 #include "fhiclcpp/ParameterSet.h"
 #include "fhiclcpp/exception.h"
 
-#include "Offline/Mu2eUtilities/inc/BinnedSpectrum.hh"
-#include "Offline/Mu2eUtilities/inc/ConversionSpectrum.hh"
-#include "Offline/Mu2eUtilities/inc/CzarneckiSpectrum.hh"
-#include "Offline/Mu2eUtilities/inc/EjectedProtonSpectrum.hh"
-#include "Offline/Mu2eUtilities/inc/MuonCaptureSpectrum.hh"
-#include "Offline/Mu2eUtilities/inc/PionCaptureSpectrum.hh"
-#include "Offline/Mu2eUtilities/inc/SimpleSpectrum.hh"
+#include "Offline/MCUtilities/inc/BinnedSpectrum.hh"
+#include "Offline/MCUtilities/inc/ConversionSpectrum.hh"
+#include "Offline/MCUtilities/inc/CzarneckiSpectrum.hh"
+#include "Offline/MCUtilities/inc/EjectedProtonSpectrum.hh"
+#include "Offline/MCUtilities/inc/MuonCaptureSpectrum.hh"
+#include "Offline/MCUtilities/inc/PionCaptureSpectrum.hh"
+#include "Offline/MCUtilities/inc/SimpleSpectrum.hh"
 
 namespace mu2e {
 

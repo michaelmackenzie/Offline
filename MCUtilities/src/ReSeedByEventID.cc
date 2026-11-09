@@ -19,7 +19,7 @@
 // Fixme: The code may require maintenance if we change to a different engine type.
 //
 
-#include "Offline/Mu2eUtilities/inc/ReSeedByEventID.hh"
+#include "Offline/MCUtilities/inc/ReSeedByEventID.hh"
 #include "fhiclcpp/exception.h"
 
 #include <iostream>

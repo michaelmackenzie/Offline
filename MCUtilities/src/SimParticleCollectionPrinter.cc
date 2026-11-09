@@ -7,7 +7,7 @@
 #include "Offline/MCDataProducts/inc/ProcessCode.hh"
 #include "cetlib/map_vector.h"
 
-#include "Offline/Mu2eUtilities/inc/SimParticleCollectionPrinter.hh"
+#include "Offline/MCUtilities/inc/SimParticleCollectionPrinter.hh"
 
 namespace mu2e {
   //================================================================

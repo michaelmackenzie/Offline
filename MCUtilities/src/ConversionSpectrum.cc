@@ -15,7 +15,7 @@
 #include "gsl/gsl_integration.h"
 #include "gsl/gsl_math.h"
 
-#include "Offline/Mu2eUtilities/inc/ConversionSpectrum.hh"
+#include "Offline/MCUtilities/inc/ConversionSpectrum.hh"
 
 using namespace std;
 

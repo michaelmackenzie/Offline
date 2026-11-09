@@ -14,7 +14,7 @@
 #include "messagefacility/MessageLogger/MessageLogger.h"
 
 // Mu2e includes
-#include "Offline/Mu2eUtilities/inc/checkSimParticleCollection.hh"
+#include "Offline/MCUtilities/inc/checkSimParticleCollection.hh"
 
 using namespace std;
 

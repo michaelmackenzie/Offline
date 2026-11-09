@@ -21,7 +21,7 @@
 // Framework includes
 #include "cetlib/pow.h"
 
-#include "Offline/Mu2eUtilities/inc/ShankerWatanabeSpectrum.hh"
+#include "Offline/MCUtilities/inc/ShankerWatanabeSpectrum.hh"
 #include "Offline/Mu2eUtilities/inc/Table.hh"
 
 using namespace std;

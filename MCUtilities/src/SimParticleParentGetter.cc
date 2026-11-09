@@ -13,7 +13,7 @@
 #include "canvas/Persistency/Common/Assns.h"
 #include "cetlib_except/exception.h"
 
-#include "Offline/Mu2eUtilities/inc/SimParticleParentGetter.hh"
+#include "Offline/MCUtilities/inc/SimParticleParentGetter.hh"
 
 namespace mu2e { class GenParticle; }
 
