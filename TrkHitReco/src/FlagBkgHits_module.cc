@@ -8,7 +8,6 @@
 #include "fhiclcpp/types/OptionalTable.h"
 
 #include "Offline/ConfigTools/inc/ConfigFileLookupPolicy.hh"
-#include "Offline/MCDataProducts/inc/StrawDigiMC.hh"
 #include "Offline/DataProducts/inc/StrawIdMask.hh"
 #include "Offline/RecoDataProducts/inc/ComboHit.hh"
 #include "Offline/RecoDataProducts/inc/BkgCluster.hh"

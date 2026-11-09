@@ -38,7 +38,6 @@ cet_build_plugin(FlagBkgHits art::module
       
       Offline::ConfigTools
       Offline::DataProducts
-      Offline::MCDataProducts
       Offline::RecoDataProducts
 )
 
