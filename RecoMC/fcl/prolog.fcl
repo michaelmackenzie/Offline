@@ -268,12 +268,26 @@ RecoMC : { @table::RecoMC
   }
 }
 
+# Associate regrown KalSeeds (RegrowLoopHelix / RegrowKinematicLine run with ProduceParentAssns : true)
+# with the KalSeedMC of the seed they were regrown from. Set KalSeedParentAssns to the regrow module
+# label and place the module right after it in the same path, e.g. label <regrowLabel>MC:
+#   physics.producers.RegrowLHMC : { @table::RecoMC.RegrowKalSeedMCAssns  KalSeedParentAssns : "RegrowLH" }
+RecoMC : { @table::RecoMC
+  RegrowKalSeedMCAssns : {
+    module_type : RegrowKalSeedMCAssns
+    KalSeedParentAssns : @nil              # label of the regrow module (ProduceParentAssns : true)
+    KalSeedMCAssns : "SelectReco"          # input KalSeed -> KalSeedMC assns of the original seeds
+    CopyKalSeedMCs : false                 # true: deep-copy the KalSeedMCs into a new collection
+  }
+}
+
 # groupings by art module kind, so job fcls can use @table::RecoMC.analyzers etc.
 RecoMC : { @table::RecoMC
   producers : {
     ComboHitFilter : { @table::RecoMC.ComboHitFilter }
     KLTruthSeed    : { @table::RecoMC.KLTruthSeed }
     CHTruthSeed    : { @table::RecoMC.CHTruthSeed }
+    RegrowKalSeedMCAssns : { @table::RecoMC.RegrowKalSeedMCAssns }
   }
   analyzers : {
     DeltaFinderAna   : { @table::RecoMC.DeltaFinderAna }

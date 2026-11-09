@@ -213,6 +213,13 @@ cet_build_plugin(CrvTimeOffsets art::module
       Offline::ProditionsService
 )
 
+cet_build_plugin(RegrowKalSeedMCAssns art::module
+    REG_SOURCE src/RegrowKalSeedMCAssns_module.cc
+    LIBRARIES REG
+      Offline::MCDataProducts
+      Offline::RecoDataProducts
+)
+
 cet_build_plugin(KKTruthSeed art::module
     REG_SOURCE src/KKTruthSeed_module.cc
     LIBRARIES REG

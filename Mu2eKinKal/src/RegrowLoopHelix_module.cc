@@ -36,9 +36,9 @@
 #include "Offline/RecoDataProducts/inc/ComboHit.hh"
 #include "Offline/RecoDataProducts/inc/StrawHitFlag.hh"
 #include "Offline/RecoDataProducts/inc/KalSeed.hh"
+#include "Offline/RecoDataProducts/inc/KalSeedAssns.hh"
 #include "Offline/RecoDataProducts/inc/TrkFitDirection.hh"
 #include "Offline/DataProducts/inc/IndexMap.hh"
-#include "Offline/MCDataProducts/inc/KalSeedMC.hh"
 // KinKal
 #include "KinKal/Fit/Track.hh"
 #include "KinKal/Fit/Config.hh"
@@ -90,8 +90,7 @@ namespace mu2e {
     fhicl::Atom<art::InputTag> comboHitCollection {Name("ComboHitCollection"), Comment("Reduced ComboHit collection") };
     fhicl::OptionalAtom<art::InputTag> caloClusterCollection {Name("CaloClusterCollection"),     Comment("CaloCluster collection ") };
     fhicl::Atom<art::InputTag> indexMap {Name("StrawDigiIndexMap"), Comment("Map between original and reduced ComboHits") };
-    fhicl::OptionalAtom<art::InputTag> kalSeedMCAssns {Name("KalSeedMCAssns"), Comment("Association to KalSeedMC. If set, regrown KalSeeds will be associated with the same KalSeedMC as the original") };
-    fhicl::OptionalAtom<bool> copyKalSeedMCs { Name("CopyKalSeedMCs"), Comment("If set, and KalSeedMCs are referenced, create a deep copy of the input") };
+    fhicl::Atom<bool> produceParentAssns {Name("ProduceParentAssns"), Comment("If true, produce Assns<KalSeed,KalSeed> from each regrown KalSeed (first) to the original KalSeed it was regrown from (second)"), false };
     fhicl::OptionalAtom<int> fitParticle {  Name("FitParticle"), Comment("PDG code of particle type to refit: e-, e+, mu-, ...")};
     fhicl::Table<KKFitConfig> kkfitSettings { Name("KKFitSettings") };
     fhicl::Table<KKConfig> fitSettings { Name("RefitSettings") };
@@ -157,8 +156,7 @@ namespace mu2e {
       art::ProductToken<ComboHitCollection> chcol_T_;
       art::ProductToken<CaloClusterCollection> cccol_T_;
       art::ProductToken<IndexMap> indexmap_T_;
-      art::InputTag ksmca_T_;
-      bool fillMCAssns_ = false, copyKalSeedMCs_ = false;
+      bool fillParentAssns_ = false;
       bool extend_;
       bool has_cccol_, has_kseedcol_, has_kseedptrcol_;
       std::unique_ptr<KKExtrap> extrap_;
@@ -172,7 +170,7 @@ namespace mu2e {
   kkfit_(settings().kkfitSettings()),
   chcol_T_(consumes<ComboHitCollection>(settings().comboHitCollection())),
   indexmap_T_(consumes<IndexMap>(settings().indexMap())),
-  fillMCAssns_(settings().kalSeedMCAssns(ksmca_T_)),
+  fillParentAssns_(settings().produceParentAssns()),
   extend_(settings().extend()),
   has_cccol_(settings().caloClusterCollection()),
   has_kseedcol_(settings().kalSeedCollection()),
@@ -182,16 +180,7 @@ namespace mu2e {
     produces<KalSeedCollection>();
     if(settings().extrapSettings())extrap_ = make_unique<KKExtrap>(*settings().extrapSettings());
     if(extrap_) extrap_->checkConfig(config_);
-    if( fillMCAssns_){
-      consumes<KalSeedMCAssns>(ksmca_T_);
-      produces <KalSeedMCAssns>();
-      // require KalSeedMC copy choice
-      if(!(settings().copyKalSeedMCs(copyKalSeedMCs_)))
-        throw cet::exception("RECO")<<"mu2e::RegrowLoopHelix: Specify if KalSeedMC Collection is deep copied or not" << endl;
-      if(copyKalSeedMCs_){
-        produces<KalSeedMCCollection>();
-      }
-    }
+    if(fillParentAssns_) produces<KalSeedParentAssns>();
     if(!(has_kseedcol_ || has_kseedptrcol_) || (has_kseedcol_ && has_kseedptrcol_))
       throw cet::exception("RECO")<<"mu2e::RegrowLoopHelix: exactly 1 of KalSeedCollection or KalSeedPtrCollection must be specified" << endl;
     if(has_kseedcol_)kseedcol_T_ = art::ProductToken<KalSeedCollection>(consumes<KalSeedCollection>(settings().kalSeedCollection().value()));
@@ -234,23 +223,11 @@ namespace mu2e {
     const auto& indexmap = *indexmap_H;
     auto KalSeedCollectionPID = event.getProductID<KalSeedCollection>();
     auto KalSeedCollectionGetter = event.productGetter(KalSeedCollectionPID);
-    art::ProductID KalSeedMCCollectionPID;
-    art::Handle<KalSeedMCAssns> ksmca_H;
     // create outputs
     unique_ptr<KKTRKCOL> ktrkcol(new KKTRKCOL );
     unique_ptr<KalSeedCollection> rgkseedcol(new KalSeedCollection );
-    std::unique_ptr<KalSeedMCAssns> rgksmca;
-    std::unique_ptr<KalSeedMCCollection> rgksmcc;
-    // deal with MC
-    if(fillMCAssns_){
-      ksmca_H = event.getHandle<KalSeedMCAssns>(ksmca_T_);
-      if(!ksmca_H)throw cet::exception("RECO")<<"mu2e::RegrowLoopHelix: No KalSeedMCAssns found" << endl;
-      rgksmca = std::unique_ptr<KalSeedMCAssns>(new KalSeedMCAssns);
-      if(copyKalSeedMCs_){
-        rgksmcc = std::unique_ptr<KalSeedMCCollection>(new KalSeedMCCollection);
-        KalSeedMCCollectionPID = event.getProductID<KalSeedMCCollection>();
-      }
-    }
+    std::unique_ptr<KalSeedParentAssns> rgparentassns;
+    if(fillParentAssns_) rgparentassns = std::make_unique<KalSeedParentAssns>();
 
     KalSeedPtrCollection kseedptrs;
     if(has_kseedptrcol_){
@@ -310,32 +287,7 @@ namespace mu2e {
             auto rgks = kkfit_.createSeed(*ktrk,fitflag,*calo_h,*nominalTracker_h,*trackerstatus);
             rgkseedcol->push_back(rgks);
             auto rgksp = art::Ptr<KalSeed>(KalSeedCollectionPID,rgkseedcol->size()-1,KalSeedCollectionGetter);
-            if(fillMCAssns_){
-              // find the MC assns
-              auto ksmca = *ksmca_H;
-              auto ksmcai= ksmca.end();
-              for(auto ksmci= ksmca.begin(); ksmci != ksmca.end(); ++ksmci){
-                if(ksmci->first == kseedptr){
-                  ksmcai = ksmci;
-                  break;
-                }
-              }
-              // test this is the right ptr
-              if(ksmcai == ksmca.end())throw cet::exception("Reco")<<"mu2e::RegrowLoopHelix: can't find MC associated with KalSeed" << std::endl;
-              if(copyKalSeedMCs_){
-                // deep-copy the KalSeedMC
-                rgksmcc->push_back(*ksmcai->second);
-                auto KalSeedMCCollectionGetter = event.productGetter(KalSeedMCCollectionPID);
-                auto mcseedp = art::Ptr<KalSeedMC>(KalSeedMCCollectionPID,rgksmcc->size()-1,KalSeedMCCollectionGetter);
-                rgksmca->addSingle(rgksp,mcseedp);
-              } else {
-                // just reference the original KalSeedMC
-                auto mcseedp = ksmcai->second;
-                rgksmca->addSingle(rgksp,mcseedp);
-                // add the original too
-                rgksmca->addSingle(kseedptr,mcseedp);
-              }
-            }
+            if(fillParentAssns_) rgparentassns->addSingle(rgksp,kseedptr);
             if(debug_ > 5)static_cast<const KinKal::PiecewiseTrajectory<KTRAJ>&>(ktrk->fitTraj()).print(std::cout,2);
             ktrkcol->push_back(ktrk.release());
           }
@@ -354,8 +306,7 @@ namespace mu2e {
     // store output
     event.put(move(ktrkcol));
     event.put(move(rgkseedcol));
-    if(fillMCAssns_)event.put(move(rgksmca));
-    if(copyKalSeedMCs_)event.put(move(rgksmcc));
+    if(fillParentAssns_)event.put(move(rgparentassns));
     return accept;
   }
 

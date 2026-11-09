@@ -265,6 +265,10 @@
  <class name="art::Assns<mu2e::CosmicTrackSeed,mu2e::KalSeed,void>"/>
  <class name="art::Wrapper<art::Assns<mu2e::CosmicTrackSeed,mu2e::KalSeed,void> >"/>
 
+<!-- Assns<KalSeed,KalSeed> is its own partner, so there is no separate reverse entry -->
+ <class name="mu2e::KalSeedParentAssns" />
+ <class name="art::Wrapper<mu2e::KalSeedParentAssns>"/>
+
 <!-- KinKal products: these cannot be directly persisted -->
 
  <class name="mu2e::KKLoopHelix"/>

@@ -36,9 +36,9 @@
 #include "Offline/RecoDataProducts/inc/ComboHit.hh"
 #include "Offline/RecoDataProducts/inc/StrawHitFlag.hh"
 #include "Offline/RecoDataProducts/inc/KalSeed.hh"
+#include "Offline/RecoDataProducts/inc/KalSeedAssns.hh"
 #include "Offline/RecoDataProducts/inc/TrkFitDirection.hh"
 #include "Offline/DataProducts/inc/IndexMap.hh"
-#include "Offline/MCDataProducts/inc/KalSeedMC.hh"
 // KinKal
 #include "KinKal/Fit/Track.hh"
 #include "KinKal/Fit/Config.hh"
@@ -89,7 +89,7 @@ namespace mu2e {
     fhicl::Atom<art::InputTag> kalSeedCollection {Name("KalSeedCollection"), Comment("KalSeed collection to process") };
     fhicl::Atom<art::InputTag> comboHitCollection {Name("ComboHitCollection"), Comment("Reduced ComboHit collection") };
     fhicl::Atom<art::InputTag> indexMap {Name("StrawDigiIndexMap"), Comment("Map between original and reduced ComboHits") };
-    fhicl::OptionalAtom<art::InputTag> kalSeedMCAssns {Name("KalSeedMCAssns"), Comment("Association to KalSeedMC. If set, regrown KalSeeds will be associated with the same KalSeedMC as the original") };
+    fhicl::Atom<bool> produceParentAssns {Name("ProduceParentAssns"), Comment("If true, produce Assns<KalSeed,KalSeed> from each regrown KalSeed (first) to the original KalSeed it was regrown from (second)"), false };
     fhicl::Table<KKFitConfig> kkfitSettings { Name("KKFitSettings") };
     fhicl::Table<KKConfig> fitSettings { Name("RefitSettings") };
     fhicl::OptionalTable<KKExtrapConfig> extrapSettings { Name("ExtrapolationSettings") };
@@ -147,8 +147,7 @@ namespace mu2e {
       art::ProductToken<KalSeedCollection> kseedcol_T_;
       art::ProductToken<ComboHitCollection> chcol_T_;
       art::ProductToken<IndexMap> indexmap_T_;
-      art::InputTag ksmca_T_;
-      bool fillMCAssns_;
+      bool fillParentAssns_;
       std::unique_ptr<KKExtrap> extrap_;
   };
 
@@ -159,16 +158,13 @@ namespace mu2e {
   kseedcol_T_(consumes<KalSeedCollection>(settings().kalSeedCollection())),
   chcol_T_(consumes<ComboHitCollection>(settings().comboHitCollection())),
   indexmap_T_(consumes<IndexMap>(settings().indexMap())),
-  fillMCAssns_(settings().kalSeedMCAssns(ksmca_T_))
+  fillParentAssns_(settings().produceParentAssns())
   {
     produces<KKTRKCOL>();
     produces<KalSeedCollection>();
     if(settings().extrapSettings())extrap_ = make_unique<KKExtrap>(*settings().extrapSettings());
     if(extrap_) extrap_->checkConfig(config_);
-    if( fillMCAssns_){
-      consumes<KalSeedMCAssns>(ksmca_T_);
-      produces <KalSeedMCAssns>();
-    }
+    if(fillParentAssns_) produces<KalSeedParentAssns>();
   }
 
   void RegrowKinematicLine::beginRun(art::Run& run)
@@ -196,22 +192,11 @@ namespace mu2e {
     const auto& indexmap = *indexmap_H;
     auto KalSeedCollectionPID = event.getProductID<KalSeedCollection>();
     auto KalSeedCollectionGetter = event.productGetter(KalSeedCollectionPID);
-    art::Handle<KalSeedMCAssns> ksmca_H;
     // create outputs
     unique_ptr<KKTRKCOL> ktrkcol(new KKTRKCOL );
     unique_ptr<KalSeedCollection> rgkseedcol(new KalSeedCollection );
-    std::unique_ptr<KalSeedMCAssns> ksmca;
-    // KalSeedMCAssns is a single flat product spanning every KalSeedCollection SelectRecoMC was
-    // configured with, so it cannot be indexed by this module's position within its own input
-    // collection. Build the KalSeed -> KalSeedMC lookup once per event instead.
-    std::map<art::Ptr<KalSeed>,art::Ptr<KalSeedMC>> mcmap;
-    // deal with MC
-    if(fillMCAssns_){
-      ksmca_H = event.getHandle<KalSeedMCAssns>(ksmca_T_);
-      if(!ksmca_H)throw cet::exception("RECO")<<"mu2e::RegrowKinematicLine: No KalSeedMCAssns found" << endl;
-      ksmca = std::unique_ptr<KalSeedMCAssns>(new KalSeedMCAssns);
-      for(auto const& assn : *ksmca_H) mcmap[assn.first] = assn.second;
-    }
+    std::unique_ptr<KalSeedParentAssns> parentassns;
+    if(fillParentAssns_) parentassns = std::make_unique<KalSeedParentAssns>();
     size_t iseed(0);
     for (auto const& kseed : kseedcol) {
       if(!kseed.kinematicLineFit())throw cet::exception("RECO")<<"mu2e::RegrowKinematicLine: passed KalSeed from non-KinematicLine fit " << endl;
@@ -254,16 +239,10 @@ namespace mu2e {
           fitflag.merge(TrkFitFlag::Regrown);
           auto rgks = kkfit_.createSeed(*ktrk,fitflag,*calo_h,*nominalTracker_h,*trackerstatus);
           rgkseedcol->push_back(rgks);
-          if(fillMCAssns_){
-            // find the MC assns
+          if(fillParentAssns_){
             auto origksp = art::Ptr<KalSeed>(kseed_H,iseed);
-            auto imc = mcmap.find(origksp);
-            if(imc == mcmap.end())throw cet::exception("Reco")<<"mu2e::RegrowKinematicLine: can't find MC associated with KalSeed"<< std::endl;
-            auto mcseedp = imc->second;
             auto rgksp = art::Ptr<KalSeed>(KalSeedCollectionPID,rgkseedcol->size()-1,KalSeedCollectionGetter);
-            ksmca->addSingle(rgksp,mcseedp);
-            // add the original too
-            ksmca->addSingle(origksp,mcseedp);
+            parentassns->addSingle(rgksp,origksp);
           }
           if(debug_ > 5)static_cast<const KinKal::PiecewiseTrajectory<KTRAJ>&>(ktrk->fitTraj()).print(std::cout,2);
           ktrkcol->push_back(ktrk.release());
@@ -275,7 +254,7 @@ namespace mu2e {
     // store output
     event.put(move(ktrkcol));
     event.put(move(rgkseedcol));
-    if(fillMCAssns_)event.put(move(ksmca));
+    if(fillParentAssns_)event.put(move(parentassns));
   }
 
   void RegrowKinematicLine::endJob()
