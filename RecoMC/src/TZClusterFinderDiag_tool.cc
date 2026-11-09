@@ -53,6 +53,12 @@ namespace mu2e {
       TimeClusterHists* _timeClusterHists[kNTimeClusterHistsSets];
     };
 
+    struct mcSimIDs {
+      int simID;
+      int pdgID;
+      int nHits; // number of straw hits corresponding to simID
+    };
+
   protected:
     Hists                            _hist;
     Data_t*                          _data;

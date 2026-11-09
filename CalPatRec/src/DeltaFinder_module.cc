@@ -65,7 +65,6 @@ namespace mu2e {
       fhicl::Atom<art::InputTag>   sschCollTag            {Name("sschCollTag"       )    , Comment("SS ComboHit collection name") };
       fhicl::Atom<art::InputTag>   chCollTag              {Name("chCollTag"         )    , Comment("ComboHit collection Name"   ) };
       fhicl::Atom<art::InputTag>   ewmTag                 {Name("ewmTag"            )    , Comment("EventWindowMarker tag") };
-      fhicl::Atom<art::InputTag>   sdmcCollTag            {Name("sdmcCollTag"       )    , Comment("StrawDigiMC collection Name") };
       fhicl::Atom<int>             debugLevel             {Name("debugLevel"        )    , Comment("debug level"                ) };
       fhicl::Atom<int>             diagLevel              {Name("diagLevel"         )    , Comment("diag level"                 ) };
       fhicl::Atom<int>             printErrors            {Name("printErrors"       )    , Comment("print errors"               ) };
@@ -88,7 +87,6 @@ namespace mu2e {
     art::InputTag   _sschCollTag;
     art::InputTag   _chCollTag;
     art::InputTag   _ewmTag;
-    art::InputTag   _sdmcCollTag;
 
     int             _writeFilteredComboHits;   // write filtered combo hits
     // int             _writeStrawHitFlags;       // obsolete
@@ -141,7 +139,6 @@ namespace mu2e {
     _sschCollTag           (config().sschCollTag()       ),
     _chCollTag             (config().chCollTag()         ),
     _ewmTag                (config().ewmTag()            ),
-    _sdmcCollTag           (config().sdmcCollTag()       ),
     _writeFilteredComboHits(config().writeFilteredComboHits()    ),
     // _writeStrawHitFlags    (config().writeStrawHitFlags()),
     _writeStrawHits        (config().writeStrawHits()    ),
@@ -183,7 +180,6 @@ namespace mu2e {
     else                 _hmanager = std::make_unique<ModuleHistToolBase>();
 
     _data.chCollTag      = _chCollTag;
-    _data.sdmcCollTag    = _sdmcCollTag;
     _data._finder        = _finder.get();    // for diagnostics
   }
 

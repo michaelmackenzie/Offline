@@ -25,9 +25,6 @@ namespace mu2e {
     fDtDz              = 0.f;
     fSigT0             = 0.f;
 
-    fMcPart            = nullptr;
-    fNHitsMcP          = 0;
-    fNHitsCE           = 0;
     fTimeIndex         = 0;
 
     for (int is=0; is<kNStations; is++) {

@@ -42,7 +42,6 @@ using CalPatRec::Pzz_t;
 
 namespace mu2e {
   class Panel;
-  class SimParticle;
   class DeltaFinderAlg;
 //-----------------------------------------------------------------------------
 // delta-electron seed: structure within the station
@@ -85,7 +84,6 @@ namespace mu2e {
       const DiskCalorimeter*        calorimeter = nullptr;
 
       art::InputTag                 chCollTag;
-      art::InputTag                 sdmcCollTag;
 
       const ComboHitCollection*     chcol = nullptr;
       ComboHitCollection*           outputChColl = nullptr;

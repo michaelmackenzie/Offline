@@ -6,7 +6,6 @@
 
 namespace mu2e {
   class Panel;
-  class SimParticle;
 
     struct DeltaCandidate {
       enum  {

@@ -48,6 +48,11 @@ namespace mu2e {
       Data_t*        data_;
       bool           mcdiag_;
       art::InputTag  mcdigisTag_;
+
+      // MC truth tree buffers, owned by the tool (not part of the reco Data_t)
+      Int_t          chPdg_   [Data_t::kMaxHits] = {};
+      Int_t          chCrCode_[Data_t::kMaxHits] = {};
+      Int_t          chSimId_ [Data_t::kMaxHits] = {};
   };
 
 
@@ -77,9 +82,9 @@ namespace mu2e {
     trkdiag_->Branch("Nch",       &data_->Nch_,       "Nch/I");
     trkdiag_->Branch("chSel",     &data_->chSel_,     "chSel[Nch]/I");
     trkdiag_->Branch("chNhit",    &data_->chNhit_,    "chNhit[Nch]/I");
-    trkdiag_->Branch("chPdg",     &data_->chPdg_,     "chPdg[Nch]/I");
-    trkdiag_->Branch("chCrCode",  &data_->chCrCode_,  "chCrCode[Nch]/I");
-    trkdiag_->Branch("chSimId",   &data_->chSimId_,   "chSimId[Nch]/I");
+    trkdiag_->Branch("chPdg",     &chPdg_,     "chPdg[Nch]/I");
+    trkdiag_->Branch("chCrCode",  &chCrCode_,  "chCrCode[Nch]/I");
+    trkdiag_->Branch("chSimId",   &chSimId_,   "chSimId[Nch]/I");
     trkdiag_->Branch("chTime",    &data_->chTime_,    "chTime[Nch]/F");
     trkdiag_->Branch("chPhi",     &data_->chPhi_,     "chPhi[Nch]/F");
     trkdiag_->Branch("chRad",     &data_->chRad_,     "chRad[Nch]/F");
@@ -112,9 +117,9 @@ namespace mu2e {
               data_->chcol_->fillStrawDigiIndices(ich,dids);
               const StrawDigiMC& mcdigi        = mcdigis.at(dids[0]);// taking 1st digi: is there a better idea??
               const art::Ptr<SimParticle>& spp = mcdigi.earlyStrawGasStep()->simParticle();
-              data_->chPdg_[ich]    = spp->pdgId();
-              data_->chCrCode_[ich] = spp->creationCode();
-              data_->chSimId_[ich]  = spp->id().asInt();
+              chPdg_[ich]    = spp->pdgId();
+              chCrCode_[ich] = spp->creationCode();
+              chSimId_[ich]  = spp->id().asInt();
           }
       }
 

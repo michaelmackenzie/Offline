@@ -6,7 +6,6 @@
 
 namespace mu2e {
   class Panel;
-  class SimParticle;
 
   using DeltaFinderTypes::PhiPrediction_t;
 
@@ -49,9 +48,6 @@ namespace mu2e {
       float                   fDtDz;
       float                   fSigT0;
 
-      McPart_t*               fMcPart;             // "best" MC particle
-      int                     fNHitsMcP;           // N combo hits by the "best" particle"
-      int                     fNHitsCE;            // N(hits) by CE
       int                     fTimeIndex;
 //-----------------------------------------------------------------------------
 //
@@ -73,7 +69,6 @@ namespace mu2e {
       int        nHitsStation(int Station) const  { return fNHitsStation[Station]; }
 
 
-      int        NHitsMcP             () const { return fNHitsMcP; }
       int        nStrawHitsTot        () const { return fNStrawHitsTot; }
 
       float      minHitTime(int Station) const { return fMinHitTime[Station]; }
@@ -81,7 +76,6 @@ namespace mu2e {
       int        LastStation          () const { return fLastStation ; }
       int        FirstStation         () const { return fFirstStation; }
       float      eDep                 () const { return (fNStrawHitsTot > 0) ? fSumEDep/fNStrawHitsTot : 0.f; }
-      float      FBest                () const { return (fNHitsTot > 0) ? float(fNHitsMcP)/fNHitsTot : 0.f; }
 
       float      xMean(int Station)  { return (fNHitsStation[Station] > 0) ? fSumX[Station]/fNHitsStation[Station] : 0.f; }
       float      yMean(int Station)  { return (fNHitsStation[Station] > 0) ? fSumY[Station]/fNHitsStation[Station] : 0.f; }

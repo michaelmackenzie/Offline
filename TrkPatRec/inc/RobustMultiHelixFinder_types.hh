@@ -21,7 +21,7 @@ namespace mu2e {
         const ComboHitCollection* chcol_;
 
         Int_t   iev_;
-        Int_t   Nch_,chNhit_[kMaxHits],chPdg_[kMaxHits],chCrCode_[kMaxHits],chSimId_[kMaxHits],chUId_[kMaxHits];
+        Int_t   Nch_,chNhit_[kMaxHits],chUId_[kMaxHits];
         Float_t chTime_[kMaxHits],chPhi_[kMaxHits],chRad_[kMaxHits],chX_[kMaxHits],chY_[kMaxHits],chZ_[kMaxHits];
         Float_t chTerr_[kMaxHits],chWerr_[kMaxHits],chWDX_[kMaxHits],chWDY_[kMaxHits];
 

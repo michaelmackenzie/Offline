@@ -11,15 +11,9 @@ using ROOT::Math::XYZVectorF;
 
 namespace mu2e {
 
-  namespace DeltaFinderTypes {
-    struct McPart_t;
-  }
-
   using  CalPatRec::HitData_t;
-  using  DeltaFinderTypes::McPart_t;
 
   class  Panel;
-  class  SimParticle;
 
   class DeltaSeed {
   public:

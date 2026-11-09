@@ -59,7 +59,7 @@ namespace mu2e {
       const art::Event*               _event;
       const TimeCluster*              _timeCluster;
       const ComboHitCollection*       _chColl;
-      const ComboHitCollection*       _chColl2; // for tool to get simID info before selection cuts
+      const ComboHitCollection*       _chColl2; // ComboHit collection before the selection cuts, for diagnostics
       const CaloClusterCollection*    _ccColl;
       TimeClusterCollection*          _tcColl; // 'tcColl': time cluster collection
       IntensityInfoTimeCluster*       _iiTC;
@@ -117,12 +117,6 @@ namespace mu2e {
       void clear_chunkInfo()   { _chunkInfo.hIndices.clear(); _chunkInfo.fitter.clear();         }
       void clear_chunks()      { chunks.clear();                                                 }
 
-    };
-
-    struct mcSimIDs {
-      int simID;
-      int pdgID;
-      int nHits; // number of straw hits corresponding to simID
     };
   }
 }
