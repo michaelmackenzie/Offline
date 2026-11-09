@@ -13,7 +13,7 @@ services: {
   message   : @local::default_message
   scheduler : { defaultExceptions : false }
 
-  GeometryService        : { inputFile      : "Offline/Mu2eG4/test/geom_mau10_custom.txt" }
+  GeometryService        : { inputFile      : "Offline/GeometryService/test/geom_mau10_custom.txt" }
   GlobalConstantsService : { inputFile      : "Offline/GlobalConstantsService/data/globalConstants_01.txt" }
 
 }

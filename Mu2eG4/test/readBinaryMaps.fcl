@@ -19,7 +19,7 @@ services : {
   TFileService          : { fileName : "readBinaryMaps.root" }
   RandomNumberGenerator : {defaultEngineKind: "MixMaxRng" }
 
-  GeometryService        : { inputFile      : "Offline/BFieldGeom/test/geom_readBinaries.txt" }
+  GeometryService        : { inputFile      : "Offline/Mu2eG4/test/geom_readBinaries.txt" }
   GlobalConstantsService : { inputFile      : "Offline/GlobalConstantsService/data/globalConstants_01.txt"    }
   Mu2eG4Helper           : {}
   SeedService            : @local::automaticSeeds

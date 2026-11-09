@@ -64,18 +64,18 @@ double mu2e.detectorSystemZ0 = 10200.;   // mm  G4BL: (17730-7292=9801 mm)
 // Proton Absorber
 #include "Offline/GeometryService/geom/protonAbsorber_cylindrical.txt"
 //#include "GeometryService/geom/protonAbsorber_conical_v2.txt"
-//#include "Mu2eG4/geom/protonAbsorber_conical.txt" // MECO-style PA
-//#include "Mu2eG4/geom/protonAbsorber_helical.txt" // Helical PA
+//#include "GeometryService/geom/protonAbsorber_conical.txt" // MECO-style PA
+//#include "GeometryService/geom/protonAbsorber_helical.txt" // Helical PA
 
 #include "Offline/GeometryService/geom/ProductionTargetInPS.txt"
-#include "Offline/Mu2eG4/geom/protonBeamDump_v02.txt"
+#include "Offline/GeometryService/geom/protonBeamDump_v02.txt"
 #include "Offline/GeometryService/geom/extmon_fnal_v02.txt"
 
 #include "Offline/GeometryService/geom/tracker_cd3_s4p2.txt"
 
 // Crystal calorimeter
-#include "Offline/Mu2eG4/geom/calorimeter_CsI.txt"
-//#include "Mu2eG4/geom/calorimeter_BaF2.txt"
+#include "Offline/GeometryService/geom/calorimeter_CsI.txt"
+//#include "GeometryService/geom/calorimeter_BaF2.txt"
 
 //CRV counters
 #include "Offline/GeometryService/geom/crv_counters_v03.txt"

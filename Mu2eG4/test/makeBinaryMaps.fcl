@@ -20,7 +20,7 @@ services : {
   TFileService          : { fileName : "makeBinaryMaps.root" }
   RandomNumberGenerator : {defaultEngineKind: "MixMaxRng" }
 
-  GeometryService        : { inputFile      : "Offline/BFieldGeom/test/geom_makeBinaries.txt" }
+  GeometryService        : { inputFile      : "Offline/Mu2eG4/test/geom_makeBinaries.txt" }
   GlobalConstantsService : { inputFile      : "Offline/GlobalConstantsService/data/globalConstants_01.txt"    }
   Mu2eG4Helper           : {}
   SeedService            : @local::automaticSeeds
