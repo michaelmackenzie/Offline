@@ -33,13 +33,10 @@ helper.make_plugins([
     'mu2e_DataProducts',
     'mu2e_DbTables',
     'mu2e_Mu2eUtilities',
-    'mu2e_MCUtilities',
     'mu2e_ProditionsService',
     'mu2e_RecoDataProducts',
     'mu2e_SeedService',
     'mu2e_TrackerConditions',
-    'mu2e_TrackerMC',
-    'mu2e_CaloMC',
 ])
 
 helper.make_dict_and_map([
@@ -55,6 +52,4 @@ helper.make_dict_and_map([
     'mu2e_RecoDataProducts',
     'mu2e_SeedService',
     'mu2e_TrackerConditions',
-    'mu2e_TrackerMC',
-    'mu2e_CaloMC',
 ])

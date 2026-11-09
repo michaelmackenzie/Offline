@@ -47,15 +47,6 @@ cet_build_plugin(BigNumberProducer art::module
       Offline::Blinding
 )
 
-cet_build_plugin(DisplaceDigiTimes art::module
-    REG_SOURCE src/DisplaceDigiTimes_module.cc
-    LIBRARIES REG
-      Offline::Blinding
-      Offline::MCUtilities
-      Offline::SeedService
-      Offline::Mu2eUtilities
-)
-
 cet_build_plugin(GoldwasserMicaliDecrypter art::module
     REG_SOURCE src/GoldwasserMicaliDecrypter_module.cc
     LIBRARIES REG
@@ -74,14 +65,6 @@ cet_build_plugin(KalSeedFunctionalPrescale art::module
     LIBRARIES REG
       Offline::Blinding
       Offline::SeedService
-)
-
-cet_build_plugin(MergeDigis art::module
-    REG_SOURCE src/MergeDigis_module.cc
-    LIBRARIES REG
-      Offline::Blinding
-      Offline::TrackerMC
-      Offline::CaloMC
 )
 
 cet_build_plugin(TrackDigiExtractor art::module
