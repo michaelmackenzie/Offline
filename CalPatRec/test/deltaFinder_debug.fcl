@@ -20,7 +20,7 @@ physics : {
 
     producers : { @table::Reconstruction.producers
 
-        ComboHitFilter : { @table::CalPatRec.producers.ComboHitFilter
+        ComboHitFilter : { @table::RecoMC.producers.ComboHitFilter
             simID      : @local::SIM_ID
             debugLevel : 1
         }
@@ -47,7 +47,7 @@ physics : {
 
     filters   : { @table::Reconstruction.filters   }
     analyzers : { @table::stntuple.analyzers
-        DeltaFinderAna: { @table::CalPatRec.analyzers.DeltaFinderAna
+        DeltaFinderAna: { @table::RecoMC.analyzers.DeltaFinderAna
             debugLevel                    : 0 ## 1
             printElectronHits             : 1
         }

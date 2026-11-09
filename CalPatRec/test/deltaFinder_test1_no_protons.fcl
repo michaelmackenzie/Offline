@@ -49,7 +49,7 @@ physics : {
     filters   : { @table::Reconstruction.filters   }
 
     analyzers : { @table::stntuple.analyzers
-        DeltaFinderAna: { @table::CalPatRec.analyzers.DeltaFinderAna
+        DeltaFinderAna: { @table::RecoMC.analyzers.DeltaFinderAna
             debugLevel                    : 0 ## 1
             chCollTag                     : "makePH"
             chfCollTag                    : "DeltaFinder:ComboHits"

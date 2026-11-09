@@ -22,19 +22,5 @@ Lumi : {
             debugLevel          : 0
         }
     }
-
-    analyzers : {
-        NPOTAnalysis : {
-            module_type: NPOTAnalysis
-            caloTag    : "CaloHitMakerFast"
-            thCollTag  : "TTmakeSH"
-            dfCollTag  : "TTflagPH"
-            tcCollTag  : "TrigTZClusterFinder:proton"
-            recoPOTTag : "RecoNPOTMaker"
-            MCPOTTag   : "PBISim"
-            processName: "lumiAna"
-            filterName : "lumiStream"
-        }
-    }
 }
 END_PROLOG

@@ -159,28 +159,6 @@ CosmicReco : { @table::CosmicReco
       StrawDigiMCCollection : "compressDigiMCs"
    }
 
-   CosmicFitDisplay : {
-      module_type : CosmicFitDisplay
-      ComboHitCollection : "makePH"
-      TimeClusterCollection : TimeClusterFinderCosmics
-      CosmicTrackSeedCollection : CosmicTrackFinder
-      doDisplay            : true
-      TimeClusterCollection : TimeClusterFinderCosmicsr
-      CosmicTrackSeedCollection : CosmicTrackFinder
-
-   }
-
-
-   CosmicTrackDiag : {
-      module_type : CosmicTrackDiag
-      StrawHitCollection : "makeSH"
-      ComboHitCollection : "makeSH"
-      PanelHitCollection : "makeSH"
-      TimeClusterCollection : SimpleTimeCluster
-      StrawDigiMCCollection : "compressDigiMCs"
-      ProtonBunchTimeMC : "EWMProducer"
-      CosmicTrackSeedCollection : "CosmicTrackFinderTimeFit"
-   }
 
    CosmicShowerFilter : {
       module_type : CosmicShowerFilter
@@ -189,24 +167,6 @@ CosmicReco : { @table::CosmicReco
       maxTotalSameGap : 1
       TimeClusterCollection : "SimpleTimeCluster"
       ComboHitCollection : "makePH"
-   }
-
-   CosmicMuonInfo : {
-      module_type : CosmicMuonInfo
-      strawDigisTag   : "makeSD"
-      strawHitsTag    : "makeSH"
-      panelHitsTag    : "makePH"
-      strawDigiMCsTag : "compressDigiMCs"
-      caloDigisTag    : "CaloDigiMaker"
-      diagLevel       : 0
-      filterCuts      : {
-         pmin          : 200. # MeV/c set low
-         pmax          : 1000000. # MeV/c currnetly not using
-         minStrawDigis :    2  # Minimum number of digis made by the primary muon //10
-         minPlanes     :    2  # Minimum number of planes hit by the muon track//3
-         minBackground :    0  # Make > 0 to select events with background digis
-         maxBackground : 9999  # Make a small number to limit digis not from the muon
-      }
    }
 }
 
@@ -223,13 +183,10 @@ CosmicReco : { @table::CosmicReco
    }
    analyzers : {
       CosmicAnalysis     : { @table::CosmicReco.CosmicAnalysis }
-      CosmicFitDisplay   : { @table::CosmicReco.CosmicFitDisplay }
       CosmicTrackDetails : { @table::CosmicReco.CosmicTrackDetails }
       CosmicMCRecoDiff   : { @table::CosmicReco.CosmicMCRecoDiff }
-      CosmicTrackDiag    : { @table::CosmicReco.CosmicTrackDiag }
    }
    filters : {
-      CosmicMuonInfo: { @table::CosmicReco.CosmicMuonInfo }
    }
 }
 #
@@ -243,11 +200,6 @@ Output : {
    Tracks : [ "keep mu2e::StrawHitFlagDetailmu2e::BitMaps_FlagBkgHits_StrawHits_*",
       "keep mu2e::ComboHitCollection_makePH_*_*",
       "keep mu2e::TimeClusters_*_*_*" ]
-   MCTracks : ["keep mu2e::GenParticles_*_*_*",
-      "keep mu2e::SimParticles_*_*_*" ]
-   MCDigis : ["keep mu2e::StrawDigiMCs_*_*_*"]
-   MCHits : [ "keep mu2e::StepPointMCs_*_tracker_*",
-      "keep mu2e::StepPointMCs_*_virtualdetector_*"]
 
 }
 

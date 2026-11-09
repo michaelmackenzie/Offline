@@ -9,6 +9,7 @@ BEGIN_PROLOG
 END_PROLOG
 
 #include "Stntuple/fcl/stntuple.fcl"
+#include "Offline/RecoMC/fcl/prolog.fcl"
 
 process_name : TestDeltaFinder
 
@@ -34,7 +35,7 @@ physics : {
     filters   : { @table::Reconstruction.filters   }
 
     analyzers : { @table::stntuple.analyzers
-        DeltaFinderAna: { @table::CalPatRec.analyzers.DeltaFinderAna
+        DeltaFinderAna: { @table::RecoMC.analyzers.DeltaFinderAna
             debugLevel     : 0 ## 1
             # tcCollTag    : "DeltaFinder"
             chCollTag      : "makePH"

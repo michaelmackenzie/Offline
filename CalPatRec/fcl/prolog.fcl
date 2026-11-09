@@ -140,7 +140,6 @@ CalPatRec : { @table::CalPatRec
         maxDoubletChi2                          : 9
         sigmaSlope                              : 0.025
         caloHitError                            : 15.0 # mm
-        printUtils                              : { @table::TrkReco.PrintUtils }
     }
 }
 #------------------------------------------------------------------------------
@@ -165,10 +164,6 @@ CalPatRec : { @table::CalPatRec
             PitchAngle                                  : 0.67   # mean pitch for CE
             Beta                                        : 1.0    # for muon reco needs to be changed
             DtOffset                                    : @local::TrackCaloMatching.DtOffset
-            DiagPlugin : { tool_type                    : "CalTimePeakFinderDiag"
-                mcTruth   : 0
-                diagLevel : 0
-            }
         }
 
         CalHelixFinder          : { module_type:CalHelixFinder
@@ -185,13 +180,6 @@ CalPatRec : { @table::CalPatRec
 
             # HelixFinderAlg configuraton (pattern recognition)
             HelixFinderAlg                              : { @table::CalPatRec.HelixFinderAlg }
-            diagPlugin : { tool_type                    : "CalHelixFinderDiag"
-                mcTruth                                 : 0
-                mcUtils                                 : { tool_type : "TrkPatRecMcUtils"
-                    strawDigiMCCollTag : "compressDigiMCs"
-                    comboHitCollTag: "makeSH"
-                }
-            }
             Helicities: [
               -1,
               1
@@ -220,7 +208,7 @@ CalPatRec : { @table::CalPatRec
 #             AddHitBackgroundBits                        : ["Dead"]
 #             diagPlugin : { tool_type  : "KalFinalFitDiag"
 #                 mcTruth       : 0
-#                 mcUtils       : { @table::TrkReco.McUtils }
+#                 mcUtils       : { @table::RecoMC.McUtils }
 #             }
 #         }
 #------------------------------------------------------------------------------
@@ -299,53 +287,6 @@ CalPatRec : { @table::CalPatRec
                 printErrors             : 0
             }
 #
-            diagPlugin                  : { tool_type : "DeltaFinderDiag"
-                diagLevel               : 0
-                mcDiag                  : false
-                mcTruth                 : 0
-                printComboHits          : 0
-                printGoodComboHits      : 0
-                printElectrons          : 0
-                printElectronsHits      : 0
-                printElectronsMinNHits  : 0
-                printElectronsMaxFReco  : 1.1                   # if print, then print all
-                printElectronsMinMom    : 0                     # by default, print all
-                printElectronsMaxMom    : 500.                  # in MeV/c, by default, print all
-                printDeltaSeeds         : 0
-                printDeltaCandidates    : 0
-                printOTracker           : 0                     #
-                printShcol              : 0                     #
-                printSeedNParents       : -1
-                printMcProtons          : 0
-                printProtonHits         : 0
-                printProtonSeeds        : 0
-                printProtonCandidates   : 0
-                mcUtils                 : { tool_type : "TrkRecoMcUtils"
-                    strawDigiMCCollTag : "compressDigiMCs"
-                    comboHitCollTag    : "makePH"
-                }
-            }
-        }
-    }
-#------------------------------------------------------------------------------
-# no separate hit flag collections any longer, hit flags are stored
-# as the ComboHit payload
-#------------------------------------------------------------------------------
-    analyzers : {
-        DeltaFinderAna : { module_type:DeltaFinderAna
-            chCollTag              : "DeltaFinder"           ## "makePH"                # use combo hits
-            shCollTag              : "makeSH"                # assume StrawHits have been written out
-            sschCollTag            : "DeltaFinder:StrawHits" ## "makeSH"                # 1-straw combohits
-            sdmcCollTag            : "compressDigiMCs"
-            debugLevel             : 0
-            diagLevel              : 0
-            printElectrons         : 1
-            printElectronsMinNHits : 0
-            printElectronsMaxFReco : 1.1                   # if print, then print all
-            printElectronHits      : 0
-            printComboHits         : 0
-            printSingleComboHits   : 0
-#            maxElectronHitEnergy          : 0.0035                # for comparisons
         }
     }
 }
@@ -395,13 +336,6 @@ CalPatRec : { @table::CalPatRec
 #             KalFit                                      : { @table::CalPatRec.KalSeedFitter }
 #         }
 #------------------------------------------------------------------------------
-        ComboHitFilter : { module_type : ComboHitFilter
-            chCollTag                                   : "makePH"
-            chfCollTag                                  : "DeltaFinder:ComboHits"
-            sdmcCollTag                                 : "compressDigiMCs"
-            simID                                       : -1                ##
-            debugLevel                                  : 0
-        }
 #------------------------------------------------------------------------------
 #         MHSeedFit : { module_type:KalSeedFit
 #             debugLevel                                  : 0
@@ -479,11 +413,6 @@ CalPatRec : { @table::CalPatRec
             caloTimeOffset             : @local::TrackCaloMatching.DtOffset
             doRefine                   : 0
 
-            diagPlugin : { tool_type  : "TZClusterFinderDiag"
-                 mcTruth       : 1
-                 simIDThresh   : 15
-                 mcUtils       : { @table::TrkReco.McUtils }
-            }
         }
 
         CalTimeClusterFinder : {
@@ -558,14 +487,6 @@ CalPatRec : { @table::CalPatRec
             maxEDepAvg              : @local::TrkReco.HelixFinderParams.maxEDepAvg
             tzSlopeSigThresh        : 5.0
             validHelixDirections    : ["downstream", "upstream", "unknown"]
-            diagPlugin              : {
-                tool_type : "AgnosticHelixFinderDiag"
-                simTag         : ""
-                strawDigiMCTag : ""
-                display        : true
-                showProtons    : false
-                debug          : 0
-            }
         }
 
         PhiClusterFinder : { module_type : PhiClusterFinder
@@ -590,11 +511,6 @@ CalPatRec : { @table::CalPatRec
              minSigma               : 0.1
              # t0Calc                 : {}
              useCC                  : false
-             DiagPlugin : {
-               diagLevel                    : 0
-               tool_type                    : "PhiClusterFinderDiag"
-               mcTruth                      : 0
-             }
          }
     }
 

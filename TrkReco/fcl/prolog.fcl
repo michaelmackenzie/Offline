@@ -9,10 +9,6 @@ BEGIN_PROLOG
 # may use a more careful optimization, but this is it for now
 #------------------------------------------------------------------------------
 TrkReco: {
-  McUtils : { tool_type : "TrkRecoMcUtils"
-    comboHitCollTag    : "makeSH"
-    strawDigiMCCollTag : "compressDigiMCs"
-  }
 # standard track selection
   TrkSel : {
     tool_type : SimpleKalSeedSelector
@@ -25,16 +21,9 @@ TrkReco: {
 }
 
 TrkReco: { @table::TrkReco
-  #------------------------------------------------------------------------------
-  # if mcTruth = 0, a dummy ("return-end") implementation of MC truth functions
-  # is used with no MC dependence.
-  # to really use that, the McUtilsToolBase needs to be moved from Mu2eUtilities *FIXME*
-  # into some 'Base' library with no MC dependencies
-  #------------------------------------------------------------------------------
+  # MC-truth print utilities (McUtils, mcTruth/mcUtils) live in the sim-side RecoMC/fcl/prolog.fcl
   PrintUtils: {
     strawHitCollTag    : "makeSH"
-    mcTruth            : 0 #
-    mcUtils            : { @table::TrkReco.McUtils } # defined on top of this file
   }
 
   RobustHelixFit : {

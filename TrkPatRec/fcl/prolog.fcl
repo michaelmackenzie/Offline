@@ -74,12 +74,6 @@ TrkPatRec : { @table::TrkPatRec
       MaxDeltaPhi            : 0.3
       MaxNdiff               : 1
       Diag                   : 0
-
-      DiagPlugin : {
-         tool_type             : "TimeAndPhiClusterFinderDiag"
-         MCDiag                : true
-         StrawDigiMCCollection : "compressDigiMCs"
-      }
    }
 
    RobustMultiHelixFinder : {
@@ -110,12 +104,6 @@ TrkPatRec : { @table::TrkPatRec
       NMaxTrkIter             : 3
       DiagLevel               : 0
 
-      DiagPlugin : {
-         tool_type             : "RobustMultiHelixFinderDiag"
-         MCDiag                : true
-         StrawDigiMCCollection : "compressDigiMCs"
-      }
-
       maxEDepAvg              : @local::TrkReco.HelixFinderParams.maxEDepAvg
    }
 
@@ -126,11 +114,6 @@ TrkPatRec : { @table::TrkPatRec
       ComboHitCollection     : "flagPH"
       HelixStereoHitMVA      : { MVAWeights : "Offline/TrkPatRec/data/HelixStereoHitMVA.weights.xml" }
       HelixNonStereoHitMVA   : { MVAWeights : "Offline/TrkPatRec/data/HelixNonStereoHitMVA.weights.xml" }
-      DiagPlugin : {
-         diagLevel                    : 0
-         tool_type                    : "RobustHelixFinderDiag"
-         mcTruth                      : 0
-      }
       TimeClusterCollection : "TimeClusterFinder"
       T0Calculator : {@table::TrkPatRec.TimeCalculator}
       HelixFitter : @local::TrkReco.RobustHelixFit

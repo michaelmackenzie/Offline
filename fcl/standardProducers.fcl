@@ -21,6 +21,7 @@
 #include "Offline/CRVResponse/fcl/prolog.fcl"
 #include "Offline/CommonMC/fcl/prolog.fcl"
 #include "Offline/DAQ/fcl/prolog.fcl"
+#include "Offline/RecoMC/fcl/prolog.fcl"
 
 BEGIN_PROLOG
 
