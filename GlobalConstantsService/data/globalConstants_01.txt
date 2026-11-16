@@ -144,10 +144,14 @@ double physicsParams.Al.capture.photon.1809keV.intensity = 0.51;
 // contain an extrapolation outside the measured range. Triton and alpha integrals (2.17e-3, 4.17e-3) are
 // in the prolog comment; there is no generator tool for them, so no constants.
 // - No citable Ti neutron multiplicity, photon rate, RMC rate or gamma-line intensity has been entered
-//   (known: neutrons 0.44(3) per capture for 2-11.5 MeV, DocDB 38414; RMC R(E>57 MeV) 1.30(12)e-5,
-//   TRIUMF, DocDB 1192). The neutron, photon, RMC and 1809 keV generators therefore still throw for Ti.
+//   (RMC R(E>57 MeV) 1.30(12)e-5, TRIUMF, DocDB 1192). The photon, RMC and 1809 keV generators still throw for Ti.
+// - Ti neutron rate: AlCap neutron thesis fit (DocDB 38414), approximate. 0.44(3) per capture measured for
+//   2-11.5 MeV; total from the fitted shape (data/neutronSpectrum_Ti.txt, components assumed equal at 5.5 MeV)
+//   = 0.897. Spread 0.88-0.905 for a crossing at 4.5-6 MeV, +-0.06 from the 0.44(3) alone; below 2 MeV and
+//   above 11.5 MeV this is the fit extrapolation.
 double physicsParams.Ti.capture.protonRate = 0.0331; // from the AlCap-based spectrum integral (AlCapTiProton)
 double physicsParams.Ti.capture.deuteronRate = 0.00810; // from the AlCap-based spectrum integral (AlCapTiDeuteron)
+double physicsParams.Ti.capture.neutronRate = 0.90; // AlCap neutron thesis fit, approximate (see above)
 
 double physicsParams.C.capture.protonRate = 0.33; // Per capture rates, measured with Geant4 on G4_C
 double physicsParams.C.capture.deuteronRate = 0.15;
