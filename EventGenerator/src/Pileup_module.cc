@@ -107,10 +107,16 @@ namespace mu2e {
          <<std::endl;
     }
 
+    // Ti: the decay/capture split above uses physicsParams.Ti.decayFraction. The capture tools take their
+    // per-capture rates from physicsParams.Ti.capture.*, which exist only for the proton and deuteron
+    // (MuCapProtonGenerator, MuCapDeuteronGenerator with the AlCapTi* muCapCharged spectra). The neutron,
+    // photon, RMC and 1809 keV tools throw PHYSICSPARAMS_MISSING_PAR for Ti until measured constants are added.
+    // The tools' spectra do not know this module's material: a Ti job must set spectrum.material : "Ti"
+    // on the DIO (Czarnecki) tool, otherwise the globally chosen stopping target material is used.
     if(conf().stoppingTargetMaterial() != "Al" and conf().stoppingTargetMaterial() != "IPA"
-       and conf().stoppingTargetMaterial() != "C") {
+       and conf().stoppingTargetMaterial() != "C" and conf().stoppingTargetMaterial() != "Ti") {
       throw   cet::exception("NOT_IMPLEMENTED")
-        <<"Pileup_module: emisson spectra for other than Al/IPA/C targets are not impelmented\n";
+        <<"Pileup_module: emisson spectra for other than Al/IPA/C/Ti targets are not impelmented\n";
     }
 
     const auto cap_psets = conf().captureProducts.get<std::vector<fhicl::ParameterSet>>();
