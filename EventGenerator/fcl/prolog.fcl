@@ -616,4 +616,78 @@ MuCapChargedSpectra : { @table::MuCapChargedSpectra
   }
 }
 
+#------------------------------------------------------------------------------
+# Ti (natural titanium stopping target): AlCap, Edmonds et al., PRC 105, 035501 (2022),
+# arXiv:2110.10228, Table V (also Table IX for the binned spectra). Same recipe as AlCapTriton/AlCapAlpha:
+# an exponential exp(-T/T0) with the AlCap nominal decay parameter, normalized so that its integral over
+# the AlCap measured range is the AlCap yield, continued to the kinematic endpoint, with an onset below
+# the range (no spline: the four equal knots are the momentum at the low edge of the range). The slopes
+# are used at their central values; the quoted uncertainties are not propagated here.
+#   species  range [MeV]  AlCap yield /capture  T0 [MeV]  (alpha: 4.4(1.7), the least certain)
+#   p        3.5-20       26.48e-3              4.1
+#   d        4.5-17        5.02e-3              9.8
+#   t        5-17          1.36e-3              7.3
+#   alpha    15-20         0.45e-3              4.4
+# Onset: shape (1 - Tc/T)^alpha exp(-beta T) as for Al (alpha 1.3279, beta = 1/T0), with Tc scaled from the
+# Al value (1.4 MeV p/d/t, 2.8 MeV alpha) by the Coulomb barrier ratio (Z/A^(1/3))_Ti / (Z/A^(1/3))_Al
+# = (22/48^(1/3)) / (13/27^(1/3)) = 1.397, so Tc = 1.96 MeV (p, d, t) and 3.91 MeV (alpha).
+# This is a scaling estimate, there are no Ti data below the AlCap ranges.
+# No hard component: there are no Ti data above 20 MeV, so nothing constrains one (the Al Krane
+# component is not carried over).
+# Endpoints: kinematic maximum kinetic energy for mu- + 48Ti -> 48Sc* + nu, 48Sc* -> X + 47Ca/46Ca/45Ca/44K,
+# E_nu -> 0, recoil included, AME2020 atomic mass excesses (Wang et al., Chin. Phys. C 45, 030003;
+# IAEA AMDC mass_1.mas20.txt, keV): 48Ti -48492.952, 47Ca -42344.665, 46Ca -43139.610, 45Ca -40812.230,
+# 44K -35781.498; 1H 7288.971, 2H 13135.723, 3H 14949.811, 4He 2424.916. Muon 1s binding
+# B = m_mu - 104.394 = 1.264 MeV (physicsParams.Ti.muonEnergy). Q = dM(48Ti) - dM(daughter) - dM(X)
+# + m_mu - B - m_e (one electron is left over), then T = Q (Q + 2 M_daughter) / (2 (M_X + M_daughter + Q)):
+#   p     Q = 90.446 MeV  T_max = 88.46 MeV   (47Ca)
+#   d     Q = 85.394 MeV  T_max = 81.74 MeV   (46Ca)
+#   t     Q = 81.252 MeV  T_max = 76.09 MeV   (45Ca)
+#   alpha Q = 88.747 MeV  T_max = 81.27 MeV   (44K)
+# The same convention reproduces the Al endpoints above (83.67, 77.35, 71.8, 76.73 MeV).
+# 48Ti is 73.7% of natural Ti. The other isotopes (46Ti 8.25%, 47Ti 7.44%, 49Ti 5.41%, 50Ti 5.18%) have different
+# Q values, so their endpoints differ by several MeV (the stopping spectrum here is that of 48Ti only).
+# Integral per capture over the full spectrum (used as physicsParams.Ti.capture.protonRate and
+# deuteronRate): p 0.0331, d 0.00810 (see globalConstants_01.txt). Triton and alpha integrals:
+# t 2.17e-3, alpha 4.17e-3 (there is no generator tool for them yet).
+#------------------------------------------------------------------------------
+MuCapChargedSpectra : { @table::MuCapChargedSpectra
+  AlCapTiProton : {
+    spectrumShape : muCapCharged
+    pdgId         : 2212
+    endpoint      : 88.46 # MeV
+    nbins         : 1000
+    tail          : { A : 1.54421e-2  gamma : 0.243902 } # 1/MeV
+    spline        : { knots : [ 81.118, 81.118, 81.118, 81.118 ]  weights : [ ] } # MeV/c, T = 3.5 MeV
+    onset         : { Tc : 1.96  alpha : 1.3279  beta : 0.243902 }
+  }
+  AlCapTiDeuteron : {
+    spectrumShape : muCapCharged
+    pdgId         : 1000010020
+    endpoint      : 81.74 # MeV
+    nbins         : 1000
+    tail          : { A : 1.12496e-3  gamma : 0.102041 } # 1/MeV
+    spline        : { knots : [ 130.003, 130.003, 130.003, 130.003 ]  weights : [ ] } # MeV/c, T = 4.5 MeV
+    onset         : { Tc : 1.96  alpha : 1.3279  beta : 0.102041 }
+  }
+  AlCapTiTriton : {
+    spectrumShape : muCapCharged
+    pdgId         : 1000010030
+    endpoint      : 76.09 # MeV
+    nbins         : 1000
+    tail          : { A : 4.5807e-4  gamma : 0.136986 } # 1/MeV
+    spline        : { knots : [ 167.683, 167.683, 167.683, 167.683 ]  weights : [ ] } # MeV/c, T = 5 MeV
+    onset         : { Tc : 1.96  alpha : 1.3279  beta : 0.136986 }
+  }
+  AlCapTiAlpha : {
+    spectrumShape : muCapCharged
+    pdgId         : 1000020040
+    endpoint      : 81.27 # MeV
+    nbins         : 1000
+    tail          : { A : 4.55438e-3  gamma : 0.227273 } # 1/MeV
+    spline        : { knots : [ 334.735, 334.735, 334.735, 334.735 ]  weights : [ ] } # MeV/c, T = 15 MeV
+    onset         : { Tc : 3.91  alpha : 1.3279  beta : 0.227273 }
+  }
+}
+
 END_PROLOG

@@ -130,11 +130,24 @@ double physicsParams.Al.capture.RMCInternalRate = 0.0069; //measurement of inter
 double physicsParams.Al.capture.photon.1809keV.energy = 1.809;
 double physicsParams.Al.capture.photon.1809keV.intensity = 0.51;
 
-// Ti has no capture.* entries on purpose: the generators that need them throw for Ti.
-// - AlCap (Edmonds et al., Phys. Rev. C 105, 035501 (2022), arXiv:2110.10228, Table VI) measured Ti yields per
-//   capture only in limited energy ranges: p 26.48e-3 [3.5-20 MeV], d 5.02e-3 [4.5-17 MeV], t 1.36e-3 [5-17 MeV].
-//   These are not total rates over the full spectrum used by MuCapProtonGenerator etc., so they are not entered here.
-// - No citable Ti neutron multiplicity, photon rate, RMC rate or gamma-line intensity has been entered.
+// Ti capture products. History: Ti originally had no capture.* entries, because the only citable numbers
+// (AlCap, Edmonds et al., Phys. Rev. C 105, 035501 (2022), arXiv:2110.10228, Table V) are yields in limited
+// energy ranges, p 26.48e-3 [3.5-20 MeV], d 5.02e-3 [4.5-17 MeV], t 1.36e-3 [5-17 MeV], alpha 0.45e-3
+// [15-20 MeV], not total rates, and the generators that use capture.* rates throw for Ti.
+// The charged-particle generators (MuCapProtonGenerator, MuCapDeuteronGenerator) draw
+// capture.<x>Rate * (fraction of the spectrum sampled) particles per capture from the shape of the
+// spectrum, so the rate is the full-range yield. For Ti it is taken from the AlCap-based spectrum integral:
+// the muCapCharged spectra AlCapTiProton and AlCapTiDeuteron (EventGenerator/fcl/prolog.fcl) are
+// exponentials normalized to the AlCap yield in the AlCap range and continued to the kinematic endpoint
+// (88.46 and 81.74 MeV), with a scaled onset below the range, no hard component. The rates below are
+// the integral of those spectra over 0 - endpoint (Offline/Mu2eUtilities MuCapChargedSpectrum), and
+// contain an extrapolation outside the measured range. Triton and alpha integrals (2.17e-3, 4.17e-3) are
+// in the prolog comment; there is no generator tool for them, so no constants.
+// - No citable Ti neutron multiplicity, photon rate, RMC rate or gamma-line intensity has been entered
+//   (known: neutrons 0.44(3) per capture for 2-11.5 MeV, DocDB 38414; RMC R(E>57 MeV) 1.30(12)e-5,
+//   TRIUMF, DocDB 1192). The neutron, photon, RMC and 1809 keV generators therefore still throw for Ti.
+double physicsParams.Ti.capture.protonRate = 0.0331; // from the AlCap-based spectrum integral (AlCapTiProton)
+double physicsParams.Ti.capture.deuteronRate = 0.00810; // from the AlCap-based spectrum integral (AlCapTiDeuteron)
 
 double physicsParams.C.capture.protonRate = 0.33; // Per capture rates, measured with Geant4 on G4_C
 double physicsParams.C.capture.deuteronRate = 0.15;
