@@ -9,6 +9,11 @@ KinKalGeom : {
     strawWireMaterialName : "straw-wire"
     IPAMaterialName : "HDPE"
     STMaterialName : "Target"
+    # optional, default is none: pairs of [ G4 foil material name, KinKal material name ] for foils that are not STMaterialName, e.g.
+    # STFoilMaterials : [ "StoppingTarget_Ti", "TargetTi" ]
+    STFoilMaterials : []
+    # optional, default is none (the TSDA only ends the upstream extrapolation); e.g. "TargetTi" for a Ti plate
+    TSDAMaterialName : ""
     CRVMaterialName : "CRVModule"
     # Global default (1 = moyalmean). Thick concrete overrides to bethemean via a trailing
     # token in MaterialsList.data (KinKal 3.7.0+).

@@ -18,6 +18,9 @@
 // C++ includes
 #include <iostream>
 #include <iomanip>
+#include <algorithm>
+#include <string>
+#include <vector>
 
 // Framework includes
 #include "messagefacility/MessageLogger/MessageLogger.h"
@@ -29,6 +32,8 @@
 #include "Offline/Mu2eG4/inc/setBirksConstant.hh"
 #include "Offline/DetectorSolenoidGeom/inc/DetectorSolenoid.hh"
 #include "Offline/ProductionSolenoidGeom/inc/PSVacuum.hh"
+#include "Offline/StoppingTargetGeom/inc/StoppingTarget.hh"
+#include "Offline/BeamlineGeom/inc/TSdA.hh"
 #include "Offline/GeometryService/inc/GeometryService.hh"
 #include "Offline/GeometryService/inc/GeomHandle.hh"
 #include "Offline/GlobalConstantsService/inc/GlobalConstantsHandle.hh"
@@ -1246,16 +1251,43 @@ namespace mu2e {
   void ConstructMaterials::constructMu2eMaterials2(){
 
 
-    // An alias for the stopping target material
-    CheckedG4String mat = uniqueMaterialOrThrow("StoppingTarget_"+GlobalConstantsHandle<PhysicsParams>()->getStoppingTargetMaterial());
-    if ( true /* Always load the stopping target material */ ){
-      G4Material* met = findMaterialOrThrow("G4_"+GlobalConstantsHandle<PhysicsParams>()->getStoppingTargetMaterial());
-      G4Material* tgt = new G4Material(mat.name, met->GetDensity(), 1);
+    // An alias for the stopping target material.  The chosen material is
+    // always defined.  In addition, define an alias for every other material
+    // used by a stopping target foil (per-foil materials) and for the TSdA
+    // material when it is given as a StoppingTarget_X alias, so that
+    // findMaterialOrThrow() works for mixed targets.
+    std::vector<std::string> stMaterials;
+    stMaterials.push_back( GlobalConstantsHandle<PhysicsParams>()->getStoppingTargetMaterial() );
+    {
+      const std::string prefix("StoppingTarget_");
+      auto addAlias = [&](std::string const& full){
+        if ( full.compare(0, prefix.size(), prefix) != 0 ) return;
+        const std::string bare = full.substr(prefix.size());
+        if ( std::find(stMaterials.begin(), stMaterials.end(), bare) == stMaterials.end() ) {
+          stMaterials.push_back(bare);
+        }
+      };
+      art::ServiceHandle<GeometryService> geom;
+      if ( geom->hasElement<StoppingTarget>() ) {
+        GeomHandle<StoppingTarget> target;
+        for ( int i=0; i<target->nFoils(); ++i ) {
+          addAlias( target->foil(i).material() );
+        }
+      }
+      if ( geom->hasElement<TSdA>() ) {
+        GeomHandle<TSdA> tsda;
+        addAlias( tsda->material4() );
+      }
+    }
+    for ( auto const& name : stMaterials ) {
+      CheckedG4String stName = uniqueMaterialOrThrow("StoppingTarget_"+name);
+      G4Material* met = findMaterialOrThrow("G4_"+name);
+      G4Material* tgt = new G4Material(stName.name, met->GetDensity(), 1);
       tgt->AddMaterial(met, 1.);
     }
 
     // Proton beam dump core material
-    mat = uniqueMaterialOrThrow( "BEAMDUMP_CORE");
+    CheckedG4String mat = uniqueMaterialOrThrow( "BEAMDUMP_CORE");
     {
       // The beam dump core is made of steel plates separated by air
       // gaps, but it is modeled here as a single block of material.

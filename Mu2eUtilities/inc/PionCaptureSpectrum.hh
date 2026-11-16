@@ -15,6 +15,7 @@
 // #include "CLHEP/Vector/LorentzVector.h"
 
 // C++ includes
+#include <string>
 #include <utility>
 
 namespace CLHEP {
@@ -35,10 +36,13 @@ namespace mu2e {
     PionCaptureSpectrum() : _spectrum( Bistirlich ), _spectrum2D( KrollWadaJoseph ) {}
 
     // random number generators ar owned by the callers, no memory cleanup needed
-    PionCaptureSpectrum(CLHEP::RandFlat* randFlat, RandomUnitSphere* randomUnitSphere);
+    // material: target nucleus (PhysicsParams name) used for the internal conversion kinematics, default Al
+    PionCaptureSpectrum(CLHEP::RandFlat* randFlat, RandomUnitSphere* randomUnitSphere,
+                        const std::string& material = "Al");
 
     PionCaptureSpectrum(bool kMaxUserSet, double kMaxUser, double kMaxMax,
-                        CLHEP::RandFlat* randFlat, RandomUnitSphere* randomUnitSphere);
+                        CLHEP::RandFlat* randFlat, RandomUnitSphere* randomUnitSphere,
+                        const std::string& material = "Al");
 
     ~PionCaptureSpectrum(){}
 

@@ -3,11 +3,14 @@
 //
 //  Original author: David Brown (LBNL) 7/2024
 //
+#include <optional>
 #include "art/Framework/Principal/Event.h"
 #include "art/Framework/Core/EDProducer.h"
 #include "art/Framework/Principal/Handle.h"
 #include "cetlib_except/exception.h"
 #include "fhiclcpp/types/Atom.h"
+#include "fhiclcpp/types/OptionalAtom.h"
+#include "art/Framework/Services/Registry/ServiceHandle.h"
 #include "canvas/Utilities/InputTag.h"
 #include "messagefacility/MessageLogger/MessageLogger.h"
 #include "Offline/GlobalConstantsService/inc/ParticleData.hh"
@@ -16,7 +19,8 @@
 #include "Offline/MCDataProducts/inc/StepPointMC.hh"
 #include "Offline/GeometryService/inc/DetectorSystem.hh"
 #include "Offline/GeometryService/inc/GeomHandle.hh"
-#include "Offline/GeometryService/inc/GeomHandle.hh"
+#include "Offline/GeometryService/inc/GeometryService.hh"
+#include "Offline/BeamlineGeom/inc/TSdA.hh"
 
 namespace mu2e {
 
@@ -29,6 +33,9 @@ namespace mu2e {
         fhicl::Atom<art::InputTag> vdstepmcs { Name("VDStepPointMCs"), Comment("Virtual Detector StepPointMC collection")};
         fhicl::Atom<art::InputTag> absstepmcs { Name("AbsorberStepPointMCs"), Comment("Absorber StepPointMC collection")};
         fhicl::Atom<art::InputTag> ststepmcs { Name("TargetStepPointMCs"), Comment("Stopping target StepPointMC collection")};
+        fhicl::OptionalAtom<art::InputTag> tsdastepmcs { Name("TSdAStepPointMCs"), Comment("Optional TSdA StepPointMC collection (e.g. g4run:TSdA4, made with SDConfig.sensitiveVolumes: [\"TSdA4\"]). All steps in it are labeled TSDA. If absent, TSDA steps are identified in the absorber collection by position (see TSdAFromGeometry)")};
+        fhicl::Atom<bool> tsdafromgeom { Name("TSdAFromGeometry"), Comment("If true, identify TSDA steps in the absorber collection by the TSdA volume extent from the GeometryService, instead of the legacy cut z < TSdALegacyZMax (detector coordinates)"), false};
+        fhicl::Atom<double> tsdalegacyzmax { Name("TSdALegacyZMax"), Comment("Legacy cut: absorber-collection steps with z (detector coordinates, mm) below this are labeled TSDA. Used unless TSdAFromGeometry is true"), -5960.0};
         fhicl::Atom<double> maxdgap{ Name("MaxDistGap"), Comment("Maximum dstance gap between aggregated StepPointMCs")};
         fhicl::Atom<double> maxtgap{ Name("MaxTimeGap"), Comment("Maximum time gap between aggregated StepPointMCs")};
       };
@@ -39,7 +46,11 @@ namespace mu2e {
       int debug_;
       double maxdgap_;
       double maxtgap_;
+      bool tsdaFromGeom_;
+      double tsdaLegacyZMax_;
       art::ProductToken<StepPointMCCollection> vdstepmcs_, absstepmcs_, ststepmcs_;
+      std::optional<art::ProductToken<StepPointMCCollection>> tsdastepmcs_;
+      void aggregateAbsorberSteps(StepPointMCCollection const& col, GeomHandle<DetectorSystem> const& det, SurfaceStepCollection& ssc, bool tsdaCollection) const;
       std::map<VirtualDetectorId,SurfaceId> vdmap_; // map of VDIds to surfaceIds
   };
 
@@ -48,10 +59,16 @@ namespace mu2e {
     debug_(config().debug()),
     maxdgap_(config().maxdgap()),
     maxtgap_(config().maxtgap()),
+    tsdaFromGeom_(config().tsdafromgeom()),
+    tsdaLegacyZMax_(config().tsdalegacyzmax()),
     vdstepmcs_{ consumes<StepPointMCCollection>(config().vdstepmcs())},
     absstepmcs_{ consumes<StepPointMCCollection>(config().absstepmcs())},
     ststepmcs_{ consumes<StepPointMCCollection>(config().ststepmcs())}
     {
+      art::InputTag tsdatag;
+      if(config().tsdastepmcs(tsdatag)) {
+        tsdastepmcs_ = consumes<StepPointMCCollection>(tsdatag);
+      }
       produces <SurfaceStepCollection>();
       // build the VDId -> SId map by hand. This should come from a service TODO
       vdmap_[VirtualDetectorId(VirtualDetectorId::TT_FrontHollow)] = SurfaceId("TT_Front");
@@ -72,29 +89,26 @@ namespace mu2e {
       vdmap_[VirtualDetectorId(VirtualDetectorId::EMC_Disk_1_EdgeOut)] = SurfaceId("EMC_Disk_1_Outer");
     }
 
-  void MakeSurfaceSteps::produce(art::Event& event) {
-    GeomHandle<DetectorSystem> det;
-    // create output
-    std::unique_ptr<SurfaceStepCollection> ssc(new SurfaceStepCollection);
-    // start with virtual detectors; these are copied directly
-    auto const& vdspmccol_h = event.getValidHandle<StepPointMCCollection>(vdstepmcs_);
-    auto const& vdspmccol = *vdspmccol_h;
-    for(auto const& vdspmc : vdspmccol) {
-      // only some VDs are kept
-      auto isid = vdmap_.find(vdspmc.virtualDetectorId());
-      if(debug_ > 0) std::cout<<" VID "<<vdspmc.virtualDetectorId().name()<<std::endl;
-      if(isid != vdmap_.end())ssc->emplace_back(isid->second,vdspmc,det); // no aggregation of VD hits
+
+  void MakeSurfaceSteps::aggregateAbsorberSteps(StepPointMCCollection const& col, GeomHandle<DetectorSystem> const& det, SurfaceStepCollection& ssc, bool tsdaCollection) const {
+    // z-range of the TSdA volume in detector coordinates, only needed with TSdAFromGeometry
+    double tsdaZMin(0.0), tsdaZMax(0.0);
+    bool haveTSdA(false);
+    if(tsdaFromGeom_ && !tsdaCollection) {
+      art::ServiceHandle<GeometryService> geom;
+      if(geom->hasElement<TSdA>()) {
+        GeomHandle<TSdA> tsda;
+        double zc = tsda->zCenter4(); // actual G4 placement (tsda.z0 is ignored for version <= 1)
+        double zcdet = det->toDetector(CLHEP::Hep3Vector(0.0,0.0,zc)).z();
+        const double tol = 0.01; // mm
+        tsdaZMin = zcdet - tsda->halfLength4() - tol;
+        tsdaZMax = zcdet + tsda->halfLength4() + tol;
+        haveTSdA = true;
+      }
     }
-    auto nvdsteps = ssc->size();
-    if(debug_ > 0)std::cout << "Added " << nvdsteps << " VD steps " << std::endl;
-    // now absorbers: IPA, OPA, and TSDA
-    // colate adjacent steppointMCs from the same particle. The following assumes the StepPointMCs from the same SimParticle are adjacent and (roughly) time-ordered. This is observationally true currently, but if G4 ever evolves so that its not, this code will need reworking
-    auto const& absspmccol_h = event.getValidHandle<StepPointMCCollection>(absstepmcs_);
-    auto const& absspmccol = *absspmccol_h;
-    if(debug_ > 0)std::cout << "Absorber StepPointMC collection has " << absspmccol.size() << " Entries" << std::endl;
-    // match steps by their sim particle. There is only 1 volume for IPA
+    auto inTSdA = [&](double z){ return haveTSdA ? (z > tsdaZMin && z < tsdaZMax) : (z < tsdaLegacyZMax_); };
     SurfaceStep absorberstep;
-    for(auto const& spmc : absspmccol) {
+    for(auto const& spmc : col) {
       // convert to detector coordinates
       auto spmcpos = XYZVectorF(det->toDetector(spmc.position()));
       bool added(false);
@@ -116,11 +130,11 @@ namespace mu2e {
       }
       if(!added){
         // if the existing step is valid, save it
-        if(absorberstep.surfaceId() != SurfaceIdDetail::unknown && absorberstep.simParticle().isNonnull())ssc->push_back(absorberstep);
+        if(absorberstep.surfaceId() != SurfaceIdDetail::unknown && absorberstep.simParticle().isNonnull())ssc.push_back(absorberstep);
         // start a new SurfaceStep for this step
         // hack around the fact that the IPA, OPA, and TSDA are all in the same collection ('absorber')
         SurfaceId sid;
-        if(spmcpos.Z() < -5960) // TSDA
+        if(tsdaCollection || (tsdaFromGeom_ ? inTSdA(spmcpos.Z()) : spmcpos.Z() < tsdaLegacyZMax_)) // TSDA
           sid = SurfaceId(SurfaceIdDetail::TSDA);
         else if(spmcpos.Rho() > 400) // OPA
           sid = SurfaceId(SurfaceIdDetail::OPA);
@@ -131,7 +145,36 @@ namespace mu2e {
       }
     }
     // save last step
-    if(absorberstep.surfaceId() != SurfaceIdDetail::unknown && absorberstep.simParticle().isNonnull())ssc->push_back(absorberstep);
+    if(absorberstep.surfaceId() != SurfaceIdDetail::unknown && absorberstep.simParticle().isNonnull())ssc.push_back(absorberstep);
+  }
+
+  void MakeSurfaceSteps::produce(art::Event& event) {
+    GeomHandle<DetectorSystem> det;
+    // create output
+    std::unique_ptr<SurfaceStepCollection> ssc(new SurfaceStepCollection);
+    // start with virtual detectors; these are copied directly
+    auto const& vdspmccol_h = event.getValidHandle<StepPointMCCollection>(vdstepmcs_);
+    auto const& vdspmccol = *vdspmccol_h;
+    for(auto const& vdspmc : vdspmccol) {
+      // only some VDs are kept
+      auto isid = vdmap_.find(vdspmc.virtualDetectorId());
+      if(debug_ > 0) std::cout<<" VID "<<vdspmc.virtualDetectorId().name()<<std::endl;
+      if(isid != vdmap_.end())ssc->emplace_back(isid->second,vdspmc,det); // no aggregation of VD hits
+    }
+    auto nvdsteps = ssc->size();
+    if(debug_ > 0)std::cout << "Added " << nvdsteps << " VD steps " << std::endl;
+    // now absorbers: IPA, OPA, and TSDA
+    // colate adjacent steppointMCs from the same particle. The following assumes the StepPointMCs from the same SimParticle are adjacent and (roughly) time-ordered. This is observationally true currently, but if G4 ever evolves so that its not, this code will need reworking
+    auto const& absspmccol_h = event.getValidHandle<StepPointMCCollection>(absstepmcs_);
+    auto const& absspmccol = *absspmccol_h;
+    if(debug_ > 0)std::cout << "Absorber StepPointMC collection has " << absspmccol.size() << " Entries" << std::endl;
+    aggregateAbsorberSteps(absspmccol, det, *ssc, false);
+    // optional dedicated TSdA collection: all steps are TSDA
+    if(tsdastepmcs_) {
+      auto const& tsdaspmccol_h = event.getValidHandle<StepPointMCCollection>(*tsdastepmcs_);
+      if(debug_ > 0)std::cout << "TSdA StepPointMC collection has " << tsdaspmccol_h->size() << " Entries" << std::endl;
+      aggregateAbsorberSteps(*tsdaspmccol_h, det, *ssc, true);
+    }
     auto nabsorbersteps = ssc->size() - nvdsteps;
     if(debug_ > 0)std::cout << "Added " << nabsorbersteps << " IPA Steps "<< std::endl;
     // same for stopping target. Here, the foil number (= volumeid) matters

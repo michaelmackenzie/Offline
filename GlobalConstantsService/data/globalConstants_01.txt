@@ -130,6 +130,12 @@ double physicsParams.Al.capture.RMCInternalRate = 0.0069; //measurement of inter
 double physicsParams.Al.capture.photon.1809keV.energy = 1.809;
 double physicsParams.Al.capture.photon.1809keV.intensity = 0.51;
 
+// Ti has no capture.* entries on purpose: the generators that need them throw for Ti.
+// - AlCap (Edmonds et al., Phys. Rev. C 105, 035501 (2022), arXiv:2110.10228, Table VI) measured Ti yields per
+//   capture only in limited energy ranges: p 26.48e-3 [3.5-20 MeV], d 5.02e-3 [4.5-17 MeV], t 1.36e-3 [5-17 MeV].
+//   These are not total rates over the full spectrum used by MuCapProtonGenerator etc., so they are not entered here.
+// - No citable Ti neutron multiplicity, photon rate, RMC rate or gamma-line intensity has been entered.
+
 double physicsParams.C.capture.protonRate = 0.33; // Per capture rates, measured with Geant4 on G4_C
 double physicsParams.C.capture.deuteronRate = 0.15;
 double physicsParams.C.capture.neutronRate = 1.77;

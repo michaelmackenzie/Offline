@@ -19,6 +19,7 @@
 #include "Offline/KinKalGeom/inc/Calo.hh"
 #include "Offline/CalorimeterGeom/inc/Calorimeter.hh"
 #include "Offline/BeamlineGeom/inc/Beamline.hh"
+#include "Offline/BeamlineGeom/inc/TSdA.hh"
 #include "Offline/GeometryService/inc/DetectorSystem.hh"
 #include "Offline/DetectorSolenoidGeom/inc/DetectorSolenoid.hh"
 #include "Offline/StoppingTargetGeom/inc/StoppingTarget.hh"
@@ -372,7 +373,30 @@ namespace mu2e {
     auto ipafront= std::make_shared<KinKal::Disk>(ipa->frontDisk());
     auto ipaback= std::make_shared<KinKal::Disk>(ipa->backDisk());
     auto opa= std::make_shared<Frustrum>(VEC3(0.0,0.0,1.0),VEC3(0.0,0.0,-3766),454.0,728.4,2125.0); // inner surface
-    auto tsda= std::make_shared<Annulus>(VEC3(0.0,0.0,1.0),VEC3(1.0,0.0,0.0),VEC3(0.0,0.0,-5967),235.0,525.0); // mid-plane: TSdA_v02 spans z = -5991.8 to -5941.0
+    // TSDA mid-plane: hard-coded (TSdA_v02 spans z = -5991.8 to -5941.0) unless 'kinkal.tsdaFromGeometry' is set and the
+    // geometry has a TSdA, in which case the mid-plane, inner and outer radius and thickness come from the TSdA served by
+    // GeometryService
+    double tsdaThickness = 0.0;
+    VEC3 tsdacenter(0.0,0.0,-5967);
+    double tsdarin(235.0), tsdarout(525.0);
+    {
+      art::ServiceHandle<GeometryService> geomService;
+      if(geomService->config().getBool("kinkal.tsdaFromGeometry",false)){
+        if(!geomService->hasElement<TSdA>())
+          throw cet::exception("GEOM") << "KinKalGeomMaker: kinkal.tsdaFromGeometry is set but the geometry has no TSdA (hasTSdA)" << std::endl;
+        GeomHandle<TSdA> tsdag;
+        GeomHandle<DetectorSystem> det;
+        // mid-plane at the actual G4 placement in z (tsda.z0 is ignored for TSdA version <= 1); the material, if configured,
+        // is applied as a shell of the full thickness at this plane
+        CLHEP::Hep3Vector pos4 = det->toDetector(CLHEP::Hep3Vector(tsdag->position().x(),tsdag->position().y(),tsdag->zCenter4()));
+        tsdacenter = VEC3(pos4.x(),pos4.y(),pos4.z());
+        // no explicit hole in the geometry (rin = 0): keep the hard-coded inner radius
+        if(tsdag->rin() > 0.0) tsdarin = tsdag->rin();
+        tsdarout = tsdag->r4();
+        tsdaThickness = 2.0*tsdag->halfLength4();
+      }
+    }
+    auto tsda= std::make_shared<Annulus>(VEC3(0.0,0.0,1.0),VEC3(1.0,0.0,0.0),tsdacenter,tsdarin,tsdarout); // mid-plane
     // TS5 face: a disk out to the DS inner radius, 1 mm downstream of the KinKal TSDA plane (so inside the absorber), so an
     // upstream-going extrapolation crosses it just before the TSDA plane. A crossing means the extrapolated helix reaches the
     // TSDA plane inside the DS bore; it is not by itself a cosmic tag (see KKExtrap ToTS5)
@@ -390,7 +414,7 @@ namespace mu2e {
     kkg_->map_.emplace(std::make_pair(SurfaceId(SurfaceIdEnum::TSDA),std::static_pointer_cast<Surface>(tsda)));
     kkg_->map_.emplace(std::make_pair(SurfaceId(SurfaceIdEnum::TS5_Face),std::static_pointer_cast<Surface>(ts5face)));
 
-    kkg_->ds_ = std::make_unique<KKGeom::DetectorSolenoid>(inner, outer, front, back, ipa, ipafront, ipaback, opa, tsda, ts5face, materialCylinders);
+    kkg_->ds_ = std::make_unique<KKGeom::DetectorSolenoid>(inner, outer, front, back, ipa, ipafront, ipaback, opa, tsda, ts5face, materialCylinders, tsdaThickness);
   }
 
   void KinKalGeomMaker::makeTarget() {
@@ -400,8 +424,10 @@ namespace mu2e {
     if(target->nFoils() <= 0) throw cet::exception("GEOM") << "KinKalGeomMaker: the stopping target has no foils" << std::endl;
     std::vector<AnnPtr> foils;
     std::vector<double> thicknesses;
+    std::vector<std::string> materials;
     foils.reserve(target->nFoils());
     thicknesses.reserve(target->nFoils());
+    materials.reserve(target->nFoils());
     // the bounding surfaces enclose all the foils: outer radius, inner (hole) radius and z extent
     double rout(0.0), rin(std::numeric_limits<double>::max());
     double zmin(std::numeric_limits<double>::max()), zmax(std::numeric_limits<double>::lowest());
@@ -416,6 +442,7 @@ namespace mu2e {
       VEC3 udir = (xdir - xdir.Dot(norm)*norm).Unit();
       foils.push_back(std::make_shared<Annulus>(norm,udir,center,tfoil.rIn(),tfoil.rOut()));
       thicknesses.push_back(2.0*tfoil.halfThickness());
+      materials.push_back(tfoil.material());
       // a foil off the axis reaches further out, and its hole edge comes closer to the axis
       double roff = center.Rho();
       rout = std::max(rout, tfoil.rOut() + roff);
@@ -443,7 +470,7 @@ namespace mu2e {
       for(size_t ifoil=0; ifoil < foils.size(); ++ifoil){
         auto const& foil = *foils[ifoil];
         std::cout << "  foil " << ifoil << " center " << foil.center() << " normal " << foil.normal()
-          << " radii " << foil.innerRadius() << " " << foil.outerRadius() << " thickness " << thicknesses[ifoil] << std::endl;
+          << " radii " << foil.innerRadius() << " " << foil.outerRadius() << " thickness " << thicknesses[ifoil] << " material " << materials[ifoil] << std::endl;
       }
     }
 
@@ -455,7 +482,7 @@ namespace mu2e {
       kkg_->map_.emplace(std::make_pair(SurfaceId(SurfaceIdEnum::ST_Foils,ifoil),std::static_pointer_cast<Surface>(foils[ifoil])));
     }
 
-    kkg_->st_ = std::make_unique<KKGeom::StoppingTarget>(outer,inner,front,back,foils,thicknesses);
+    kkg_->st_ = std::make_unique<KKGeom::StoppingTarget>(outer,inner,front,back,foils,thicknesses,materials);
   }
 
   void KinKalGeomMaker::makeCRV() {

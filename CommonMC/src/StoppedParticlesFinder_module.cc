@@ -58,10 +58,19 @@ namespace mu2e {
             ""
         };
 
+        fhicl::Sequence<std::string> stoppingMaterials{
+          Name("stoppingMaterials"),
+            Comment("Optional list of materials. Particles that stopped in any of these materials are selected\n"
+                "(e.g. [\"StoppingTarget_Al\", \"StoppingTarget_Ti\"] for a mixed-material target).\n"
+                "If stoppingMaterial is also set, the selected set is the union of the two.\n"
+                "If both are empty, see vetoedMaterials below."),
+            std::vector<std::string>()
+        };
+
         fhicl::Sequence<std::string> vetoedMaterials{ Name("vetoedMaterials"),
-          Comment("Used only if stoppingMaterial is set to an emtpy string.\n"
+          Comment("Used only if stoppingMaterial is empty and stoppingMaterials is empty.\n"
               "Particles stopping in materials that DO NOT match any on this list will be selected."),
-          [this](){ return stoppingMaterial().empty(); }
+          [this](){ return stoppingMaterial().empty() && stoppingMaterials().empty(); }
         };
 
         fhicl::OptionalAtom<unsigned> simStageThreshold{ Name("simStageThreshold"),
@@ -89,6 +98,7 @@ namespace mu2e {
       art::InputTag physVolInfoInput_;
       bool useEventLevelVolumeInfo_;
       std::string stoppingMaterial_;
+      std::vector<std::string> stoppingMaterials_; // all accepted materials (stoppingMaterial plus stoppingMaterials)
       std::vector<std::string> vetoedMaterials_;
 
       bool simStageThresholdConfigured_;
@@ -133,7 +143,13 @@ namespace mu2e {
     {
       produces<SimParticlePtrCollection>();
 
-      if(stoppingMaterial_.empty()) {
+      stoppingMaterials_ = conf().stoppingMaterials();
+      if(!stoppingMaterial_.empty() &&
+         std::find(stoppingMaterials_.begin(), stoppingMaterials_.end(), stoppingMaterial_) == stoppingMaterials_.end()) {
+        stoppingMaterials_.push_back(stoppingMaterial_);
+      }
+
+      if(stoppingMaterials_.empty()) {
         vetoedMaterials_ = conf().vetoedMaterials();
       }
 
@@ -156,6 +172,10 @@ namespace mu2e {
         }
 
         os<<"stoppingMaterial = "<<stoppingMaterial_<<std::endl;
+
+        os<<"stoppingMaterials = [ ";
+        std::copy(stoppingMaterials_.begin(), stoppingMaterials_.end(), std::ostream_iterator<std::string>(os, ", "));
+        os<<" ]"<<std::endl;
 
         os<<"vetoedMaterials = [ ";
         std::copy(vetoedMaterials_.begin(), vetoedMaterials_.end(), std::ostream_iterator<std::string>(os, ", "));
@@ -263,7 +283,7 @@ namespace mu2e {
     // stage.
 
     bool ret = false;
-    if(stoppingMaterial_.empty()) {
+    if(stoppingMaterials_.empty()) {
       ret = true;
       for(const auto& i : vetoedMaterials_) {
         if(i == material) {
@@ -272,7 +292,7 @@ namespace mu2e {
       }
     }
     else {
-      ret = (material == stoppingMaterial_);
+      ret = (std::find(stoppingMaterials_.begin(), stoppingMaterials_.end(), material) != stoppingMaterials_.end());
     }
 
     return ret;

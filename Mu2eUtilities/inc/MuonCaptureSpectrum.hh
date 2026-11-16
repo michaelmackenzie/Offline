@@ -8,6 +8,7 @@
 #include "CLHEP/Vector/LorentzVector.h"
 
 // C++ includes
+#include <string>
 #include <utility>
 
 
@@ -28,12 +29,16 @@ namespace mu2e {
    MuonCaptureSpectrum(){}
 
     // random number generators ar owned by the callers, no memory cleanup needed
-    MuonCaptureSpectrum(CLHEP::RandFlat* randFlat, RandomUnitSphere* randomUnitSphere);
+    // material: target nucleus (PhysicsParams name) used for the internal conversion kinematics, default Al
+    MuonCaptureSpectrum(CLHEP::RandFlat* randFlat, RandomUnitSphere* randomUnitSphere,
+                        const std::string& material = "Al");
 
     MuonCaptureSpectrum(bool kMaxUserSet, double kMaxUser, double kMaxMax,
-                        CLHEP::RandFlat* randFlat = 0, RandomUnitSphere* randomUnitSphere = 0);
+                        CLHEP::RandFlat* randFlat = 0, RandomUnitSphere* randomUnitSphere = 0,
+                        const std::string& material = "Al");
     MuonCaptureSpectrum(double kMax, int nKnockout,
-                        CLHEP::RandFlat* randFlat = 0, RandomUnitSphere* randomUnitSphere = 0);
+                        CLHEP::RandFlat* randFlat = 0, RandomUnitSphere* randomUnitSphere = 0,
+                        const std::string& material = "Al");
 
     ~MuonCaptureSpectrum(){}
 

@@ -93,7 +93,7 @@ namespace mu2e {
     , eng_(createEngine(art::ServiceHandle<SeedService>()->getSeed()))
     , randomFlat_(eng_)
     , stops_(eng_, conf_.stops())
-    , _decayFraction(GlobalConstantsHandle<PhysicsParams>()->getDecayFraction())
+    , _decayFraction(GlobalConstantsHandle<PhysicsParams>()->getDecayFraction(conf_.material()))
     , _captureFraction(1 - _decayFraction)
   {
     produces<mu2e::GenParticleCollection>();

@@ -33,7 +33,8 @@ using cet::square;
 
 namespace mu2e {
 
-  PionCaptureSpectrum::PionCaptureSpectrum(CLHEP::RandFlat* rnFlat, RandomUnitSphere* rnUnitSphere):
+  PionCaptureSpectrum::PionCaptureSpectrum(CLHEP::RandFlat* rnFlat, RandomUnitSphere* rnUnitSphere,
+                                           const std::string& material):
     _spectrum    (Bistirlich      ),
     _spectrum2D  (KrollWadaJoseph ),
     _kMaxUserSet (false           ),
@@ -46,11 +47,12 @@ namespace mu2e {
 
     _me    = pdt->particle(PDGCode::e_minus ).mass();
     _mpi   = pdt->particle(PDGCode::pi_minus).mass();
-    _MN    = GlobalConstantsHandle<PhysicsParams>()->getAtomicMass("Al");
+    _MN    = GlobalConstantsHandle<PhysicsParams>()->getAtomicMass(material);
   }
 
   PionCaptureSpectrum::PionCaptureSpectrum(bool kMaxUserSet, double kMaxUser, double kMaxMax,
-                                           CLHEP::RandFlat* rnFlat, RandomUnitSphere* rnUnitSphere):
+                                           CLHEP::RandFlat* rnFlat, RandomUnitSphere* rnUnitSphere,
+                                           const std::string& material):
     _spectrum    (Bistirlich      ),
     _spectrum2D  (KrollWadaJoseph ),
     _kMaxUserSet (kMaxUserSet     ),
@@ -63,7 +65,7 @@ namespace mu2e {
 
     _me    = pdt->particle(PDGCode::e_minus ).mass();
     _mpi   = pdt->particle(PDGCode::pi_minus).mass();
-    _MN    = GlobalConstantsHandle<PhysicsParams>()->getAtomicMass("Al");
+    _MN    = GlobalConstantsHandle<PhysicsParams>()->getAtomicMass(material);
   }
 
   double PionCaptureSpectrum::getWeight(double E) const {

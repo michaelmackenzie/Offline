@@ -1,6 +1,7 @@
 #include "Offline/KinKalGeom/inc/KKMaterial.hh"
 #include "Offline/ConfigTools/inc/ConfigFileLookupPolicy.hh"
 #include "KinKal/MatEnv/DetMaterial.hh"
+#include "cetlib_except/exception.h"
 
 namespace mu2e {
   using MatDBInfo = MatEnv::MatDBInfo;
@@ -15,6 +16,7 @@ namespace mu2e {
     wirematname_(matconfig.strawWireMaterialName()),
     ipamatname_(matconfig.IPAMaterialName()),
     stmatname_(matconfig.STMaterialName()),
+    tsdamatname_(matconfig.TSDAMaterialName()),
     crvmatname_(matconfig.CRVMaterialName()) {
       MatEnv::DetMaterialConfig dmconf;
       dmconf.elossmode_ = (DetMaterial::energylossmode)matconfig.elossMode();
@@ -27,6 +29,15 @@ namespace mu2e {
           matdbinfo_->findDetMaterial(wallmatname_),
           matdbinfo_->findDetMaterial(gasmatname_),
           matdbinfo_->findDetMaterial(wirematname_));
+      // optional per-foil ST materials: flattened pairs of G4 name and KinKal name
+      auto const stpairs = matconfig.STFoilMaterials();
+      if(stpairs.size()%2 != 0)
+        throw cet::exception("CONFIG") << "KKMaterial: STFoilMaterials must be pairs of G4 and KinKal material names, got " << stpairs.size() << " entries" << std::endl;
+      for(size_t ipair = 0; ipair < stpairs.size(); ipair += 2){
+        stfoilmats_[stpairs[ipair]] = stpairs[ipair+1];
+        matdbinfo_->findDetMaterial(stpairs[ipair+1]); // fail at configuration if the material is unknown
+      }
+      if(!tsdamatname_.empty()) matdbinfo_->findDetMaterial(tsdamatname_);
     }
 
 // implement file finder policy using mu2e file policy

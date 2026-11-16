@@ -56,20 +56,28 @@ namespace mu2e {
 
     typedef EnumToStringSparse<SpectrumType> Spectrum;
 
-    SimpleSpectrum( Spectrum::enum_type i, const PhysicsParams& phy = *GlobalConstantsHandle<PhysicsParams>() ) ;
+    // material: stopping target material for the endpoint, muon energy and Czarnecki
+    // coefficients; empty means the chosen stopping target material (historical behavior)
+    SimpleSpectrum( Spectrum::enum_type i, const PhysicsParams& phy = *GlobalConstantsHandle<PhysicsParams>(),
+                    const std::string& material = "" ) ;
     ~SimpleSpectrum();
 
     double getWeight(double e) const;
 
-    static double getFlat     (const double e, const PhysicsParams& phy = *GlobalConstantsHandle<PhysicsParams>() );
-    static double getFlatTrunc(const double e, const PhysicsParams& phy = *GlobalConstantsHandle<PhysicsParams>() );
-    static double getPol5     (const double e, const PhysicsParams& phy = *GlobalConstantsHandle<PhysicsParams>() );
-    static double getPol58    (const double e, const PhysicsParams& phy = *GlobalConstantsHandle<PhysicsParams>() );
+    static double getFlat     (const double e, const PhysicsParams& phy = *GlobalConstantsHandle<PhysicsParams>(),
+                                   const std::string& material = "" );
+    static double getFlatTrunc(const double e, const PhysicsParams& phy = *GlobalConstantsHandle<PhysicsParams>(),
+                                   const std::string& material = "" );
+    static double getPol5     (const double e, const PhysicsParams& phy = *GlobalConstantsHandle<PhysicsParams>(),
+                                   const std::string& material = "" );
+    static double getPol58    (const double e, const PhysicsParams& phy = *GlobalConstantsHandle<PhysicsParams>(),
+                                   const std::string& material = "" );
 
   private:
 
     Spectrum::enum_type _approx;
     PhysicsParams _phy;
+    std::string _material;
 
   };
 

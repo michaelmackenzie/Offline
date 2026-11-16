@@ -12,6 +12,7 @@
 #include "Offline/Mu2eUtilities/inc/Table.hh"
 
 // C++ includes
+#include <string>
 #include <utility>
 
 namespace mu2e {
@@ -20,12 +21,16 @@ namespace mu2e {
 
   public:
 
-    CzarneckiSpectrum();
+    // material: stopping target material whose DIO table, endpoint and muon
+    // energy are used; empty means the chosen stopping target material
+    // (PhysicsParams::getStoppingTargetMaterial()), the historical behavior.
+    explicit CzarneckiSpectrum(const std::string& material = "");
 
     double getWeight(double E) const;
 
   private:
 
+    const std::string _material; // resolved, never empty
     const Table<2> _table;
     double _halfBinWidth;
 

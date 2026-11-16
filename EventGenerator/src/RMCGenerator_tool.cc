@@ -55,6 +55,7 @@ namespace mu2e {
       _spectrumXMin(_spectrum.getXMin()),
       _spectrumXMax(_spectrum.getXMax()),
       _flatSpectrum(conf().spectrum.get<fhicl::ParameterSet>().get<std::string>("spectrumShape", "") == "flat"),
+      _spectrumMaterial(conf().spectrum.get<fhicl::ParameterSet>().get<std::string>("material", "Al")), // same default as BinnedSpectrum "RMC"
       _internalRate((_external) ? 0. : 1.),
       _makeHistograms(conf().makeHistograms())
     {
@@ -108,7 +109,7 @@ namespace mu2e {
       _randomUnitSphereInternal = std::make_unique<RandomUnitSphere>(eng);
       _randFlat = std::make_unique<CLHEP::RandFlat>(eng);
       _randSpectrum = std::make_unique<CLHEP::RandGeneral>(eng, _spectrum.getPDF(), _spectrum.getNbins());
-      _muonCaptureSpectrum = std::make_unique<MuonCaptureSpectrum>(_randFlat.get(), _randomUnitSphereInternal.get());
+      _muonCaptureSpectrum = std::make_unique<MuonCaptureSpectrum>(_randFlat.get(), _randomUnitSphereInternal.get(), _spectrumMaterial);
       if(_useRate) {
         _randomPoissonQ = std::make_unique<CLHEP::RandPoissonQ>(eng, GlobalConstantsHandle<PhysicsParams>()->getCaptureRMCRate(material) * (_czmax - _czmin)/2.);
         _internalRate = GlobalConstantsHandle<PhysicsParams>()->getCaptureRMCInternalRate(material);
@@ -128,6 +129,7 @@ namespace mu2e {
     const double _spectrumXMin;
     const double _spectrumXMax;
     const bool _flatSpectrum;
+    const std::string _spectrumMaterial; // nucleus for the internal conversion kinematics (spectrum.material)
     std::unique_ptr<MuonCaptureSpectrum> _muonCaptureSpectrum; // internal conversion spectrum
     double _internalRate;
 

@@ -1002,13 +1002,17 @@ namespace mu2e {
         matxing->materialEffects(dmom,paramomvar,perpmomvar);
         inters.emplace_back(ktraj.stateEstimate(matxing->time()),XYZVectorF(ktraj.bnom()),matxing->surfaceId(),matxing->intersection(),dmom);
       }
-      for(auto const& matxing : kktrk.materialPlaneXings()){
-        double stime = matxing->time() - epsilon;
-        auto const& ktraj = ptraj.nearestPiece(stime);
-        double dmom,paramomvar,perpmomvar;
-        matxing->materialEffects(dmom,paramomvar,perpmomvar);
-        inters.emplace_back(ktraj.stateEstimate(matxing->time()),XYZVectorF(ktraj.bnom()),matxing->surfaceId(),matxing->intersection(),dmom);
-      }
+    }
+    // generic passive planar Xings; the TSDA (a material plane when KKMaterial TSDAMaterialName is set) is always saved, like the
+    // IPA and ST, since without material its crossing is a plain intersection that is always saved
+    static const SurfaceId tsdaid("TSDA");
+    for(auto const& matxing : kktrk.materialPlaneXings()){
+      if(!savematxings_ && matxing->surfaceId() != tsdaid) continue;
+      double stime = matxing->time() - epsilon;
+      auto const& ktraj = ptraj.nearestPiece(stime);
+      double dmom,paramomvar,perpmomvar;
+      matxing->materialEffects(dmom,paramomvar,perpmomvar);
+      inters.emplace_back(ktraj.stateEstimate(matxing->time()),XYZVectorF(ktraj.bnom()),matxing->surfaceId(),matxing->intersection(),dmom);
     }
     // record other intersections saved in the track
     for(auto const& interpair : kktrk.intersections()) {

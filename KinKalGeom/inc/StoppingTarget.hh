@@ -9,6 +9,7 @@
 #include "KinKal/Geometry/Annulus.hh"
 #include "cetlib_except/exception.h"
 #include <memory>
+#include <string>
 #include <vector>
 namespace mu2e {
   namespace KKGeom {
@@ -20,11 +21,15 @@ namespace mu2e {
         using FoilCol = std::vector<AnnPtr>;
         // built by KinKalGeomMaker from the stopping target served by GeometryService.
         // inner is null when the hole of some foil reaches the axis (a foil without a hole): the target then has no inner boundary.
-        // thicknesses are the full foil thicknesses (mm), one per foil
-        StoppingTarget(CylPtr outer, CylPtr inner, DiskPtr front, DiskPtr back, FoilCol foils, std::vector<double> thicknesses) :
-        outer_(outer), inner_(inner), front_(front), back_(back), foils_(foils), thicknesses_(thicknesses) {
+        // thicknesses are the full foil thicknesses (mm), one per foil.
+        // materials are the G4 material names of the foils (TargetFoil::material(), e.g. StoppingTarget_Al), one per foil; empty means unspecified
+        StoppingTarget(CylPtr outer, CylPtr inner, DiskPtr front, DiskPtr back, FoilCol foils, std::vector<double> thicknesses,
+            std::vector<std::string> materials = std::vector<std::string>()) :
+        outer_(outer), inner_(inner), front_(front), back_(back), foils_(foils), thicknesses_(thicknesses), materials_(materials) {
           if(thicknesses_.size() != foils_.size())
             throw cet::exception("GEOM") << "KKGeom::StoppingTarget: " << foils_.size() << " foils but " << thicknesses_.size() << " thicknesses";
+          if(!materials_.empty() && materials_.size() != foils_.size())
+            throw cet::exception("GEOM") << "KKGeom::StoppingTarget: " << foils_.size() << " foils but " << materials_.size() << " materials";
         }
 
         // accessors
@@ -39,6 +44,11 @@ namespace mu2e {
         auto const& back() const { return *back_; }
         auto const& foil(size_t ifoil) const { return *foils_[ifoil]; }
         double foilThickness(size_t ifoil) const { return thicknesses_.at(ifoil); }
+        // G4 material name of a foil (empty if the materials were not given)
+        std::string const& foilMaterial(size_t ifoil) const {
+          static const std::string none;
+          return materials_.empty() ? none : materials_.at(ifoil);
+        }
         // return by ptr
         auto const& outerPtr() const { return outer_; }
         auto const& innerPtr() const { return inner_; } // null when hasInner() is false
@@ -47,11 +57,13 @@ namespace mu2e {
         auto const& foils() const { return foils_; }
         auto const& foilPtr(size_t ifoil) const { return foils_[ifoil]; }
         auto const& foilThicknesses() const { return thicknesses_; }
+        auto const& foilMaterials() const { return materials_; }
       private:
         CylPtr outer_, inner_; // boundaries
         DiskPtr front_, back_;
         FoilCol foils_; // target foils
         std::vector<double> thicknesses_; // full thickness of each foil (mm)
+        std::vector<std::string> materials_; // G4 material name of each foil
     };
   }
 }

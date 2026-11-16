@@ -107,6 +107,34 @@ namespace mu2e {
 
     _materials.assign( _rOut.size(), "StoppingTarget_"+GlobalConstantsHandle<PhysicsParams>()->getStoppingTargetMaterial() );
 
+    // Optional per-foil materials (bare names, e.g. "Al", "Ti"), mapped to
+    // "StoppingTarget_"+name.  Like halfThicknesses, a list shorter than the
+    // number of foils is padded by repeating its last entry.  When absent the
+    // single-material behaviour above is unchanged.
+    std::vector<std::string> foilMaterials;
+    c.getVectorString("stoppingTarget.foilMaterials", foilMaterials,
+                      std::vector<std::string>());
+    if ( !foilMaterials.empty() ) {
+      if ( foilMaterials.size() > _rOut.size() ) {
+        throw cet::exception("GEOM")
+          << "stoppingTarget.foilMaterials has " << foilMaterials.size()
+          << " entries but stoppingTarget.radii has " << _rOut.size()
+          << "; there must not be more materials than foils.\n";
+      }
+      if ( c.hasName("stoppingTarget.overrideMaterial") ) {
+        throw cet::exception("GEOM")
+          << "stoppingTarget.foilMaterials and stoppingTarget.overrideMaterial "
+          << "cannot both be specified.\n";
+      }
+      _materials.clear();
+      for ( auto const& m : foilMaterials ) {
+        _materials.push_back( "StoppingTarget_"+m );
+      }
+      while ( _materials.size() < _rOut.size() ) {
+        _materials.push_back( _materials.back() );
+      }
+    }
+
     // Search to see if override material is specifed in geom. file
     const string overrideMaterial = c.getString("stoppingTarget.overrideMaterial","");
     if ( !overrideMaterial.empty() ) {

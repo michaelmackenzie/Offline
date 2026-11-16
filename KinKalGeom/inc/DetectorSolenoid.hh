@@ -32,10 +32,11 @@ namespace mu2e {
         // default constructor with nominal geometry
         DetectorSolenoid( CylPtr inner, CylPtr outer, DiskPtr front, DiskPtr back,
             CylPtr ipa, DiskPtr ipafront, DiskPtr ipaback,
-            FruPtr opa, AnnPtr tsda, DiskPtr ts5face, MaterialCylinderCollection const& materialCylinders = MaterialCylinderCollection()) :
+            FruPtr opa, AnnPtr tsda, DiskPtr ts5face, MaterialCylinderCollection const& materialCylinders = MaterialCylinderCollection(),
+            double tsdaThickness = 0.0) :
           inner_(inner) , outer_(outer), front_(front), back_(back),
           ipa_(ipa), ipa_front_(ipafront), ipa_back_(ipaback), opa_(opa), tsda_(tsda), ts5face_(ts5face),
-          materialCylinders_(materialCylinders)
+          materialCylinders_(materialCylinders), tsdaThickness_(tsdaThickness)
       {}
 
         // accessors
@@ -50,6 +51,8 @@ namespace mu2e {
         auto const& outerProtonAbsorber() const { return *opa_; }
         auto const& upstreamAbsorber() const { return *tsda_; }
         auto const& ts5Face() const { return *ts5face_; }
+        // full TSDA thickness (mm); 0 when the TSDA surface is the hard-coded one (no thickness known)
+        double upstreamAbsorberThickness() const { return tsdaThickness_; }
         // return by ptr
         auto const& outerPtr() const { return outer_; }
         auto const& innerPtr() const { return inner_; }
@@ -74,6 +77,7 @@ namespace mu2e {
         AnnPtr tsda_; // TS downstream absorber
         DiskPtr ts5face_; // TS5 face: disk out to the DS inner radius, 1 mm downstream of the KinKal TSDA plane (inside the absorber)
         MaterialCylinderCollection materialCylinders_; // passive cylindrical material shells
+        double tsdaThickness_; // full thickness of the TSDA (mm), 0 if unknown
     };
   }
 }

@@ -191,7 +191,7 @@ namespace mu2e {
         tg.surf_ = foil.get();
         tg.pl_ = foil.get(); // a grazing foil is crossed again only after the track leaves its tolerance
         tg.ann_ = foil;
-        tg.mat_ = &*kkmat_h->STMaterial();
+        tg.mat_ = &*kkmat_h->STMaterial(st.foilMaterial(ifoil)); // the foil's own material; STMaterialName unless mapped in STFoilMaterials
         tg.thick_ = st.foilThickness(ifoil);
         tg.maxcross_ = 0;
         tg.mincos_ = std::max(minv_,stFoilMinCos_);
@@ -216,6 +216,15 @@ namespace mu2e {
       tsda.zval_ = ds.upstreamAbsorber().center().Z();
       tsda.terminal_ = true;
       tsda.inbounds_ = false;
+      // optional TSDA material (TSDAMaterialName) with the thickness of the geometry TSdA (kinkal.tsdaFromGeometry): the crossing
+      // then also adds a material shell; the sweep still ends here
+      if(kkmat_h->hasTSDAMaterial() && ds.upstreamAbsorberThickness() > 0.0){
+        tsda.effect_ = SweepTarget::planeshell;
+        tsda.plane_ = ds.upstreamAbsorberPtr();
+        tsda.ann_ = ds.upstreamAbsorberPtr();
+        tsda.mat_ = &*kkmat_h->TSDAMaterial();
+        tsda.thick_ = ds.upstreamAbsorberThickness();
+      }
       tgts.push_back(tsda);
       if(extrapolateOPA_){
         SweepTarget opa;
@@ -474,6 +483,16 @@ namespace mu2e {
       reason << "material crossing " << tg.sid_ << " at " << inter.time_ << " is not owned by the end piece " << endpiece.range();
       addFailure(ktrk,tdir,reason.str());
       return false;
+    }
+    // the TSDA ends the sweep wherever it reaches its z; the material only applies to a crossing within the annulus (not the hole)
+    if(tg.terminal_ && tg.effect_ == SweepTarget::planeshell && tg.ann_){
+      double dx = inter.pos_.X() - tg.ann_->center().X();
+      double dy = inter.pos_.Y() - tg.ann_->center().Y();
+      double rho = std::sqrt(dx*dx + dy*dy);
+      if(rho < tg.ann_->innerRadius() || rho > tg.ann_->outerRadius()){
+        ktrk.addIntersection(tg.sid_,inter);
+        return true;
+      }
     }
     switch(tg.effect_) {
       case SweepTarget::cylshell:

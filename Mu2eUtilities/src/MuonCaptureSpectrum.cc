@@ -32,7 +32,8 @@ using cet::square;
 
 namespace mu2e {
 
-  MuonCaptureSpectrum::MuonCaptureSpectrum(CLHEP::RandFlat* rnFlat, RandomUnitSphere* rnUnitSphere):
+  MuonCaptureSpectrum::MuonCaptureSpectrum(CLHEP::RandFlat* rnFlat, RandomUnitSphere* rnUnitSphere,
+                                           const std::string& material):
     _spectrum    (RMC             ),
     _spectrum2D  (KrollWadaJoseph ),
     _kMaxUserSet (false           ),
@@ -46,11 +47,12 @@ namespace mu2e {
 
     _me    = pdt->particle(PDGCode::e_minus ).mass();
     _mmu   = pdt->particle(PDGCode::mu_minus).mass();
-    _MN    = GlobalConstantsHandle<PhysicsParams>()->getAtomicMass("Al");
+    _MN    = GlobalConstantsHandle<PhysicsParams>()->getAtomicMass(material);
   }
 
   MuonCaptureSpectrum::MuonCaptureSpectrum(bool kMaxUserSet, double kMaxUser, double kMaxMax,
-                                           CLHEP::RandFlat* rnFlat, RandomUnitSphere* rnUnitSphere):
+                                           CLHEP::RandFlat* rnFlat, RandomUnitSphere* rnUnitSphere,
+                                           const std::string& material):
     _spectrum    (RMC             ),
     _spectrum2D  (KrollWadaJoseph ),
     _kMaxUserSet (kMaxUserSet     ),
@@ -64,11 +66,12 @@ namespace mu2e {
 
     _me    = pdt->particle(PDGCode::e_minus ).mass();
     _mmu   = pdt->particle(PDGCode::mu_minus).mass();
-    _MN    = GlobalConstantsHandle<PhysicsParams>()->getAtomicMass("Al");
+    _MN    = GlobalConstantsHandle<PhysicsParams>()->getAtomicMass(material);
   }
 
   MuonCaptureSpectrum::MuonCaptureSpectrum(double kMax, int nKnockout,
-                                           CLHEP::RandFlat* rnFlat, RandomUnitSphere* rnUnitSphere):
+                                           CLHEP::RandFlat* rnFlat, RandomUnitSphere* rnUnitSphere,
+                                           const std::string& material):
     _spectrum    (PhaseSpace      ),
     _spectrum2D  (KrollWadaJoseph ),
     _kMaxUserSet (true            ),
@@ -82,7 +85,7 @@ namespace mu2e {
 
     _me    = pdt->particle(PDGCode::e_minus ).mass();
     _mmu   = pdt->particle(PDGCode::mu_minus).mass();
-    _MN    = GlobalConstantsHandle<PhysicsParams>()->getAtomicMass("Al");
+    _MN    = GlobalConstantsHandle<PhysicsParams>()->getAtomicMass(material);
 
   }
 

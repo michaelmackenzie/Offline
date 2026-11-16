@@ -26,6 +26,9 @@ namespace mu2e {
 
     tsda->_r4          = c.getDouble("tsda.r4");
 
+    // optional, as in constructTSdA: 0 means no explicit hole
+    tsda->_rin         = c.getDouble("tsda.rin",0.0);
+
     tsda->_halfLength4 = c.getDouble("tsda.halfLength4");
 
     tsda->_position    = CLHEP::Hep3Vector( ds.position().x(),0,c.getDouble("tsda.z0"));
@@ -33,6 +36,11 @@ namespace mu2e {
     tsda->_mat4        = c.getString("tsda.materialName");
 
     tsda->_version     = c.getInt("tsda.version", 1);
+
+    // actual placement of TSdA4, mirroring constructTSdA.cc
+    tsda->_zCenter4    = (tsda->_version <= 1)
+      ? ds.vac_zLocDs23Split() - 2.*ds.vac_halfLengthDs2() + tsda->_halfLength4
+      : tsda->_position.z();
 
     return tsda;
 

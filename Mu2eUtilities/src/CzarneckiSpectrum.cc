@@ -22,9 +22,9 @@
 
 namespace mu2e {
 
-  CzarneckiSpectrum::CzarneckiSpectrum() :
-    _table ( loadTable<2>( ConfigFileLookupPolicy()( "Offline/EventGenerator/data/czarnecki_"+
-                                                     GlobalConstantsHandle<PhysicsParams>()->getStoppingTargetMaterial()+".tbl" ) ) )
+  CzarneckiSpectrum::CzarneckiSpectrum(const std::string& material) :
+    _material( material.empty() ? std::string(GlobalConstantsHandle<PhysicsParams>()->getStoppingTargetMaterial()) : material ),
+    _table ( loadTable<2>( ConfigFileLookupPolicy()( "Offline/EventGenerator/data/czarnecki_"+_material+".tbl" ) ) )
   {
     _halfBinWidth = (_table.getRow(1).first - _table.getRow(0).first)/2.;
   }
@@ -80,10 +80,10 @@ namespace mu2e {
     const double energy = val.first;
     const double weight = val.second.at(0);
 
-    const double b = weight/cet::pow<5>( phy->getMuonEnergy()-energy-cet::square(energy)/(2*phy->getAtomicMass()));
+    const double b = weight/cet::pow<5>( phy->getMuonEnergy(_material)-energy-cet::square(energy)/(2*phy->getAtomicMass(_material)));
 
-    if ( phy->getEndpointEnergy() - E < 0 ) return 0.;
-    else return b*cet::pow<5>( phy->getMuonEnergy() - E - cet::square(E)/(2*phy->getAtomicMass()) );
+    if ( phy->getEndpointEnergy(_material) - E < 0 ) return 0.;
+    else return b*cet::pow<5>( phy->getMuonEnergy(_material) - E - cet::square(E)/(2*phy->getAtomicMass(_material)) );
   }
 
 }

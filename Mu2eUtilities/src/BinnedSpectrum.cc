@@ -30,9 +30,11 @@ namespace mu2e {
       PDGCode::type pdgId = PDGCode::type(psphys.get<int>("pdgId"));
       const double mass(GlobalConstantsHandle<ParticleDataList>()->particle(pdgId).mass());
       double elow = psphys.get<double>("elow", mass);
-      double ehi  = GlobalConstantsHandle<PhysicsParams>()->getEndpointEnergy();
+      // optional target material; empty (default) means the chosen stopping target material
+      const std::string material = psphys.get<std::string>("material", "");
+      double ehi  = GlobalConstantsHandle<PhysicsParams>()->getEndpointEnergy(material);
       double res = psphys.get<double>("spectrumResolution");
-      this->initialize< CzarneckiSpectrum >(elow, ehi, res);
+      this->initialize< CzarneckiSpectrum >(elow, ehi, res, material);
     }
     else if (spectrumShape == "flat") {
       double elow = psphys.get<double>("elow");
@@ -44,7 +46,9 @@ namespace mu2e {
     }
     else if (spectrumShape == "CeEndpoint") {
       // think this is total energy
-      double endpoint = psphys.get<double>("ehi", GlobalConstantsHandle<PhysicsParams>()->getEndpointEnergy());
+      // optional target material; empty (default) means the chosen stopping target material
+      const std::string material = psphys.get<std::string>("material", "");
+      double endpoint = psphys.get<double>("ehi", GlobalConstantsHandle<PhysicsParams>()->getEndpointEnergy(material));
       this->initialize(endpoint);
     }
     else if (spectrumShape == "ceLeadingLog") {
@@ -76,7 +80,7 @@ namespace mu2e {
       if(phase_space) {
         const int nKnockout = psphys.get<int>("nKnockout");
         const double kMax  = GlobalConstantsHandle<PhysicsParams>()->getRMCKMaxKnockout(material, nKnockout);
-        this->initialize<MuonCaptureSpectrum>(elow, ehi, res, kMax, nKnockout);
+        this->initialize<MuonCaptureSpectrum>(elow, ehi, res, kMax, nKnockout, nullptr, nullptr, material);
       } else { // Closure approximation
         const double bindingEnergyFit = GlobalConstantsHandle<PhysicsParams>()->getRMCbindingEnergyFit(material);
         const double recoilEnergyFit  = GlobalConstantsHandle<PhysicsParams>()->getRMCrecoilEnergyFit(material);
@@ -85,7 +89,7 @@ namespace mu2e {
         const double kMaxMax =mmu - bindingEnergyFit - recoilEnergyFit - deltaMassFit;
         bool kMaxUserSet = psphys.get<bool>  ("kMaxUserSet",false);
         double kMaxUser = psphys.get<double>("kMaxUser",0);
-        this->initialize<MuonCaptureSpectrum>(elow, ehi, res, kMaxUserSet, kMaxUser, kMaxMax);
+        this->initialize<MuonCaptureSpectrum>(elow, ehi, res, kMaxUserSet, kMaxUser, kMaxMax, nullptr, nullptr, material);
       }
     }else if (spectrumShape == "Bistirlich") {
       double elow = psphys.get<double>("elow");
