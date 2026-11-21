@@ -24,19 +24,6 @@ cet_make_library(
 
 # ---- from CalPatRec ----
 
-cet_build_plugin(CFOFragmentFromSim art::module
-    REG_SOURCE src/CFOFragmentFromSim_module.cc
-    LIBRARIES REG
-      Offline::RecoMC
-      artdaq-core-mu2e::Data
-      Offline::DAQ
-      Offline::DAQConditions
-      Offline::DataProducts
-      Offline::GlobalConstantsService
-      Offline::MCDataProducts
-      Offline::ProditionsService
-)
-
 cet_build_plugin(ComboHitFilter art::module
     REG_SOURCE src/ComboHitFilter_module.cc
     LIBRARIES REG

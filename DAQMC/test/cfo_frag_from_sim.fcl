@@ -9,7 +9,7 @@
 # Its label depends on the mu2e-trig-config version (e.g. ProcessCFOData). In a digi job, EWMProducer
 # is the EventWindowMarkerProducer that CFOFragmentFromSim reads, not the decoder.
 #
-# mu2e -c Offline/RecoMC/test/cfo_frag_from_sim.fcl -n 20
+# mu2e -c Offline/DAQMC/test/cfo_frag_from_sim.fcl -n 20
 
 #include "Offline/fcl/minimalMessageService.fcl"
 #include "Offline/fcl/standardServices.fcl"
