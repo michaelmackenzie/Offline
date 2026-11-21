@@ -8,6 +8,11 @@
 # Fixme:
 #   - Get rid of stale code.  In particular the two things that depend on Minuit.
 #
+import os as _os, sys as _sys; Import('env'); _sc = File('SConscript').srcnode().abspath; _rt = _sc  # build-component guard: see scripts/build/python/mu2e_components.py
+while not _os.path.exists(_rt + '/scripts/build/python/mu2e_components.py'): _rt = _os.path.dirname(_rt)
+_sys.path.insert(0, _rt + '/scripts/build/python'); import mu2e_components as _mc
+if not _mc.guard(_sc, env['TRIGGER'] == 'on'): Return()
+
 import os
 Import('env')
 Import('mu2e_helper')
