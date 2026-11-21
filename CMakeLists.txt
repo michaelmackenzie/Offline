@@ -186,7 +186,7 @@ mu2e_add_package(EventGenerator)
 mu2e_add_package(Mu2eG4)
 mu2e_add_package(Mu2eG4Helper)
 mu2e_package_selected(Mu2eG4 _mu2e_have_g4)
-if(NOT _mu2e_have_g4)
+if(NOT _mu2e_have_g4 AND Offline_HAS_SIMBASE)  # trig-style build: sim side without Geant4 still needs these data dirs
     install(DIRECTORY Mu2eG4/g4study DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/Offline/Mu2eG4)
     install(DIRECTORY Mu2eG4/test DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/Offline/Mu2eG4)
     install(DIRECTORY Mu2eG4/vis DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/Offline/Mu2eG4)
