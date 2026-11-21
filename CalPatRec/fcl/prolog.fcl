@@ -558,6 +558,7 @@ CalPatRec: { @table::CalPatRec
         }
         CalHelixFinderUe               : { @table::CalPatRec.producers.CalHelixFinder
             fitparticle                : @local::Particle.eminus
+            fitdirection               : @local::FitDir.upstream
             TimeClusterCollectionLabel : CalTimePeakFinderUe
         }
         CalHelixFinderDmu              : { @table::CalPatRec.producers.CalHelixFinder
@@ -566,6 +567,7 @@ CalPatRec: { @table::CalPatRec
         }
         CalHelixFinderUmu               : { @table::CalPatRec.producers.CalHelixFinder
             fitparticle                : @local::Particle.muminus
+            fitdirection               : @local::FitDir.upstream
             TimeClusterCollectionLabel : CalTimePeakFinderUmu
         }
     }

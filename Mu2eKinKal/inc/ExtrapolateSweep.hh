@@ -10,6 +10,8 @@
 // - Limit: limit(t,recordonly) caps the search at t (optionally to record targets only); KKExtrap uses it for the fitted trajectory before the end piece, where no material can be added, and unlimit() removes the cap.
 // - Re-crossing guard: a plane, CRV sector or foil is crossed again only after the trajectory has left the slab of half-width intertol around it (departed).
 // - Planes: the signed plane distance of a helix or line is monotonic between the extrema of its normal velocity, which are known in closed form (visitPlaneExtrema), so plane roots are bracketed and bisected (planeCrossing); cylinders use KinKal::intersect.
+//   TEMPORARY: this works around KFTrack/KinKal#233 (KinKal::intersect can return a plane root outside the query). Once Offline uses a KinKal release
+//   with KFTrack/KinKal#235, remove visitPlaneExtrema and planeCrossing and use KinKal::intersect for planes too.
 // Adding a material target: see KKExtrap::targets and KKExtrap::addCrossing.
 #ifndef Mu2eKinKal_ExtrapolateSweep_hh
 #define Mu2eKinKal_ExtrapolateSweep_hh
@@ -40,6 +42,7 @@ namespace mu2e {
   namespace KKGeom {
     class CaloFrontPanelPipes;
     class CaloInnerSupport;
+    struct KKCRVSector;
   }
   // one surface the sweep can cross
   struct SweepTarget {
@@ -60,6 +63,7 @@ namespace mu2e {
     double thick_ = 0.0; // material thickness (mm)
     KKGeom::CaloFrontPanelPipes const* pipes_ = nullptr; // calopanel: the thickness depends on where the pipe plane is crossed
     KKGeom::CaloInnerSupport const* support_ = nullptr; // calosupport: the support and the part this target finds
+    KKGeom::KKCRVSector const* crvsector_ = nullptr; // crvsector: the material is the fraction of the sector's layers the track crosses
     SupportPart part_ = casefront;
     unsigned maxcross_ = 1; // crossings kept per sweep, 0 for no limit
     int group_ = -1; // targets in a group keep only the first crossing of any of them

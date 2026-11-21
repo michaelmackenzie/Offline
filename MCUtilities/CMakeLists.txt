@@ -8,6 +8,7 @@ cet_make_library(
       src/GammaPairConversionSpectrum.cc
       src/GeneratorSummaryHistograms.cc
       src/McUtilsToolBase.cc
+      src/MuCapChargedSpectrum.cc
       src/MuonCaptureSpectrum.cc
       src/PhysicalVolumeMultiHelper.cc
       src/PionCaptureSpectrum.cc

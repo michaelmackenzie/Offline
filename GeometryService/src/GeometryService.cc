@@ -242,7 +242,7 @@ namespace mu2e {
       StraightSection const * ts1vac = beamline.getTS().getTSVacuum<StraightSection>( TransportSolenoid::TSRegion::TS1 );
       const double vacPS_TS_z = ts1vac->getGlobal().z() - ts1vac->getHalfLength();
 
-      addDetector(PSVacuumMaker::make(*_config, ps, pse, vacPS_TS_z));
+      addDetector(PSVacuumMaker::make(*_config, ps, pse, vacPS_TS_z, beamline.getTS()));
 
       // Use ProductionTarget's built-in method to get the correct position based on model type
       addDetector(PSShieldMaker::make(*_config, ps.psEndRefPoint(), prodTarget.targetPositionByVersion()));
@@ -301,7 +301,7 @@ namespace mu2e {
       }
 
       if(_config->getBool("hasTSdA",false)){
-        addDetector( TSdAMaker::make(*_config,ds) );
+        addDetector( TSdAMaker::make(*_config,ds,beamline) );
       }
 
       if(_config->getBool("hasExternalShielding",false)) {

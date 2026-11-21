@@ -14,6 +14,7 @@
 #include "Offline/MCUtilities/inc/ConversionSpectrum.hh"
 #include "Offline/MCUtilities/inc/CzarneckiSpectrum.hh"
 #include "Offline/MCUtilities/inc/EjectedProtonSpectrum.hh"
+#include "Offline/MCUtilities/inc/MuCapChargedSpectrum.hh"
 #include "Offline/MCUtilities/inc/MuonCaptureSpectrum.hh"
 #include "Offline/MCUtilities/inc/PionCaptureSpectrum.hh"
 #include "Offline/MCUtilities/inc/SimpleSpectrum.hh"
@@ -67,6 +68,12 @@ namespace mu2e {
       double ehi =  psphys.get<double>("ehi", GlobalConstantsHandle<ParticleDataList>()->particle(PDGCode::mu_minus).mass());
       double bin = (ehi - elow)/psphys.get<unsigned>("nbins");
       this->initialize<EjectedProtonSpectrum>(elow, ehi, bin);
+    }else if (spectrumShape == "muCapCharged") {
+      // kinetic energy, absolute yield per capture per MeV; cut off at the kinematic endpoint
+      double elow = psphys.get<double>("elow", 0.);
+      double ehi  = psphys.get<double>("ehi", MuCapChargedSpectrum::endpoint(psphys));
+      double bin = (ehi - elow)/psphys.get<unsigned>("nbins");
+      this->initialize<MuCapChargedSpectrum>(elow, ehi, bin, psphys);
     }else if (spectrumShape == "RMC") {
       double elow = psphys.get<double>("elow");
       double ehi = psphys.get<double>("ehi");
