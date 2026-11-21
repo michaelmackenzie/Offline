@@ -8,7 +8,7 @@
 // mu2eKinKal classes
 //KinKal classes
 #include "KinKal/Detector/ResidualHit.hh"
-#include "Offline/Mu2eKinKal/inc/WireHitState.hh"
+#include "Offline/RecoDataProducts/inc/WireHitState.hh"
 #include "KinKal/Trajectory/ParticleTrajectory.hh"
 #include "KinKal/Trajectory/SensorLine.hh"
 #include "KinKal/Trajectory/PiecewiseClosestApproach.hh"
@@ -17,14 +17,14 @@
 // Mu2e-specific classes
 #include "Offline/TrackerGeom/inc/Straw.hh"
 #include "Offline/RecoDataProducts/inc/ComboHit.hh"
-#include "Offline/TrackerConditions/inc/DriftInfo.hh"
+#include "Offline/RecoDataProducts/inc/DriftInfo.hh"
 #include "Offline/TrackerConditions/inc/StrawResponse.hh"
 #include "Offline/Mu2eKinKal/inc/CADSHU.hh"
 #include "Offline/Mu2eKinKal/inc/DriftANNSHU.hh"
 #include "Offline/Mu2eKinKal/inc/BkgANNSHU.hh"
 #include "Offline/Mu2eKinKal/inc/Chi2SHU.hh"
 #include "Offline/Mu2eKinKal/inc/PanelDiagSHU.hh"
-#include "Offline/Mu2eKinKal/inc/StrawHitUpdaters.hh"
+#include "Offline/RecoDataProducts/inc/StrawHitUpdaters.hh"
 #include "Offline/Mu2eKinKal/inc/KKFitUtilities.hh"
 // Other
 #include "cetlib_except/exception.h"

@@ -3,7 +3,7 @@
 #include "Offline/MCDataProducts/inc/StepPointMC.hh"
 #include "Offline/MCDataProducts/inc/KalSeedMC.hh"
 #include "Offline/MCDataProducts/inc/PrimaryParticle.hh"
-#include "Offline/Mu2eKinKal/inc/WireHitState.hh"
+#include "Offline/RecoDataProducts/inc/WireHitState.hh"
 #include "Offline/GlobalConstantsService/inc/GlobalConstantsHandle.hh"
 #include "Offline/GlobalConstantsService/inc/ParticleDataList.hh"
 #include <cmath>

@@ -3,7 +3,7 @@ Offline software for the Mu2e experiment at Fermilab.
 
 
 ## Building a subset (build components)
-Top-level packages are grouped into components (`core`, `reco`, `simbase`, `g4`, `sim`) in
+Top-level packages are grouped into components (`dataproducts`, `core`, `reco`, `mcdataproducts`, `simbase`, `g4`, `sim`) in
 `scripts/build/components.txt`. With CMake, select components at configure time:
 
     cmake -DMU2E_COMPONENTS=reco ...          # reco plus what it requires (core)
@@ -13,5 +13,7 @@ Top-level packages are grouped into components (`core`, `reco`, `simbase`, `g4`,
 Names are expanded through `requires`; unknown names are an error; `g4` (Geant4) needs
 `-DWITH_G4=TRUE` (`all` silently drops it when WITH_G4 is false, as the trig build does).
 Downstream projects see the selection as `Offline_COMPONENTS` and `Offline_HAS_<COMP>`
-(e.g. `Offline_HAS_SIM`) after `find_package(Offline)`. Details and the planned small
-`dataproducts` component: `scripts/build/cmake/Mu2eComponents.cmake`.
+(e.g. `Offline_HAS_SIM`) after `find_package(Offline)`. `dataproducts` is a small component
+(DataProducts, RecoDataProducts and their minimal dependencies; `mcdataproducts` adds MCDataProducts),
+usable on its own: `cmake -DMU2E_COMPONENTS=dataproducts ...`. Details:
+`scripts/build/cmake/Mu2eComponents.cmake`.

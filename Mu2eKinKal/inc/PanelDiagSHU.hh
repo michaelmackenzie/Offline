@@ -3,9 +3,9 @@
 //
 // Diagnostic updater of StrawHits that can force panels to be inactive
 //
-#include "Offline/Mu2eKinKal/inc/WireHitState.hh"
-#include "Offline/Mu2eKinKal/inc/WHSMask.hh"
-#include "Offline/Mu2eKinKal/inc/StrawHitUpdaters.hh"
+#include "Offline/RecoDataProducts/inc/WireHitState.hh"
+#include "Offline/RecoDataProducts/inc/WHSMask.hh"
+#include "Offline/RecoDataProducts/inc/StrawHitUpdaters.hh"
 #include "Offline/DataProducts/inc/StrawIdMask.hh"
 #include "Offline/DataProducts/inc/StrawId.hh"
 #include <tuple>

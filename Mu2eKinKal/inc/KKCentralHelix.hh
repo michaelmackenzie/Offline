@@ -1,6 +1,6 @@
 
-#ifndef RecoDataProducts_KKCentralHelix_hh
-#define RecoDataProducts_KKCentralHelix_hh
+#ifndef Mu2eKinKal_KKCentralHelix_hh
+#define Mu2eKinKal_KKCentralHelix_hh
 //
 // Define a type for storing KinKal Tracks based on CentralHelix
 //

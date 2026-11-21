@@ -1,6 +1,6 @@
 #include "Offline/Mu2eKinKal/inc/BkgANNSHU.hh"
 #include "Offline/RecoDataProducts/inc/ComboHit.hh"
-#include "Offline/Mu2eKinKal/inc/StrawHitUpdaters.hh"
+#include "Offline/RecoDataProducts/inc/StrawHitUpdaters.hh"
 #include "Offline/ConfigTools/inc/ConfigFileLookupPolicy.hh"
 #include "Offline/Mu2eKinKal/inc/TrainBkg.hxx"
 #include <algorithm>

@@ -8,7 +8,7 @@
 #include "KinKal/General/Parameters.hh"
 #include "KinKal/General/Weights.hh"
 #include "Offline/Mu2eKinKal/inc/WHSIterator.hh"
-#include "Offline/Mu2eKinKal/inc/KKSHFlag.hh"
+#include "Offline/RecoDataProducts/inc/KKSHFlag.hh"
 #include <tuple>
 #include <vector>
 #include <memory>

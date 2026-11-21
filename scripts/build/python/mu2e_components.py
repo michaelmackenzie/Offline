@@ -8,6 +8,7 @@ Usage
 -----
     MU2E_COMPONENTS=reco muse build -j 8          # reco + everything it requires (core)
     MU2E_COMPONENTS=core,simbase muse build ...   # comma or space separated list
+    MU2E_COMPONENTS=dataproducts muse build ...   # data products only (DataProducts, RecoDataProducts + minimal deps)
     muse build ...                                # unset, empty or 'all': everything (as before)
 
 Component names are those in components.txt; each selection is expanded through `requires`.

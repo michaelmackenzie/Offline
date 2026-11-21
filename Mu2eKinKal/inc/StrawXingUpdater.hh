@@ -1,6 +1,6 @@
 #ifndef Mu2eKinKal_StrawXingUpdater_hh
 #define Mu2eKinKal_StrawXingUpdater_hh
-#include "Offline/Mu2eKinKal/inc/WireHitState.hh"
+#include "Offline/RecoDataProducts/inc/WireHitState.hh"
 #include <tuple>
 namespace mu2e {
   // simple struct to hold crossing calculation configuration parameters

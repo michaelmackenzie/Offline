@@ -18,8 +18,6 @@ helper=mu2e_helper(env);
 rootlibs  = env['ROOTLIBS']
 
 mainlib = helper.make_mainlib ( [ 'mu2e_DataProducts',
-  'mu2e_GeomPrimitives',
-  'mu2e_GeometryService',
   'mu2e_GeneralUtilities',
   'mu2e_GlobalConstantsService',
   'art_Framework_Core',
@@ -45,9 +43,7 @@ mainlib = helper.make_mainlib ( [ 'mu2e_DataProducts',
 
 helper.make_dict_and_map( [ mainlib,
   'mu2e_DataProducts',
-  'mu2e_GeomPrimitives',
   'mu2e_GeneralUtilities',
-  'mu2e_TrackerGeom',
   'art_Persistency_Common',
   'art_Persistency_Provenance',
   'art_Utilities',

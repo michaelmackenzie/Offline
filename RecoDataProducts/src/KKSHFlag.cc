@@ -2,7 +2,7 @@
 // Original author David Brown
 //
 // Mu2e includes
-#include "Offline/Mu2eKinKal/inc/KKSHFlag.hh"
+#include "Offline/RecoDataProducts/inc/KKSHFlag.hh"
 #include <stdexcept>
 #include <iostream>
 #include <stdio.h>

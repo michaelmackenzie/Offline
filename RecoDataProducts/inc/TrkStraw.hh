@@ -8,13 +8,14 @@
 #define RecoDataProducts_TrkStraw_HH
 #include "Offline/DataProducts/inc/StrawId.hh"
 #include "Offline/RecoDataProducts/inc/StrawFlag.hh"
-#include "Offline/KinKalGeom/inc/KKStrawMaterial.hh"
-#include "Offline/Mu2eKinKal/inc/StrawXingUpdater.hh"
 #include "KinKal/Trajectory/ClosestApproachData.hh"
 
 namespace mu2e {
   struct TrkStraw {
-    TrkStraw(StrawId const& id,StrawFlag const& flag, KinKal::ClosestApproachData const& pocadata, KKStrawMaterial const& smat,StrawXingUpdater const& caconfig,
+    // Plain-value constructor.  pcalc/wallpath/gaspath/wirepath come from KKStrawMaterial::pathLengths; see the
+    // factory makeTrkStraw in Mu2eKinKal/inc/RecoProductFactories.hh
+    TrkStraw(StrawId const& id,StrawFlag const& flag, KinKal::ClosestApproachData const& pocadata,
+        int pcalc, double wallpath, double gaspath, double wirepath,
         double radlen, double dmom) :
       _straw(id), _flag(flag),
       _poca(pocadata.sensorPoca().Vect()),
@@ -25,8 +26,7 @@ namespace mu2e {
       _radlen(radlen),
       _dmom(dmom)
     {
-      double wallpath, gaspath, wirepath;
-      _pcalc = smat.pathLengths(pocadata,caconfig.nsig_,wallpath,gaspath,wirepath);
+      _pcalc = pcalc;
       _wallpath = wallpath;
       _gaspath = gaspath;
       _wirepath = wirepath;
@@ -50,7 +50,7 @@ namespace mu2e {
     bool dead() const { return _flag.hasAllProperties(StrawFlag::dead); }
     StrawId _straw; // which straw was traversed
     StrawFlag _flag; // description of how this straw was used in the fit
-    int _pcalc = KKStrawMaterial::unknown; // how were pathlengths calculated?
+    int _pcalc = 2; // how were pathlengths calculated? (2 = KKStrawMaterial::unknown)
     XYZVectorF _poca; // POCA to the straw axis
     float _doca = 0.0; // DOCA from the track to the straw axis
     float _docavar = 0.0; // DOCA variance

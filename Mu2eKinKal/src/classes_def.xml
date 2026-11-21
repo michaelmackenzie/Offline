@@ -1,0 +1,18 @@
+<!--  -->
+<!--  Dictionary for the in-memory KinKal track products (moved here from RecoDataProducts so that -->
+<!--  RecoDataProducts does not depend on Mu2eKinKal).  The collections are not persistent.       -->
+<!--  -->
+
+<lcgdict>
+
+<!-- KinKal products: these cannot be directly persisted -->
+
+ <class name="mu2e::KKLoopHelix"/>
+ <class name="mu2e::KKLoopHelixCollection" persistent="false"/>
+ <class name="art::Wrapper<mu2e::KKLoopHelixCollection>"/>
+
+ <class name="mu2e::KKCentralHelix"/>
+ <class name="mu2e::KKCentralHelixCollection" persistent="false"/>
+ <class name="art::Wrapper<mu2e::KKCentralHelixCollection>"/>
+
+</lcgdict>

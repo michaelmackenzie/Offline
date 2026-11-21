@@ -1,8 +1,8 @@
 //
 // enum of StrawHitUpdaters.  This needs to be extended when new updaters are added
 //
-#ifndef Mu2eKinKal_StrawHitUpdaters_hh
-#define Mu2eKinKal_StrawHitUpdaters_hh
+#ifndef RecoDataProducts_StrawHitUpdaters_hh
+#define RecoDataProducts_StrawHitUpdaters_hh
 #include <string>
 #include <vector>
 

@@ -8,21 +8,21 @@
 #include "Offline/RecoDataProducts/inc/HitT0.hh"
 #include "Offline/RecoDataProducts/inc/StrawHitFlag.hh"
 #include "Offline/RecoDataProducts/inc/ComboHit.hh"
-#include "Offline/Mu2eKinKal/inc/KKSHFlag.hh"
+#include "Offline/RecoDataProducts/inc/KKSHFlag.hh"
 #include "Offline/DataProducts/inc/StrawId.hh"
 #include "Offline/DataProducts/inc/StrawEnd.hh"
 #include "Offline/DataProducts/inc/TrkTypes.hh"
 #include "KinKal/Detector/Residual.hh"
 #include "KinKal/Trajectory/ClosestApproachData.hh"
-#include "Offline/TrackerConditions/inc/DriftInfo.hh"
-#include "Offline/Mu2eKinKal/inc/WireHitState.hh"
-#include "Offline/TrackerGeom/inc/Straw.hh"
+#include "Offline/RecoDataProducts/inc/DriftInfo.hh"
+#include "Offline/RecoDataProducts/inc/WireHitState.hh"
 #include <functional>
 namespace mu2e {
   struct TrkStrawHitSeed {
     // default constructor: initialization on declaration
     TrkStrawHitSeed() {}
-    //KinKal constructor
+    //KinKal constructor.  The straw-geometry quantities (uwirephi, ustrawphi, ustrawdist, wdot) are
+    // computed from the Straw by the factory makeTrkStrawHitSeed in Mu2eKinKal/inc/RecoProductFactories.hh
     TrkStrawHitSeed(StrawHitIndex index, ComboHit const& chit,
         KinKal::ClosestApproachData const& rptca,
         KinKal::ClosestApproachData const& uptca,
@@ -30,7 +30,7 @@ namespace mu2e {
         KinKal::Residual const& rtresid, KinKal::Residual const& rdresid, KinKal::Residual const& rlresid,
         DriftInfo const& dinfo,
         WireHitState const& whs,
-        Straw const& straw) :
+        float uwirephi, float ustrawphi, float ustrawdist, float wdot) :
       _index(index), _sid(chit.strawId()),_eend(chit.earlyEnd()),
       _flag(chit.flag()),_kkshflag(whs.flag_),
       _ambig(whs.state_), _algo(whs.algo_), _frozen(whs.frozen_),
@@ -66,28 +66,10 @@ namespace mu2e {
       _flag.merge(StrawHitFlag::track);
       if(whs.active())_flag.merge(StrawHitFlag::active);
 
-      // calculate the doca and phi relative to the straw envelope at POCA to wire
-      auto ppoca = XYZVectorF(uptca.particlePoca().Vect());
-      static XYZVectorF zdir(0.0,0.0,1.0); // relative to Z
-      auto wmid = XYZVectorF(straw.wirePosition());
-      auto wdir = XYZVectorF(straw.wireDirection());
-      auto delta = ppoca - wmid;
-      float dw = delta.Dot(wdir);
-      XYZVectorF cperp = delta - dw*wdir; // just perp part
-      auto raddir = wdir.Cross(zdir);
-      if (raddir.Dot(wmid) < 0.0) raddir *= -1.0; // sign radially outwards
-      _uwirephi = atan2(cperp.Dot(raddir),cperp.Dot(zdir));
-
-      auto smid = XYZVectorF(straw.strawPosition());
-      auto sdir = XYZVectorF(straw.strawDirection());
-      delta = ppoca - smid; // particle poca to wire WRT straw middle
-      dw = delta.Dot(sdir);
-      cperp = delta - dw*sdir; // just perp part
-      raddir = sdir.Cross(zdir);
-      if(raddir.Dot(smid) < 0.0) raddir *= -1.0; // sign radially outwards
-      _ustrawphi = atan2(cperp.Dot(raddir),cperp.Dot(zdir)); // angle around wire WRT z axis in range -pi,pi
-      _ustrawdist = sqrt(cperp.mag2());
-      _wdot = uptca.particleDirection().Dot(straw.wireDirection());
+      _uwirephi = uwirephi;
+      _ustrawphi = ustrawphi;
+      _ustrawdist = ustrawdist;
+      _wdot = wdot;
       // set unbiased residual flags
       if(udresid.active())_kkshflag.merge(KKSHFlag::goodudresid);
       if(utresid.active())_kkshflag.merge(KKSHFlag::goodutresid);

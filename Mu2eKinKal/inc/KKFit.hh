@@ -10,8 +10,9 @@
 #include "Offline/KinKalGeom/inc/KKMaterial.hh"
 #include "Offline/Mu2eKinKal/inc/KKCaloHit.hh"
 #include "Offline/Mu2eKinKal/inc/KKFitUtilities.hh"
+#include "Offline/Mu2eKinKal/inc/RecoProductFactories.hh"
 #include "Offline/Mu2eKinKal/inc/KKFitSettings.hh"
-#include "Offline/Mu2eKinKal/inc/WireHitState.hh"
+#include "Offline/RecoDataProducts/inc/WireHitState.hh"
 // art includes
 #include "canvas/Persistency/Common/Ptr.h"
 #include "art/Framework/Principal/Handle.h"
@@ -797,7 +798,7 @@ namespace mu2e {
       auto udres = strawhit->residual(Mu2eKinKal::dresid);
       auto utres = strawhit->residual(Mu2eKinKal::tresid);
       auto ulres = strawhit->residual(Mu2eKinKal::lresid);
-      kseed._hits.emplace_back(strawhit->strawHitIndex(),strawhit->hit(),
+      kseed._hits.push_back(makeTrkStrawHitSeed(strawhit->strawHitIndex(),strawhit->hit(),
           strawhit->closestApproach().tpData(),
           strawhit->unbiasedClosestApproach().tpData(),
           utres, udres, ulres,
@@ -806,13 +807,13 @@ namespace mu2e {
           strawhit->refResidual(Mu2eKinKal::lresid),
           strawhit->fillDriftInfo(strawhit->closestApproach()),
           strawhit->hitState(),
-          strawhit->straw());
+          strawhit->straw()));
       if (saveHitCalib_){
-        kseed._hitcalibs.emplace_back(nominalTracker,strawhit->strawId(),
+        kseed._hitcalibs.push_back(makeTrkStrawHitCalib(nominalTracker,strawhit->strawId(),
             strawhit->refResidual(Mu2eKinKal::dresid),
             strawhit->refResidual(Mu2eKinKal::lresid),
             strawhit->dRdX(Mu2eKinKal::dresid),
-            strawhit->closestApproach().tpData());
+            strawhit->closestApproach().tpData()));
       }
     }
     if(kktrk.caloHits().size() > 0){
@@ -854,14 +855,14 @@ namespace mu2e {
       double dm, paramomvar, perpmomvar;
       sxing->materialEffects(dm, paramomvar,perpmomvar);
       double radfrac = sxing->radiationFraction();
-      kseed._straws.emplace_back(
+      kseed._straws.push_back(makeTrkStraw(
           sxing->strawId(),
           flag,
           sxing->closestApproach().tpData(),
           sxing->strawMaterial(),
           sxing->config(),
           radfrac,
-          dm);
+          dm));
     }
     // save the fit segments as requested
     if(kktrk.fitStatus().usable()){

@@ -14,7 +14,7 @@
 #include "Offline/TrackerConditions/inc/StrawDrift.hh"
 #include "Offline/TrackerConditions/inc/StrawElectronics.hh"
 #include "Offline/TrackerConditions/inc/StrawPhysics.hh"
-#include "Offline/TrackerConditions/inc/DriftInfo.hh"
+#include "Offline/RecoDataProducts/inc/DriftInfo.hh"
 #include "Offline/GeneralUtilities/inc/SplineInterpolation.hh"
 #include "Offline/Mu2eInterfaces/inc/ProditionsEntity.hh"
 

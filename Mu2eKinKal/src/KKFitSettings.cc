@@ -1,6 +1,6 @@
 #include "Offline/Mu2eKinKal/inc/KKFitSettings.hh"
-#include "Offline/Mu2eKinKal/inc/WireHitState.hh"
-#include "Offline/Mu2eKinKal/inc/StrawHitUpdaters.hh"
+#include "Offline/RecoDataProducts/inc/WireHitState.hh"
+#include "Offline/RecoDataProducts/inc/StrawHitUpdaters.hh"
 #include "Offline/GeneralUtilities/inc/splitLine.hh"
 #include "cetlib_except/exception.h"
 #include <iostream>

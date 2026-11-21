@@ -1,7 +1,7 @@
 # Mu2eComponents.cmake -- select which Offline packages the CMake build configures.
 #
 # Offline is divided into build components listed in scripts/build/components.txt
-# (core, reco, simbase, g4, sim; see the header of that file for the format).  Every
+# (dataproducts, core, reco, mcdataproducts, simbase, g4, sim; see the header of that file for the format).  Every
 # top-level package belongs to exactly one component.  The same manifest drives the SCons
 # build (env var MU2E_COMPONENTS) and is checked by plan/tools/check_components.py.
 #
@@ -21,15 +21,18 @@
 #   * Every directory passed to mu2e_add_package() must be listed in the manifest
 #     (FATAL_ERROR otherwise), so a new package cannot be forgotten.
 #
-# Planned: a small `dataproducts` component (data products only, no Mu2eKinKal,
-# TrackerConditions, ...).  It needs RecoDataProducts decoupled from those packages first;
-# once that is done it is added to components.txt and selected like any other component.
+# `dataproducts` is the smallest component: DataProducts, RecoDataProducts and their minimal
+# dependencies (GeneralUtilities, BTrkLegacy, GlobalConstantsService, ConfigTools, Mu2eInterfaces,
+# DbTables), with no geometry, conditions or KinKal-geometry packages.  `mcdataproducts` (side sim)
+# adds MCDataProducts on top of it.  Select them like any other component, e.g.
+#   cmake -DMU2E_COMPONENTS=dataproducts ...
+#   cmake -DMU2E_COMPONENTS="dataproducts,mcdataproducts" ...
 #
 # PROVIDED
 #   mu2e_add_package(<dir>)       add_subdirectory(<dir>) iff its component is selected
 #   mu2e_package_selected(<dir> <var>)   set <var> to TRUE/FALSE
 #   Offline_COMPONENTS            expanded, selected component list
-#   Offline_HAS_<COMP>            TRUE/FALSE for each component (CORE, RECO, SIMBASE, G4, SIM)
+#   Offline_HAS_<COMP>            TRUE/FALSE for each component (DATAPRODUCTS, CORE, RECO, MCDATAPRODUCTS, SIMBASE, G4, SIM)
 #   Offline_PACKAGES              list of selected packages
 # The last three are also written into the installed OfflineConfig.cmake (see
 # Mu2eComponentsConfig.cmake.in) so downstream projects can do:

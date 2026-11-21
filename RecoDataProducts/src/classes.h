@@ -47,8 +47,6 @@
 #include "Offline/RecoDataProducts/inc/KKLine.hh"
 
 #include "Offline/RecoDataProducts/inc/TrkFitFlag.hh"
-#include "Offline/RecoDataProducts/inc/KKLoopHelix.hh"
-#include "Offline/RecoDataProducts/inc/KKCentralHelix.hh"
 #include "Offline/RecoDataProducts/inc/KalSeed.hh"
 #include "Offline/RecoDataProducts/inc/KalIntersection.hh"
 #include "Offline/RecoDataProducts/inc/KalSeedAssns.hh"

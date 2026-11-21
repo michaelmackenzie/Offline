@@ -9,12 +9,9 @@ cet_make_library(
       src/KKConstantBField.cc
       src/KKFitSettings.cc
       src/KKFitUtilities.cc
-      src/KKSHFlag.cc
-      src/StrawHitUpdaters.cc
+      src/RecoProductFactories.cc
       src/StrawXingUpdater.cc
       src/WHSIterator.cc
-      src/WHSMask.cc
-      src/WireHitState.cc
     LIBRARIES PUBLIC
       BLAS::BLAS
       KinKal::General
@@ -30,10 +27,18 @@ cet_make_library(
       Offline::GeneralUtilities
       Offline::GeometryService
       Offline::KinKalGeom
+      Offline::RecoDataProducts
       Offline::TrackerConditions
       Offline::TrackerGeom
       ROOT::ROOTTMVASofie
       ROOT::TMVA
+)
+
+art_dictionary( NO_CHECK_CLASS_VERSION
+    CLASSES_DEF_XML ${CMAKE_CURRENT_SOURCE_DIR}/src/classes_def.xml
+    CLASSES_H ${CMAKE_CURRENT_SOURCE_DIR}/src/classes.h
+    DICTIONARY_LIBRARIES
+      Offline::Mu2eKinKal
 )
 
 cet_build_plugin(CentralHelixFit art::module

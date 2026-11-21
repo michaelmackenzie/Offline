@@ -7,6 +7,7 @@ cet_make_library(
       src/CrvDAQerror.cc
       src/CrvDigi.cc
       src/CrvRecoPulse.cc
+      src/DriftInfo.cc
       src/ExtMonFNALRawCluster.cc
       src/ExtMonFNALRawHit.cc
       src/ExtMonFNALRecoCluster.cc
@@ -18,6 +19,7 @@ cet_make_library(
       src/IntensityInfoCalo.cc
       src/KalSeed.cc
       src/KalSegment.cc
+      src/KKSHFlag.cc
       src/PIDProduct.cc
       src/RobustHelix.cc
       src/StrawDigi.cc
@@ -25,19 +27,23 @@ cet_make_library(
       src/StrawHit.cc
       src/StrawHitFlag.cc
       src/StrawFlag.cc
+      src/StrawHitUpdaters.cc
       src/TrkCaloHitPID.cc
       src/TrkFitDirection.cc
       src/TrkFitFlag.cc
       src/TrkQual.cc
+      src/WHSMask.cc
+      src/WireHitState.cc
     LIBRARIES PUBLIC
+      KinKal::Detector
+      KinKal::General
+      KinKal::Geometry
       KinKal::Trajectory
 
       Offline::DataProducts
+      Offline::BTrkLegacy
       Offline::GeneralUtilities
       Offline::GlobalConstantsService
-      Offline::KinKalGeom
-      Offline::Mu2eKinKal
-      Offline::TrackerConditions
 
       artdaq-core-mu2e::Overlays
 )

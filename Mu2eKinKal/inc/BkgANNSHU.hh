@@ -4,10 +4,10 @@
 #ifndef Mu2eKinKal_BkgANNSHU_hh
 #define Mu2eKinKal_BkgANNSHU_hh
 #include "KinKal/Trajectory/ClosestApproachData.hh"
-#include "Offline/Mu2eKinKal/inc/WireHitState.hh"
-#include "Offline/Mu2eKinKal/inc/WHSMask.hh"
-#include "Offline/TrackerConditions/inc/DriftInfo.hh"
-#include "Offline/Mu2eKinKal/inc/StrawHitUpdaters.hh"
+#include "Offline/RecoDataProducts/inc/WireHitState.hh"
+#include "Offline/RecoDataProducts/inc/WHSMask.hh"
+#include "Offline/RecoDataProducts/inc/DriftInfo.hh"
+#include "Offline/RecoDataProducts/inc/StrawHitUpdaters.hh"
 #include <tuple>
 #include <string>
 #include <iostream>

@@ -1,4 +1,4 @@
-#include "Offline/Mu2eKinKal/inc/StrawHitUpdaters.hh"
+#include "Offline/RecoDataProducts/inc/StrawHitUpdaters.hh"
 namespace mu2e {
   std::vector<std::string> StrawHitUpdaters::names_{"None","CADSHU","DriftANNSHU","BkgANNSHU","","","","","","PanelDiagSHU","Chi2SHU"};
   std::string const& StrawHitUpdaters::name(algorithm alg) {

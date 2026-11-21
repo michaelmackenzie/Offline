@@ -27,8 +27,8 @@
 #include "Offline/RecoDataProducts/inc/ComboHit.hh"
 #include "Offline/RecoDataProducts/inc/CrvCoincidenceCluster.hh"
 #include "Offline/RecoDataProducts/inc/RecoCount.hh"
-#include "Offline/RecoDataProducts/inc/KKLoopHelix.hh"
-#include "Offline/RecoDataProducts/inc/KKCentralHelix.hh"
+#include "Offline/Mu2eKinKal/inc/KKLoopHelix.hh"
+#include "Offline/Mu2eKinKal/inc/KKCentralHelix.hh"
 #include "Offline/RecoDataProducts/inc/KKLine.hh"
 #include "Offline/RecoDataProducts/inc/TimeCluster.hh"
 // Utilities

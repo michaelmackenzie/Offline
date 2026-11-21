@@ -106,6 +106,26 @@ helper.make_plugins([mainlib,
   'pthread'
   ])
 
+helper.make_dict_and_map([mainlib,
+  'mu2e_RecoDataProducts',
+  'mu2e_DataProducts',
+  'mu2e_GeneralUtilities',
+  'art_Persistency_Common',
+  'art_Persistency_Provenance',
+  'art_Utilities',
+  'canvas',
+  'cetlib',
+  'cetlib_except',
+  'CLHEP',
+  'KinKal_Trajectory',
+  'KinKal_Geometry',
+  'KinKal_Detector',
+  'KinKal_General',
+  rootlibs,
+  'Core'
+  ],
+  [ '-fvar-tracking-assignments-toggle'])
+
 helper.make_bin("ExtrapolateSweepTest", [
   'mu2e_DataProducts',
   'KinKal_Fit',

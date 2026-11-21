@@ -1,4 +1,4 @@
-#include "Offline/Mu2eKinKal/inc/WHSMask.hh"
+#include "Offline/RecoDataProducts/inc/WHSMask.hh"
 #include <stdexcept>
 #include <iostream>
 #include <stdio.h>

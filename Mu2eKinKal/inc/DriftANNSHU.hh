@@ -4,11 +4,11 @@
 #ifndef Mu2eKinKal_DriftANNSHU_hh
 #define Mu2eKinKal_DriftANNSHU_hh
 #include "KinKal/Trajectory/ClosestApproachData.hh"
-#include "Offline/Mu2eKinKal/inc/WireHitState.hh"
-#include "Offline/Mu2eKinKal/inc/WHSMask.hh"
-#include "Offline/Mu2eKinKal/inc/KKSHFlag.hh"
-#include "Offline/TrackerConditions/inc/DriftInfo.hh"
-#include "Offline/Mu2eKinKal/inc/StrawHitUpdaters.hh"
+#include "Offline/RecoDataProducts/inc/WireHitState.hh"
+#include "Offline/RecoDataProducts/inc/WHSMask.hh"
+#include "Offline/RecoDataProducts/inc/KKSHFlag.hh"
+#include "Offline/RecoDataProducts/inc/DriftInfo.hh"
+#include "Offline/RecoDataProducts/inc/StrawHitUpdaters.hh"
 #include "Offline/Mu2eKinKal/inc/TrainSign.hxx"
 #include "Offline/Mu2eKinKal/inc/TrainCluster.hxx"
 #include <tuple>

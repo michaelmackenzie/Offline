@@ -1,5 +1,5 @@
-#ifndef Mu2eKinKal_DriftInfo_hh
-#define Mu2eKinKal_DriftInfo_hh
+#ifndef RecoDataProducts_DriftInfo_hh
+#define RecoDataProducts_DriftInfo_hh
 #include <algorithm>
 
 namespace mu2e {

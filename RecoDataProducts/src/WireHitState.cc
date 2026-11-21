@@ -1,4 +1,4 @@
-#include "Offline/Mu2eKinKal/inc/WireHitState.hh"
+#include "Offline/RecoDataProducts/inc/WireHitState.hh"
 #include "cetlib_except/exception.h"
 namespace mu2e {
   std::vector<std::string> WireHitState::StateNames_ = {"Unusable", "Inactive", "Left", "Null","Right"};

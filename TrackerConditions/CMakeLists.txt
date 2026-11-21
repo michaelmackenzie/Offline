@@ -1,7 +1,6 @@
 cet_make_library(
     SOURCE
       src/AlignedTrackerMaker.cc
-      src/DriftInfo.cc
       src/FullReadoutStraw.cc
       src/FullReadoutStrawMaker.cc
       src/StrawDrift.cc
@@ -26,6 +25,7 @@ cet_make_library(
       Offline::GeometryService
       Offline::Mu2eInterfaces
       Offline::ProditionsService
+      Offline::RecoDataProducts
       Offline::TrackerConfig
       Offline::TrackerGeom
 )
