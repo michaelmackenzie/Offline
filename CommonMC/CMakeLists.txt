@@ -60,7 +60,9 @@ cet_build_plugin(InFlightStepDumper art::module
 cet_build_plugin(MakeSurfaceSteps art::module
     REG_SOURCE src/MakeSurfaceSteps_module.cc
     LIBRARIES REG
+      Offline::GeometryService
       Offline::MCDataProducts
+      Offline::MCUtilities
 )
 
 cet_build_plugin(NullMCPrimary art::module

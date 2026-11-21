@@ -37,6 +37,7 @@ cet_build_plugin(FilterEcalMixedTrigger art::module
       Offline::ConfigTools
       Offline::GeometryService
       Offline::RecoDataProducts
+      ROOT::TMVA
 )
 
 cet_build_plugin(FilterEcalMVATrigger art::module
@@ -47,6 +48,7 @@ cet_build_plugin(FilterEcalMVATrigger art::module
       Offline::ConfigTools
       Offline::GeometryService
       Offline::RecoDataProducts
+      ROOT::TMVA
 )
 
 cet_build_plugin(CaloNNEval art::module

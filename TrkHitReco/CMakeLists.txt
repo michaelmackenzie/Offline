@@ -19,6 +19,9 @@ cet_make_library(
       Offline::RecoDataProducts
       Offline::TrackerConditions
       Offline::TrackerGeom
+      BLAS::BLAS
+      ROOT::ROOTTMVASofie
+      ROOT::TMVA
 )
 
 cet_build_plugin(CombineStrawHits art::module

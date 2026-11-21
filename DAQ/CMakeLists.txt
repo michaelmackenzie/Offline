@@ -145,6 +145,7 @@ cet_build_plugin(StrawDigisFromArtdaqFragments art::module
   Offline::DAQ
   Offline::RecoDataProducts
   Offline::DataProducts
+  Offline::TrackerConditions
   artdaq-core-mu2e::Data
   art_root_io::TFileService_service
   ROOT::Hist

@@ -76,6 +76,7 @@ cet_build_plugin(CrvRecoPulsesFinder art::module
 
       Offline::CosmicRayShieldGeom
       Offline::CRVConditions
+      Offline::DAQConditions
       Offline::DataProducts
       Offline::GeometryService
       Offline::ProditionsService

@@ -6,6 +6,7 @@ cet_make_library(
     LIBRARIES PUBLIC
       
       Offline::Mu2eUtilities
+      ROOT::Minuit
 )
 
 cet_build_plugin(CaloHitMakerFast art::module

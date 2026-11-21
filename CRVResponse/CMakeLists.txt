@@ -133,6 +133,7 @@ cet_build_plugin(CrvWidebandTest art::module
     REG_SOURCE src/CrvWidebandTest_module.cc
     LIBRARIES REG
       Offline::CRVResponse
+      Offline::CosmicRayShieldGeom
       art_root_io::TFileService_service
 )
 
