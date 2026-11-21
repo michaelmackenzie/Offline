@@ -8,9 +8,11 @@
 #   <Package> <component>
 # Lines may be in any order; '#' starts a comment; fields are whitespace separated.
 
-component core    side reco requires
+component dataproducts side reco requires
+component core    side reco requires dataproducts
 component reco    side reco requires core
-component simbase side sim  requires core
+component mcdataproducts side sim requires dataproducts
+component simbase side sim  requires core mcdataproducts
 component g4      side sim  requires simbase needs-geant4
 component sim     side sim  requires reco simbase
 
@@ -20,7 +22,7 @@ AnalysisConfig              core
 AnalysisUtilities           reco
 BFieldGeom                  core
 BFieldTest                  reco
-BTrkLegacy                  core
+BTrkLegacy                  dataproducts
 BeamlineGeom                core
 Blinding                    reco
 BlindingMC                  sim
@@ -45,7 +47,7 @@ CalorimeterGeom             core
 CommonMC                    simbase
 CommonReco                  reco
 Compression                 sim
-ConfigTools                 core
+ConfigTools                 dataproducts
 CosmicRayShieldGeom         core
 CosmicReco                  reco
 DAQ                         reco
@@ -53,9 +55,9 @@ DAQConditions               core
 DAQConfig                   core
 DAQMC                       sim
 DQMHelpers                  reco
-DataProducts                core
+DataProducts                dataproducts
 DbService                   core
-DbTables                    core
+DbTables                    dataproducts
 DetectorSolenoidGeom        core
 EventDisplay                sim
 EventGenerator              g4
@@ -65,16 +67,16 @@ ExtinctionMonitorFNAL       core
 ExtinctionMonitorFNALMC     simbase
 Filters                     reco
 FiltersMC                   sim
-GeneralUtilities            core
+GeneralUtilities            dataproducts
 GeomPrimitives              core
 GeometryService             core
-GlobalConstantsService      core
+GlobalConstantsService      dataproducts
 HelloWorld                  sim
 KalmanTests                 sim
 KinKalGeom                  core
 Lumi                        reco
 MBSGeom                     core
-MCDataProducts              simbase
+MCDataProducts              mcdataproducts
 MCUtilities                 simbase
 MECOStyleProtonAbsorberGeom core
 MachineLearningTools        reco
@@ -82,7 +84,7 @@ Mu2e                        core
 Mu2eG4                      g4
 Mu2eG4Helper                g4
 Mu2eHallGeom                core
-Mu2eInterfaces              core
+Mu2eInterfaces              dataproducts
 Mu2eKinKal                  core
 Mu2eReco                    reco
 Mu2eUtilities               core
@@ -94,7 +96,7 @@ ProditionsService           core
 ProductionSolenoidGeom      core
 ProductionTargetGeom        core
 ProtonBeamDumpGeom          core
-RecoDataProducts            core
+RecoDataProducts            dataproducts
 RecoMC                      sim
 STMConditions               core
 STMConfig                   core

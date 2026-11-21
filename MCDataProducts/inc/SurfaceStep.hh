@@ -12,19 +12,15 @@
 #include "Offline/MCDataProducts/inc/StepPointMC.hh"
 #include "Offline/DataProducts/inc/SurfaceId.hh"
 #include "Offline/DataProducts/inc/GenVector.hh"
-#ifndef __ROOTCLING__
-#include "Offline/GeometryService/inc/DetectorSystem.hh"
-#include "Offline/GeometryService/inc/GeomHandle.hh"
-#endif
 
 namespace mu2e {
   class SurfaceStep {
     public:
     SurfaceStep(){};
-#ifndef __ROOTCLING__
-      // create from a StepPointMC. Association to a SurfaceId must be done outside this class
-    SurfaceStep(SurfaceId sid, StepPointMC const& spmc, GeomHandle<DetectorSystem> const& det);
-#endif
+    // create from a StepPointMC. Association to a SurfaceId must be done outside this class.
+    // The positions are in DETECTOR coordinates (see MCUtilities/inc/SurfaceStepHelpers.hh
+    // for the conversion from the StepPointMC global positions).
+    SurfaceStep(SurfaceId sid, StepPointMC const& spmc, XYZVectorF const& startPosDet, XYZVectorF const& endPosDet);
     // accessors
       float energyDeposit() const { return edep_; }
       double const& time() const { return time_; } // time of the earliest StepPointMC used in this step
@@ -37,11 +33,10 @@ namespace mu2e {
       art::Ptr<SimParticle>& simParticle() { return simp_; } // used for compression
       auto const& surfaceId() const& { return sid_; }
       double pathLength() const { return (endPosition() - startPosition()).R(); }
-#ifndef __ROOTCLING__
       // append a MCStep to this step. The step must have the same SimParticle.  Caller is responsible
-      // to insure this step is subsequent in time to the previous step
-      void addStep(StepPointMC const& spmc, GeomHandle<DetectorSystem> const& det);
-#endif
+      // to insure this step is subsequent in time to the previous step.
+      // endPosDet is the end position of spmc in DETECTOR coordinates.
+      void addStep(StepPointMC const& spmc, XYZVectorF const& endPosDet);
     private:
       SurfaceId  sid_ = SurfaceIdDetail::unknown; // Identifier of the surface this step crosses
       float       edep_ = 0.0;  // energy deposited in this material in this step

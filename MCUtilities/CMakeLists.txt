@@ -21,6 +21,7 @@ cet_make_library(
       src/SimParticleGetTau.cc
       src/SimParticleParentGetter.cc
       src/SimpleSpectrum.cc
+      src/SurfaceStepHelpers.cc
       src/SortedStepPoints.cc
       src/checkSimParticleCollection.cc
       src/particleEnteringG4Volume.cc

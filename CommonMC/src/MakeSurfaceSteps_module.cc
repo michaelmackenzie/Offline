@@ -15,6 +15,7 @@
 #include "Offline/MCDataProducts/inc/SurfaceStep.hh"
 #include "Offline/MCDataProducts/inc/StepPointMC.hh"
 #include "Offline/GeometryService/inc/DetectorSystem.hh"
+#include "Offline/MCUtilities/inc/SurfaceStepHelpers.hh"
 #include "Offline/GeometryService/inc/GeomHandle.hh"
 #include "Offline/GeometryService/inc/GeomHandle.hh"
 
@@ -83,7 +84,7 @@ namespace mu2e {
       // only some VDs are kept
       auto isid = vdmap_.find(vdspmc.virtualDetectorId());
       if(debug_ > 0) std::cout<<" VID "<<vdspmc.virtualDetectorId().name()<<std::endl;
-      if(isid != vdmap_.end())ssc->emplace_back(isid->second,vdspmc,det); // no aggregation of VD hits
+      if(isid != vdmap_.end())ssc->emplace_back(makeSurfaceStep(isid->second,vdspmc,*det)); // no aggregation of VD hits
     }
     auto nvdsteps = ssc->size();
     if(debug_ > 0)std::cout << "Added " << nvdsteps << " VD steps " << std::endl;
@@ -110,7 +111,7 @@ namespace mu2e {
         if(tgap < maxtgap_ && dgap < maxdgap_){
           // accumulate this step into the existing surface step
           if(debug_ > 1)std::cout <<"Added step" << std::endl;
-          absorberstep.addStep(spmc,det);
+          addSurfaceStep(absorberstep,spmc,*det);
           added = true;
         }
       }
@@ -126,7 +127,7 @@ namespace mu2e {
           sid = SurfaceId(SurfaceIdDetail::OPA);
         else
           sid = SurfaceId(SurfaceIdDetail::IPA);
-        absorberstep = SurfaceStep(sid,spmc,det);
+        absorberstep = makeSurfaceStep(sid,spmc,*det);
         if(debug_ > 1)std::cout <<"New step" << std::endl;
       }
     }
@@ -156,7 +157,7 @@ namespace mu2e {
         if(tgap < maxtgap_ && dgap < maxdgap_){
           // accumulate this step into the existing e step
           if(debug_ > 1)std::cout <<"Added step" << std::endl;
-          ststep.addStep(spmc,det);
+          addSurfaceStep(ststep,spmc,*det);
           added = true;
         }
       }
@@ -167,7 +168,7 @@ namespace mu2e {
         // hack around the problem that the ST wires are mixed in with the ST foils
         SurfaceId stid(SurfaceIdDetail::ST_Foils,spmc.volumeId());
         if(spmcpos.Rho() > 75.001)stid = SurfaceId(SurfaceIdDetail::ST_Wires,spmc.volumeId());
-        ststep = SurfaceStep(stid,spmc,det);
+        ststep = makeSurfaceStep(stid,spmc,*det);
         if(debug_ > 1)std::cout <<"New step" << std::endl;
       }
     }
