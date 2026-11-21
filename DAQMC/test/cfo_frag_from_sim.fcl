@@ -72,13 +72,16 @@ physics : {
       module_type : PrintModule
       EventHeaderPrinter       : { verbose : 1 }
       ProtonBunchTimePrinter   : { verbose : 1 }
+    }
+    printModuleMC : {
+      module_type : PrintMCModule
       ProtonBunchTimeMCPrinter : { verbose : 1 }
     }
   }
 
   TrigPath : [ EWMProducer, CFOFragmentFromSim, CFOFragmentFromEWM, HeaderFromCFO, HeaderFromCFOEWM ]
   trigger_paths : [ TrigPath ]
-  EndPath : [ printModule, out ]
+  EndPath : [ printModule, printModuleMC, out ]
   end_paths : [ EndPath ]
 }
 
