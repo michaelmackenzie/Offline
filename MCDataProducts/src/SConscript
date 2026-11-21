@@ -16,8 +16,7 @@ Import('mu2e_helper')
 
 helper=mu2e_helper(env);
 
-                                  'mu2e_RecoDataProducts',
-                                  'mu2e_DataProducts',
+mainlib = helper.make_mainlib ( [ 'mu2e_RecoDataProducts',
                                   'art_Framework_Core',
                                   'art_Framework_Services_Registry',
                                   'art_Persistency_Common',
