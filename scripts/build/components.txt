@@ -1,0 +1,126 @@
+# Offline build components. Parsed by CMake (file(STRINGS)) and Python; keep it trivial.
+# Selection: MU2E_COMPONENTS=<comp>[,<comp>...] builds the listed components plus everything
+# they (transitively) require.  Checked by plan/tools/check_components.py.
+#
+# Section 1 -- component definitions (one per line):
+#   component <name> side <reco|sim> requires <comp> <comp> ... [needs-geant4]
+# Section 2 -- packages (EVERY top-level Offline dir with a CMakeLists.txt/SConscript):
+#   <Package> <component>
+# Lines may be in any order; '#' starts a comment; fields are whitespace separated.
+
+component core    side reco requires
+component reco    side reco requires core
+component simbase side sim  requires core
+component g4      side sim  requires simbase needs-geant4
+component sim     side sim  requires reco simbase
+
+Analyses                    sim
+AnalysisConditions          core
+AnalysisConfig              core
+AnalysisUtilities           reco
+BFieldGeom                  core
+BFieldTest                  reco
+BTrkLegacy                  core
+BeamlineGeom                core
+Blinding                    reco
+BlindingMC                  sim
+CRVConditions               core
+CRVConfig                   core
+CRVDQM                      reco
+CRVFilters                  reco
+CRVReco                     reco
+CRVResponse                 sim
+CRVTools                    reco
+CalPatRec                   reco
+CaloCalibration             reco
+CaloCluster                 reco
+CaloConditions              core
+CaloConfig                  core
+CaloDiag                    sim
+CaloFilters                 reco
+CaloMC                      sim
+CaloReco                    reco
+CaloVisualizer              reco
+CalorimeterGeom             core
+CommonMC                    simbase
+CommonReco                  reco
+Compression                 sim
+ConfigTools                 core
+CosmicRayShieldGeom         core
+CosmicReco                  reco
+DAQ                         reco
+DAQConditions               core
+DAQConfig                   core
+DAQMC                       sim
+DQMHelpers                  reco
+DataProducts                core
+DbService                   core
+DbTables                    core
+DetectorSolenoidGeom        core
+EventDisplay                sim
+EventGenerator              g4
+EventMixing                 sim
+ExternalShieldingGeom       core
+ExtinctionMonitorFNAL       core
+ExtinctionMonitorFNALMC     simbase
+Filters                     reco
+FiltersMC                   sim
+GeneralUtilities            core
+GeomPrimitives              core
+GeometryService             core
+GlobalConstantsService      core
+HelloWorld                  sim
+KalmanTests                 sim
+KinKalGeom                  core
+Lumi                        reco
+MBSGeom                     core
+MCDataProducts              simbase
+MCUtilities                 simbase
+MECOStyleProtonAbsorberGeom core
+MachineLearningTools        reco
+Mu2e                        core
+Mu2eG4                      g4
+Mu2eG4Helper                g4
+Mu2eHallGeom                core
+Mu2eInterfaces              core
+Mu2eKinKal                  core
+Mu2eReco                    reco
+Mu2eUtilities               core
+PTMGeom                     core
+ParticleID                  reco
+Print                       reco
+PrintMC                     sim
+ProditionsService           core
+ProductionSolenoidGeom      core
+ProductionTargetGeom        core
+ProtonBeamDumpGeom          core
+RecoDataProducts            core
+RecoMC                      sim
+STMConditions               core
+STMConfig                   core
+STMGeom                     core
+STMMC                       sim
+STMReco                     reco
+SeedService                 core
+ServicesGeom                core
+SimulationConditions        core
+SimulationConfig            core
+Sources                     simbase
+StoppingTargetGeom          core
+TestTools                   core
+TimeoutService              core
+TrackerConditions           core
+TrackerConfig               core
+TrackerGeom                 core
+TrackerMC                   sim
+Trigger                     reco
+TrkFilters                  reco
+TrkHitReco                  reco
+TrkPatRec                   reco
+TrkReco                     core
+UtilityModules              reco
+Validation                  sim
+bin                         core
+boost_fix                   core
+fcl                         reco
+scripts                     core
