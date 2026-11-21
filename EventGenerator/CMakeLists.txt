@@ -637,6 +637,7 @@ cet_build_plugin(MuCapTritonGenerator art::tool
       Offline::DataProducts
       Offline::GlobalConstantsService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
 )
 
@@ -648,6 +649,7 @@ cet_build_plugin(MuCapAlphaGenerator art::tool
       Offline::DataProducts
       Offline::GlobalConstantsService
       Offline::MCDataProducts
+      Offline::MCUtilities
       Offline::Mu2eUtilities
 )
 
