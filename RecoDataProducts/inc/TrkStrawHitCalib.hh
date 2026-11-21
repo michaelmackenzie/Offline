@@ -22,7 +22,7 @@ namespace mu2e {
         KinKal::VEC3 const& dDdX,
         std::array<float,6> const& dDdPanelAlign,
         std::array<float,6> const& dDdPlaneAlign) :
-      _dDdX(dDdX), _dDdPanelAlign(dDdPanelAlign), _dDdPlaneAlign(dDdPlaneAlign)
+      _dDdX(dDdX), _dDdPlaneAlign(dDdPlaneAlign), _dDdPanelAlign(dDdPanelAlign)
     {
       auto dDdP = rdresid.dRdP();
       auto dLdP = rlresid.dRdP();

@@ -6,6 +6,7 @@
 #include "KinKal/Fit/Track.hh"
 #include "KinKal/Detector/ParameterHit.hh"
 #include "Offline/DataProducts/inc/PDGCode.hh"
+#include "Offline/RecoDataProducts/inc/TrkFitFlag.hh"
 #include "Offline/Mu2eKinKal/inc/KKStrawHit.hh"
 #include "Offline/Mu2eKinKal/inc/KKStrawHitCluster.hh"
 #include "Offline/Mu2eKinKal/inc/KKStrawXing.hh"
